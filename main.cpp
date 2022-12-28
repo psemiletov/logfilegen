@@ -7,7 +7,6 @@
 #include <stdio.h>  // for FILENAME_MAX
 #include <sys/stat.h>
 
-//#include <dirent.h>
 
 #ifdef WINDOWS
 #include <direct.h>
@@ -98,9 +97,6 @@ inline bool file_exists (const std::string& name)
 int main (int argc, char *argv[])
 {
 
-
-
-
   CParameters params;
 
 /*
@@ -166,31 +162,29 @@ Params initialization order and overrides:
 
    auto next_frame = clock::now();
 
-    while (true)
-    {
-        next_frame += std::chrono::milliseconds(1000 / params.rate);
+   while (true)
+         {
+          next_frame += std::chrono::milliseconds(1000 / params.rate);
 
-        std::cout << "seconds_counter: " << seconds_counter << endl;
-        std::cout << "frame_counter: " << frame_counter++ << endl;
+          std::cout << "seconds_counter: " << seconds_counter << endl;
+          std::cout << "frame_counter: " << frame_counter++ << endl;
 
-        if (frame_counter == params.rate)
-           {
-            frame_counter = 0;
-            seconds_counter++;
-           }
+          if (frame_counter == params.rate)
+             {
+              frame_counter = 0;
+              seconds_counter++;
+             }
 
-        if (seconds_counter == params.duration)
-           break;
+          if (seconds_counter == params.duration)
+             break;
 
-
-
-        //WRITE TO LOG HERE
+          //WRITE TO LOG HERE
 
 
-        std::cout << std::time(0) << endl;
+          std::cout << std::time(0) << endl;
 
-        std::this_thread::sleep_until(next_frame);
-    }
+          std::this_thread::sleep_until(next_frame);
+         }
 
 
   return 0;
