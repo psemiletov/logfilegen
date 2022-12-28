@@ -187,9 +187,8 @@ Params initialization order and overrides:
         //WRITE TO LOG HERE
 
 
-        std::cout << std::time(0) << endl; // 5 for each second
+        std::cout << std::time(0) << endl;
 
-        // wait for end of frame
         std::this_thread::sleep_until(next_frame);
     }
 
