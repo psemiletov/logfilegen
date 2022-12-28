@@ -40,8 +40,8 @@ public:
   string logfile; //output logfile name with full path
   string mode;    //"nginx" or "apache"
 
-  size_t seconds_to_generate; //duration of log generation, in seconds
-  size_t lines_per_second;  //during the log generation, how many lines per second will be written
+  size_t duration; //duration of log generation, in seconds
+  size_t rate;  //during the log generation, how many lines per second will be written
 
   bool append;
   bool create;
@@ -55,8 +55,8 @@ void CParameters::print()
 {
   cout << "------------ Print parameters -------------" << endl;
 
-  cout << "seconds_to_generate: " << seconds_to_generate << endl;
-  cout << "lines_per_second: " << lines_per_second << endl;
+  cout << "duration: " << duration << endl;
+  cout << "rate: " << rate << endl;
   cout << "logfile: " << logfile << endl;
   cout << "mode: " << mode << endl;
   cout << "append: " << append << endl;
@@ -127,8 +127,8 @@ Params initialization order and overrides:
       //load params from config:
       CPairFile opts_config (fname_config);
 
-      params.seconds_to_generate = opts_config.get_int ("seconds_to_generate", 3);
-      params.lines_per_second = opts_config.get_int ("lines_per_second", 5);
+      params.duration = opts_config.get_int ("duration", 3);
+      params.rate = opts_config.get_int ("rate", 5);
       params.logfile = opts_config.get_string ("logfile", "test.log");
 
      }
@@ -137,13 +137,13 @@ Params initialization order and overrides:
 
   CPairFile opts_cmdline (argc, argv);
 
-  int temp_int = opts_cmdline.get_int ("--seconds_to_generate", 0);
-  if (temp_int)
-      params.seconds_to_generate = temp_int;
+  int temp_int = opts_cmdline.get_int ("--duration", -1);
+  if (temp_int != -1)
+      params.duration = temp_int;
 
-  temp_int = opts_cmdline.get_int ("--lines_per_second", 0);
-  if (temp_int)
-      params.lines_per_second = temp_int;
+  temp_int = opts_cmdline.get_int ("--rate", -1);
+  if (temp_int != -1)
+      params.rate = temp_int;
 
   string temp_string = opts_cmdline.get_string ("--logfile", " ");
   if (temp_string != " ")
@@ -152,9 +152,8 @@ Params initialization order and overrides:
 
 // load params from ENV
 
-
-   const char* env_p;
-   env_p = std::getenv("PATH"))
+   //const char* env_p;
+   //env_p = std::getenv("PATH"))
 
 
 
@@ -169,18 +168,18 @@ Params initialization order and overrides:
 
     while (true)
     {
-        next_frame += std::chrono::milliseconds(1000 / params.lines_per_second);
+        next_frame += std::chrono::milliseconds(1000 / params.rate);
 
         std::cout << "seconds_counter: " << seconds_counter << endl;
         std::cout << "frame_counter: " << frame_counter++ << endl;
 
-        if (frame_counter == params.lines_per_second)
+        if (frame_counter == params.rate)
            {
             frame_counter = 0;
             seconds_counter++;
            }
 
-        if (seconds_counter == params.seconds_to_generate)
+        if (seconds_counter == params.duration)
            break;
 
 
