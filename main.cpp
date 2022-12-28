@@ -93,13 +93,13 @@ Params initialization order and overrides:
 
 //Try to load params from config
 
-  string fname_config = "/etc/logfilegen.conf";
+  string fname_config = current_path() + "/logfilegen.conf";
 
   if (! file_exists (fname_config))
-     {
-      fname_config = get_home_dir() + "/.config/logfilegen.conf";
+     fname_config = "/etc/logfilegen.conf";
 
-     }
+    if (! file_exists (fname_config))
+      fname_config = get_home_dir() + "/.config/logfilegen.conf";
 
   if (file_exists (fname_config))
      {
