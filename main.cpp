@@ -37,12 +37,11 @@ int main (int argc, char *argv[])
 
     while (true)
     {
-//        next_frame += std::chrono::milliseconds(1000 / 5); // 5Hz
-        next_frame += std::chrono::milliseconds(1000 / lines_per_second); // 5Hz
+        next_frame += std::chrono::milliseconds(1000 / lines_per_second);
 
-        std::cout << "seconds_counter: " << seconds_counter << endl; // 5 for each second
+        std::cout << "seconds_counter: " << seconds_counter << endl;
 
-        std::cout << "frame_counter: " << frame_counter++ << endl; // 5 for each second
+        std::cout << "frame_counter: " << frame_counter++ << endl;
 
         if (frame_counter == lines_per_second)
            {
@@ -53,11 +52,13 @@ int main (int argc, char *argv[])
         if (seconds_counter == seconds_to_generate)
            break;
 
-     //   cout << "frame: " << next_frame << endl; // 5 for each second
 
 
-        // do stuff
-        std::cout << std::time(0) << '\n'; // 5 for each second
+
+        //WRITE TO LOG HERE
+
+
+        std::cout << std::time(0) << endl; // 5 for each second
 
         // wait for end of frame
         std::this_thread::sleep_until(next_frame);
