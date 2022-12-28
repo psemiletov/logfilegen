@@ -32,6 +32,7 @@ public:
   
   CPairFile (const string &fname, bool from_data = false);
   CPairFile (int argc, char *argv[]);
+  //CPairFile (int argc, char *vars[]); //ENV VARS
 
 
 };

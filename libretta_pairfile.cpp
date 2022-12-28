@@ -114,12 +114,8 @@ CPairFile::CPairFile (const string &fname, bool from_data)
            {
             if (line.empty())
                continue;
-            
-           // cout << "line: " << line << endl;
            
             size_t pos = line.find ("=");
-      
-            //cout << "pos: " << pos << endl;
                  
             if (pos == string::npos)
                 continue;
@@ -170,18 +166,12 @@ CPairFile::CPairFile (const string &fname, bool from_data)
 
 CPairFile::CPairFile (int argc, char *argv[])
 {
-cout << "CPairFile::CPairFile (int argc, char *argv[])" << endl;
-
-//  stringstream st (fname);
   stringstream st;
 
   for (int i = 0; i < argc; i++)
      {
       st << argv[i];
       st << endl;
-
-      //cout << argv[i] << endl;
-
      }
 
   string line;
@@ -191,25 +181,19 @@ cout << "CPairFile::CPairFile (int argc, char *argv[])" << endl;
          if (line.empty())
                continue;
 
-           // cout << "line: " << line << endl;
+         size_t pos = line.find ("=");
 
-            size_t pos = line.find ("=");
 
-            //cout << "pos: " << pos << endl;
+         if (pos == string::npos)
+             continue;
 
-            if (pos == string::npos)
-                continue;
+         if (pos > line.size())
+             continue;
 
-            if (pos > line.size())
-                continue;
-
-            string a = line.substr (0, pos);
-            string b = line.substr (pos + 1, line.size() - pos);
-
-          //  cout << a << ":" << b << endl;
-
-            values[a] = b;
-           }
+         string a = line.substr (0, pos);
+         string b = line.substr (pos + 1, line.size() - pos);
+         values[a] = b;
+        }
 
 }
 
