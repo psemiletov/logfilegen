@@ -179,10 +179,9 @@ CPairFile::CPairFile (int argc, char *argv[])
   while (getline (st, line))
         {
          if (line.empty())
-               continue;
+            continue;
 
          size_t pos = line.find ("=");
-
 
          if (pos == string::npos)
              continue;
@@ -191,6 +190,10 @@ CPairFile::CPairFile (int argc, char *argv[])
              continue;
 
          string a = line.substr (0, pos);
+         a.erase (0,2);
+
+         cout << "key:" << a << endl;
+
          string b = line.substr (pos + 1, line.size() - pos);
          values[a] = b;
         }

@@ -39,8 +39,8 @@ public:
   string logfile; //output logfile name with full path
   string mode;    //"nginx" or "apache"
 
-  size_t duration; //duration of log generation, in seconds
-  size_t rate;  //during the log generation, how many lines per second will be written
+  int duration; //duration of log generation, in seconds
+  int rate;  //during the log generation, how many lines per second will be written
 
   bool append;
   bool create;
@@ -136,6 +136,12 @@ Params initialization order and overrides:
 
   CPairFile opts_cmdline (argc, argv);
 
+  params.duration = opts_cmdline.get_int ("duration", params.duration);
+  params.rate = opts_cmdline.get_int ("rate", params.rate);
+  params.logfile = opts_cmdline.get_string ("logfile", params.logfile);
+
+
+/*
   int temp_int = opts_cmdline.get_int ("--duration", -1);
   if (temp_int != -1)
       params.duration = temp_int;
@@ -147,7 +153,7 @@ Params initialization order and overrides:
   string temp_string = opts_cmdline.get_string ("--logfile", " ");
   if (temp_string != " ")
      params.logfile = temp_string;
-
+*/
 
 // load params from ENV
 
@@ -158,8 +164,8 @@ Params initialization order and overrides:
 
    params.print();
 
-   size_t seconds_counter = 0;
-   size_t frame_counter = 0;
+   int seconds_counter = 0;
+   int frame_counter = 0;
 
    using clock = std::chrono::steady_clock;
 
