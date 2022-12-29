@@ -6,6 +6,7 @@
 #define LIBRETTA_PAIRFILE_H
 
 #include <string>
+#include <vector>
 #include <map>
 
 using namespace std;
@@ -32,7 +33,7 @@ public:
   
   CPairFile (const string &fname, bool from_data = false);
   CPairFile (int argc, char *argv[]);
-  //CPairFile (int argc, char *vars[]); //ENV VARS
+  CPairFile (vector <string> envars); //ENV VARS
 
 
 };

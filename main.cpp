@@ -1,12 +1,13 @@
 #include <cstdint>
 #include <cstdlib>
+#include <vector>
 #include <iostream>
 #include <thread>
 #include <chrono>
 #include <unistd.h>
 #include <stdio.h>  // for FILENAME_MAX
 #include <sys/stat.h>
-
+#include <csignal>
 
 #ifdef WINDOWS
 #include <direct.h>
@@ -67,6 +68,18 @@ void CParameters::print()
 }
 
 
+namespace
+{
+  volatile std::sig_atomic_t g_signal_status;
+}
+
+
+void signal_handler (int signal)
+{
+  g_signal_status = signal;
+}
+
+
 string get_home_dir()
 {
   string homedir = getenv ("HOME");
@@ -97,7 +110,12 @@ inline bool file_exists (const std::string& name)
 int main (int argc, char *argv[])
 {
 
+  vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE"};
+
   CParameters params;
+
+  std::signal (SIGINT, signal_handler);
+
 
 /*
 Params initialization order and overrides:
@@ -141,24 +159,14 @@ Params initialization order and overrides:
   params.logfile = opts_cmdline.get_string ("logfile", params.logfile);
 
 
-/*
-  int temp_int = opts_cmdline.get_int ("--duration", -1);
-  if (temp_int != -1)
-      params.duration = temp_int;
-
-  temp_int = opts_cmdline.get_int ("--rate", -1);
-  if (temp_int != -1)
-      params.rate = temp_int;
-
-  string temp_string = opts_cmdline.get_string ("--logfile", " ");
-  if (temp_string != " ")
-     params.logfile = temp_string;
-*/
-
 // load params from ENV
 
-   //const char* env_p;
-   //env_p = std::getenv("PATH"))
+  CPairFile opts_envars (envars);
+
+  params.duration = opts_envars.get_int ("duration", params.duration);
+  params.rate = opts_envars.get_int ("rate", params.rate);
+  params.logfile = opts_envars.get_string ("logfile", params.logfile);
+
 
 
 
@@ -187,6 +195,11 @@ Params initialization order and overrides:
           if (seconds_counter == params.duration)
              break;
 
+           if (g_signal_status == SIGINT)
+             {
+              cout << "break the main loop" << endl;
+              break;
+             }
           //WRITE TO LOG HERE
 
 

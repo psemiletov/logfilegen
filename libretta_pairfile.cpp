@@ -8,6 +8,9 @@
 #include <sstream>
 #include <stdlib.h>
 #include <string.h>
+#include <cstring>
+#include <algorithm>
+
 
 #include "libretta_pairfile.h"
 
@@ -199,4 +202,75 @@ CPairFile::CPairFile (int argc, char *argv[])
         }
 
 }
+
+
+CPairFile::CPairFile (vector <string> envars)
+{
+ cout << "CPairFile::CPairFile (vector <string> envars)" << endl;
+
+
+  stringstream st;
+
+
+  for (size_t i = 0; i < envars.size(); i++)
+      {
+       const char* env_p = std::getenv(envars[i].c_str());
+       if (env_p)
+          {
+           cout << "env_p: " << env_p << endl;
+
+           string param = envars[i];
+           param.erase (0, 4);
+
+//           std::transform (param.begin(), param.end(), param.begin(), std::tolower);
+    std::for_each(
+    param.begin(),
+    param.end(),
+    [](char & c) {
+        c = ::tolower(c);
+    });
+
+
+           string value = env_p;
+
+           //cout << "envars[" << i << "] = " << t << endl;
+
+           cout << param << "=" << value << endl;
+
+
+           st << param << "=" << value << endl;
+
+
+          //st << endl;
+
+         }
+
+     }
+
+
+   cout << "END ---  CPairFile::CPairFile (vector <string> envars)" << endl;
+
+  string line;
+
+  while (getline (st, line))
+        {
+         if (line.empty())
+            continue;
+
+         size_t pos = line.find ("=");
+
+         if (pos == string::npos)
+             continue;
+
+         if (pos > line.size())
+             continue;
+
+         string a = line.substr (0, pos);
+
+         string b = line.substr (pos + 1, line.size() - pos);
+         values[a] = b;
+        }
+
+}
+
 
