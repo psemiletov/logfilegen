@@ -110,24 +110,27 @@ Params initialization order and overrides:
 
 //Try to load params from config
 
-  string fname_config = current_path() + "/logfilegen.conf";
+  string fname_config = "/etc/logfilegen/logfilegen.conf";
 
   if (! file_exists (fname_config))
-     fname_config = "/etc/logfilegen.conf";
+      fname_config = get_home_dir() + "/.config/logfilegen/logfilegen.conf";
 
   if (! file_exists (fname_config))
-      fname_config = get_home_dir() + "/.config/logfilegen.conf";
+      fname_config = current_path() + "/logfilegen.conf";
 
   if (file_exists (fname_config))
      {
+      cout << "Load parameters from config file: " << fname_config << endl;
+
       //load params from config:
       CPairFile opts_config (fname_config);
 
       params.duration = opts_config.get_int ("duration", 3);
       params.rate = opts_config.get_int ("rate", 5);
       params.logfile = opts_config.get_string ("logfile", "test.log");
-
      }
+   else
+       cout << "No config file exists" << endl;
 
 // Load params from command line
 
