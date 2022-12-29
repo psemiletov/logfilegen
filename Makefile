@@ -1,7 +1,7 @@
 prefix=/usr/local
 
 all: main.cpp
-	g++ -g -Wall -o logfilegen libretta_pairfile.cpp main.cpp
+	g++ -g -Wall -o logfilegen tpl.cpp libretta_pairfile.cpp main.cpp
 
 clean:
 	$(RM) logfilegen

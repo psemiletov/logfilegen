@@ -1,3 +1,8 @@
+/***********************************************************
+ *   this code by Peter Semiletov is Public Domain         *
+ **********************************************************/
+
+
 #include <cstdint>
 #include <cstdlib>
 #include <vector>
@@ -19,6 +24,8 @@
 
 
 #include "libretta_pairfile.h"
+#include "tpl.h"
+
 
 using namespace std;
 using namespace std::chrono;
@@ -36,7 +43,7 @@ class CParameters
 {
 public:
 
-
+  string templatefile; //templatefile name from /logfilegen/templates
   string logfile; //output logfile name with full path
   string mode;    //"nginx" or "apache"
 
@@ -57,6 +64,7 @@ void CParameters::print()
 
   cout << "duration: " << duration << endl;
   cout << "rate: " << rate << endl;
+  cout << "templatefile: " << templatefile << endl;
   cout << "logfile: " << logfile << endl;
   cout << "mode: " << mode << endl;
   cout << "append: " << append << endl;
@@ -110,7 +118,7 @@ inline bool file_exists (const std::string& name)
 int main (int argc, char *argv[])
 {
 
-  vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE"};
+  vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE", "LFG_TEMPLATEFILE"};
 
   CParameters params;
 
@@ -146,6 +154,8 @@ Params initialization order and overrides:
       params.duration = opts_config.get_int ("duration", 3);
       params.rate = opts_config.get_int ("rate", 5);
       params.logfile = opts_config.get_string ("logfile", "test.log");
+      params.templatefile = opts_config.get_string ("templatefile", "test.tpl");
+
      }
    else
        cout << "No config file exists" << endl;
@@ -157,6 +167,7 @@ Params initialization order and overrides:
   params.duration = opts_cmdline.get_int ("duration", params.duration);
   params.rate = opts_cmdline.get_int ("rate", params.rate);
   params.logfile = opts_cmdline.get_string ("logfile", params.logfile);
+  params.templatefile = opts_cmdline.get_string ("templatefile", params.templatefile);
 
 
 // load params from ENV
@@ -166,11 +177,40 @@ Params initialization order and overrides:
   params.duration = opts_envars.get_int ("duration", params.duration);
   params.rate = opts_envars.get_int ("rate", params.rate);
   params.logfile = opts_envars.get_string ("logfile", params.logfile);
+  params.templatefile = opts_envars.get_string ("templatefile", params.templatefile);
 
 
+  params.print();
 
 
-   params.print();
+//read template
+
+  string fname_template;
+  fname_template = "/etc/logfilegen/templates/" + params.templatefile;
+
+  if (! file_exists (fname_template))
+      fname_template = get_home_dir() + "/.config/logfilegen/templates/" + params.templatefile;
+
+  if (! file_exists (fname_template))
+      fname_template = current_path() + "/templates/" + params.templatefile;
+
+
+  cout << "fname_template: " << fname_template << endl;
+
+
+  cout << "00000000000000000000" << endl;
+
+  CTpl tpl (fname_template);
+  cout << tpl.prepare_log_string() << endl;
+
+  cout << "00000000000000000000" << endl;
+
+
+/*******************************
+MAIN LOOP
+******************************/
+
+
 
    int seconds_counter = 0;
    int frame_counter = 0;
@@ -200,6 +240,8 @@ Params initialization order and overrides:
               cout << "break the main loop" << endl;
               break;
              }
+
+
           //WRITE TO LOG HERE
 
 
