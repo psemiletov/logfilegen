@@ -186,7 +186,7 @@ string CTpl::prepare_log_string()
 
   string ip = gen_random_ip();
 
-  logstring.replace(logstring.find("IP"), string("IP").size(), ip);
+  logstring.replace (logstring.find("IP"), string("IP").size(), ip);
 
   string user = get_string ("USER", "WORD|NUMBER");
 
@@ -211,7 +211,6 @@ string CTpl::prepare_log_string()
   //add msecs support
 
   //string request = get_string ("USER", "WORD");
-
 
 
   return logstring;
