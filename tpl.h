@@ -8,6 +8,8 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <random>
+
 
 #include "libretta_pairfile.h"
 
@@ -18,7 +20,8 @@ class CTpl: public CPairFile
 {
 public:
 
-//read the template from file to following variables
+  std::random_device rnd_dev;
+  std::mt19937 *rnd_generator;
 
   CPairFile *templatefile;
 
@@ -29,6 +32,10 @@ public:
   string datetime;
 
   CTpl (const string &fname);
+  ~CTpl();
+
+  string gen_random_ip();
+
 
   string prepare_log_string();
 };

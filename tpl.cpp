@@ -8,7 +8,7 @@
 #include <iomanip>
 #include <ctime>
 #include <chrono>
-#include <random>
+//#include <random>
 
 #include <sys/time.h>
 
@@ -38,18 +38,34 @@ STATIC_TEXT="static text"
  */
 
 
+string CTpl::gen_random_ip()
+{
+  std::uniform_int_distribution<> distrib(0, 255);
 
+  ostringstream st;
+
+  st << distrib (*rnd_generator);
+  st << ".";
+
+  st << distrib (*rnd_generator);
+  st << ".";
+
+  st << distrib (*rnd_generator);
+  st << ".";
+
+  st << distrib (*rnd_generator);
+
+  return st.str();
+}
+
+/*
 string gen_random_ip()
 {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_int_distribution<> distrib(0, 255);
 
-
   ostringstream st;
-  //srand(time(0));
-
-//      int num = (rand() % (upper - lower + 1)) + lower
 
   st << distrib (gen);
   st << ".";
@@ -61,11 +77,10 @@ string gen_random_ip()
   st << ".";
 
   st << distrib (gen);
-
 
   return st.str();
 }
-
+*/
 
 
 /*
@@ -250,20 +265,16 @@ CTpl::CTpl (const string &fname): CPairFile (fname, false)
   tlogstring  = get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
 
 
-    struct timeval time;
-    gettimeofday(&time,NULL);
-
-    srand((time.tv_sec * 1000) + (time.tv_usec / 1000));
-
-
-
+  rnd_generator = new std::mt19937 (rnd_dev());
 }
 
-/*
+
+CTpl::~CTpl()
 {
-  delete templatefile;
+
+  delete rnd_generator;
 }
-*/
+
 
 
 string CTpl::prepare_log_string()
