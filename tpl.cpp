@@ -37,6 +37,20 @@ STATIC_TEXT="static text"
 
  */
 
+vector <string> split_string_to_vector (const string &s, char delimeter)
+{
+  string ts;
+  stringstream ss (s);
+  vector <string> tokens;
+
+  while (getline (ss, ts, delimeter))
+        {
+         tokens.push_back (ts);
+        }
+
+  return tokens;
+}
+
 
 string CTpl::gen_random_ip()
 {
