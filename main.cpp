@@ -224,8 +224,14 @@ MAIN LOOP
          {
           next_frame += std::chrono::milliseconds(1000 / params.rate);
 
-          std::cout << "seconds_counter: " << seconds_counter << endl;
-          std::cout << "frame_counter: " << frame_counter++ << endl;
+          frame_counter++;
+
+          //std::cout << "seconds_counter: " << seconds_counter << endl;
+//          std::cout << "frame_counter: " << frame_counter << endl;
+
+           //simple output to screen
+          //cout << tpl.prepare_log_string() << endl;
+
 
           if (frame_counter == params.rate)
              {
