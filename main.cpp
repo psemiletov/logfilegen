@@ -201,7 +201,7 @@ Params initialization order and overrides:
   cout << "00000000000000000000" << endl;
 
   CTpl tpl (fname_template);
-  cout << tpl.prepare_log_string() << endl;
+  //cout << tpl.prepare_log_string() << endl;
 
   cout << "00000000000000000000" << endl;
 
@@ -211,6 +211,7 @@ MAIN LOOP
 ******************************/
 
 
+   auto start = high_resolution_clock::now();
 
    int seconds_counter = 0;
    int frame_counter = 0;
@@ -223,8 +224,8 @@ MAIN LOOP
          {
           next_frame += std::chrono::milliseconds(1000 / params.rate);
 
-          std::cout << "seconds_counter: " << seconds_counter << endl;
-          std::cout << "frame_counter: " << frame_counter++ << endl;
+          //std::cout << "seconds_counter: " << seconds_counter << endl;
+          //std::cout << "frame_counter: " << frame_counter++ << endl;
 
           if (frame_counter == params.rate)
              {
@@ -244,12 +245,21 @@ MAIN LOOP
 
           //WRITE TO LOG HERE
 
+          //simple output to screen
+          cout << tpl.prepare_log_string() << endl;
+
+
 
           std::cout << std::time(0) << endl;
 
           std::this_thread::sleep_until(next_frame);
          }
 
+
+  auto stop = high_resolution_clock::now();
+  auto duration = duration_cast<microseconds>(stop - start);
+
+  cout << "duration.count (microseconds): " << duration.count() << endl;
 
   return 0;
 }

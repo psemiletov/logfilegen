@@ -182,13 +182,13 @@ CTpl::CTpl (const string &fname): CPairFile (fname, false)
 
 string CTpl::prepare_log_string()
 {
-  string logstring = get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
+  logstring = get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
 
-  string ip = gen_random_ip();
+  ip = gen_random_ip();
 
   logstring.replace (logstring.find("IP"), string("IP").size(), ip);
 
-  string user = get_string ("USER", "WORD|NUMBER");
+  user = get_string ("USER", "WORD|NUMBER");
 
   if (user == "NUMBER")
      logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_number(8));
@@ -206,7 +206,9 @@ string CTpl::prepare_log_string()
             logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_word(8));
       }
 
-  string datetime = get_string ("DATETIME", "%x:%X");
+  //ADD TIMESTAMP macro
+
+  datetime = get_string ("DATETIME", "%x:%X");
   logstring.replace(logstring.find("DATETIME"), string("DATETIME").size(), get_datetime (datetime));
   //add msecs support
 

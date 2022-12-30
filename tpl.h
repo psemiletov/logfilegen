@@ -51,6 +51,12 @@ public:
 */
 
 // CTpl (const string &fname, bool from_data = false);
+
+  string logstring;
+  string ip;
+  string user;
+  string datetime;
+
   CTpl (const string &fname);
 
 
