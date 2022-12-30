@@ -154,7 +154,7 @@ Params initialization order and overrides:
       params.duration = opts_config.get_int ("duration", 3);
       params.rate = opts_config.get_int ("rate", 5);
       params.logfile = opts_config.get_string ("logfile", "test.log");
-      params.templatefile = opts_config.get_string ("templatefile", "test.tpl");
+      params.templatefile = opts_config.get_string ("templatefile", "test.tp");
 
      }
    else
