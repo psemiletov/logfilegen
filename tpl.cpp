@@ -95,7 +95,6 @@ string gen_user_word (size_t len)
 
 /*
 
-pecifier	Replaced by	Example
 %a	Abbreviated weekday name *	Thu
 %A	Full weekday name *	Thursday
 %b	Abbreviated month name *	Aug
