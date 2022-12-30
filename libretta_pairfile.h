@@ -35,7 +35,6 @@ public:
   CPairFile (int argc, char *argv[]);
   CPairFile (vector <string> envars); //ENV VARS
 
-
 };
 
 #endif

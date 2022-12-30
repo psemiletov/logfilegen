@@ -17,14 +17,14 @@
 
 /*
 
-IP={{ RANDOM IP }}
-USER={{ WORD | NUMBER }}
+IP=IP
+USER=WORD|NUMBER
 DATETIME={{dd/mm/yyyy:hh:mm:ss z}}
-REQUEST=["GET", "POST"]
-URI=["api", "docs"]
-PROTOCOL=["HTTP/1.1", "HTTP/2.0"]
-STATUS=[200, 403]
-BYTES=[0-5000]
+REQUEST=GET|POST
+URI=api|docs
+PROTOCOL=HTTP/1.1|HTTP/2.0
+STATUS=200|403
+BYTES=0-5000
 STATIC_TEXT="static text"
 
 
