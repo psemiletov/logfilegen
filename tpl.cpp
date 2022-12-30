@@ -9,6 +9,8 @@
 #include <ctime>
 #include <chrono>
 
+#include <sys/time.h>
+
 #include "tpl.h"
 
 
@@ -38,7 +40,7 @@ STATIC_TEXT="static text"
 string gen_random_ip()
 {
   ostringstream st;
-  srand(time(0));
+  //srand(time(0));
 
 //      int num = (rand() % (upper - lower + 1)) + lower
 
@@ -65,7 +67,7 @@ string gen_random_ip()
 string gen_user_number (size_t len)
 {
   ostringstream st;
-  srand(time(0));
+  //srand(time(0));
 
   for (size_t i = 0; i < len; i++)
       {
@@ -80,7 +82,7 @@ string gen_user_number (size_t len)
 string gen_user_word (size_t len)
 {
   ostringstream st;
-  srand(time(0));
+  //srand(time(0));
 
   for (size_t i = 0; i < len; i++)
       {
@@ -172,23 +174,45 @@ string get_datetime_with_msecs (const string &format)
 }
 
 
-CTpl::CTpl (const string &fname): CPairFile (fname, false)
+CTpl::CTpl (const string &fname)
 {
+  templatefile = new CPairFile (fname);
 
-//cout << "gen_random_ip():" << gen_random_ip() << endl;
+  tlogstring  = templatefile->get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
+
+
+    struct timeval time;
+    gettimeofday(&time,NULL);
+
+    srand((time.tv_sec * 1000) + (time.tv_usec / 1000));
+
+
 
 }
 
 
+CTpl::~CTpl()
+{
+  delete templatefile;
+}
+
+
+
 string CTpl::prepare_log_string()
 {
-  logstring = get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
+  //srand(time(0));
+
+//  logstring = get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
+
+//  logstring = templatefile->get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
+
+  logstring = tlogstring;
 
   ip = gen_random_ip();
 
   logstring.replace (logstring.find("IP"), string("IP").size(), ip);
 
-  user = get_string ("USER", "WORD|NUMBER");
+  user = templatefile->get_string ("USER", "WORD|NUMBER");
 
   if (user == "NUMBER")
      logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_number(8));
@@ -208,7 +232,7 @@ string CTpl::prepare_log_string()
 
   //ADD TIMESTAMP macro
 
-  datetime = get_string ("DATETIME", "%x:%X");
+  datetime = templatefile->get_string ("DATETIME", "%x:%X");
   logstring.replace(logstring.find("DATETIME"), string("DATETIME").size(), get_datetime (datetime));
   //add msecs support
 
