@@ -36,7 +36,7 @@ STATIC_TEXT="static text"
 
  */
 
-class CTpl
+class CTpl: public CPairFile
 {
 public:
 
@@ -61,7 +61,7 @@ public:
   string datetime;
 
   CTpl (const string &fname);
-  ~CTpl();
+  //~CTpl();
 
   string prepare_log_string();
 };

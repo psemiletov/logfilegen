@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <ctime>
 #include <chrono>
+#include <random>
 
 #include <sys/time.h>
 
@@ -37,6 +38,37 @@ STATIC_TEXT="static text"
  */
 
 
+
+string gen_random_ip()
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> distrib(0, 255);
+
+
+  ostringstream st;
+  //srand(time(0));
+
+//      int num = (rand() % (upper - lower + 1)) + lower
+
+  st << distrib (gen);
+  st << ".";
+
+  st << distrib (gen);
+  st << ".";
+
+  st << distrib (gen);
+  st << ".";
+
+  st << distrib (gen);
+
+
+  return st.str();
+}
+
+
+
+/*
 string gen_random_ip()
 {
   ostringstream st;
@@ -62,9 +94,9 @@ string gen_random_ip()
 
   return st.str();
 }
-
-
-string gen_user_number (size_t len)
+*/
+/*
+string gen_user_number_old (size_t len)
 {
   ostringstream st;
   //srand(time(0));
@@ -77,8 +109,45 @@ string gen_user_number (size_t len)
 
   return st.str();
 }
+*/
 
 
+string gen_user_number (size_t len)
+{
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> distrib(0, 9);
+
+  ostringstream st;
+
+  for (size_t i = 0; i < len; i++)
+      {
+       st << distrib (gen);
+      }
+
+  return st.str();
+}
+
+
+string gen_user_word (size_t len)
+{
+  ostringstream st;
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> distrib(0, 25);
+
+  for (size_t i = 0; i < len; i++)
+      {
+       int g = distrib (gen);
+       char d = static_cast<char> (g + 'a');
+       st << d;
+      }
+
+  return st.str();
+}
+
+/*
 string gen_user_word (size_t len)
 {
   ostringstream st;
@@ -93,7 +162,7 @@ string gen_user_word (size_t len)
 
   return st.str();
 }
-
+*/
 
 /*
 
@@ -174,11 +243,11 @@ string get_datetime_with_msecs (const string &format)
 }
 
 
-CTpl::CTpl (const string &fname)
+CTpl::CTpl (const string &fname): CPairFile (fname, false)
 {
-  templatefile = new CPairFile (fname);
+//  templatefile = new CPairFile (fname);
 
-  tlogstring  = templatefile->get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
+  tlogstring  = get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
 
 
     struct timeval time;
@@ -190,12 +259,11 @@ CTpl::CTpl (const string &fname)
 
 }
 
-
-CTpl::~CTpl()
+/*
 {
   delete templatefile;
 }
-
+*/
 
 
 string CTpl::prepare_log_string()
@@ -212,7 +280,7 @@ string CTpl::prepare_log_string()
 
   logstring.replace (logstring.find("IP"), string("IP").size(), ip);
 
-  user = templatefile->get_string ("USER", "WORD|NUMBER");
+  user = get_string ("USER", "WORD|NUMBER");
 
   if (user == "NUMBER")
      logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_number(8));
@@ -232,7 +300,7 @@ string CTpl::prepare_log_string()
 
   //ADD TIMESTAMP macro
 
-  datetime = templatefile->get_string ("DATETIME", "%x:%X");
+  datetime = get_string ("DATETIME", "%x:%X");
   logstring.replace(logstring.find("DATETIME"), string("DATETIME").size(), get_datetime (datetime));
   //add msecs support
 
