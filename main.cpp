@@ -247,10 +247,11 @@ MAIN LOOP
 
           //simple output to screen
           cout << tpl.prepare_log_string() << endl;
+         //   string xx = tpl.prepare_log_string();
 
 
 
-          std::cout << std::time(0) << endl;
+         // std::cout << std::time(0) << endl;
 
           std::this_thread::sleep_until(next_frame);
          }
@@ -258,8 +259,10 @@ MAIN LOOP
 
   auto stop = high_resolution_clock::now();
   auto duration = duration_cast<microseconds>(stop - start);
+  auto duration_s = duration_cast<seconds>(stop - start);
 
   cout << "duration.count (microseconds): " << duration.count() << endl;
+  cout << "duration_s.count (seconds): " << duration_s.count() << endl;
 
   return 0;
 }

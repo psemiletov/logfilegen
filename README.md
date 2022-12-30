@@ -46,7 +46,11 @@ The configuration file is called ```logfilegen.conf``` and must be placed to ```
 
 ### Command line parameters
 
-All configuration variables can be **overrided** using command line options in the format ```---key=value```. For example
+All configuration variables can be **overrided** using command line options in the format ```---key=value```. For example:
+
+```console
+logfilegen --duration=3
+```
 
 
 
