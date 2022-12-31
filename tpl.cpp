@@ -38,13 +38,14 @@ STATIC_TEXT="static text"
 
 
 
-string str_replace (string source, const string &text_to_find, const string &replace_width)
+string str_replace (string &source, const string &text_to_find, const string &replace_with)
 {
   size_t pos = source.find (text_to_find);
+
   if (pos == string::npos)
      return source;
 
-  source.replace (pos, replace_width.length(), replace_width);
+  source.replace (pos, text_to_find.size(), replace_with);
 
   return source;
 }
@@ -236,10 +237,10 @@ string CTpl::prepare_log_string()
 
   string logstring = tlogstring;
 
-  ip = get_string ("IP", "1111.1111.1111.1111");
+//  ip = get_string ("IP", "1111.1111.1111.1111");
 //  cout << "ip = get_string IP: " << ip << endl;
 
-  //str_replace (logstring, "COOOL", "FOOOOOOOOOOOOOOOOOOl");
+  str_replace (logstring, "COOOL", "FOOOOOOOOOOOOOOOOOOl");
 
 
   //logstring.replace (logstring.find("IP"), string("IP").size(), ip);
@@ -251,9 +252,11 @@ string CTpl::prepare_log_string()
 
   user = get_string ("USER", "WORD|NUMBER");
 
+//    user = get_string ("USER", "WORD");
+
 
   if (user == "NUMBER")
-     //logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_number(8));
+    //logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_number(8));
     str_replace (logstring, "USER", gen_user_number(8));
   else
   if (user == "WORD")
@@ -263,9 +266,13 @@ string CTpl::prepare_log_string()
       {
        //get random
        if (get_rnd (0, 1) == 0)
+          //logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_number(8));
+
           str_replace (logstring, "USER", gen_user_number(8));
        else
           str_replace (logstring, "USER", gen_user_word(8));
+      //    logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_word(8));
+
       }
 
 
