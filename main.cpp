@@ -66,6 +66,8 @@ void CParameters::print()
   cout << "rate: " << rate << endl;
   cout << "templatefile: " << templatefile << endl;
   cout << "logfile: " << logfile << endl;
+
+
   cout << "mode: " << mode << endl;
   cout << "append: " << append << endl;
   cout << "create: " << create << endl;
@@ -155,6 +157,7 @@ Params initialization order and overrides:
       params.rate = opts_config.get_int ("rate", 5);
       params.logfile = opts_config.get_string ("logfile", "test.log");
       params.templatefile = opts_config.get_string ("templatefile", "test.tp");
+      params.mode = opts_config.get_string ("mode", "nginx");
 
      }
    else
@@ -168,6 +171,7 @@ Params initialization order and overrides:
   params.rate = opts_cmdline.get_int ("rate", params.rate);
   params.logfile = opts_cmdline.get_string ("logfile", params.logfile);
   params.templatefile = opts_cmdline.get_string ("templatefile", params.templatefile);
+  params.mode = opts_cmdline.get_string ("mode", params.mode);
 
 
 // load params from ENV
@@ -178,6 +182,7 @@ Params initialization order and overrides:
   params.rate = opts_envars.get_int ("rate", params.rate);
   params.logfile = opts_envars.get_string ("logfile", params.logfile);
   params.templatefile = opts_envars.get_string ("templatefile", params.templatefile);
+  params.mode = opts_envars.get_string ("mode", params.mode);
 
 
   params.print();
@@ -198,12 +203,8 @@ Params initialization order and overrides:
   cout << "fname_template: " << fname_template << endl;
 
 
-  cout << "00000000000000000000" << endl;
 
-  CTpl tpl (fname_template);
-  //cout << tpl.prepare_log_string() << endl;
-
-  cout << "00000000000000000000" << endl;
+  CTpl tpl (fname_template, params.mode);
 
 
 /*******************************

@@ -23,15 +23,19 @@ public:
   std::random_device rnd_dev;
   std::mt19937 *rnd_generator;
 
+  map <string, string> logstrings;
+
   CPairFile *templatefile;
 
+  string mode; //nginx, apache, etc
+
   string tlogstring;
-  string logstring;
+  //string logstring;
   string ip;
   string user;
   string datetime;
 
-  CTpl (const string &fname);
+  CTpl (const string &fname, const string &amode);
   ~CTpl();
 
   int get_rnd (int a, int b);

@@ -8,7 +8,6 @@
 #include <iomanip>
 #include <ctime>
 #include <chrono>
-//#include <random>
 
 #include <sys/time.h>
 
@@ -36,6 +35,20 @@ STATIC_TEXT="static text"
 209.124.125.132 - 5678efgi [22/Dec/2022:18:56:55 +0000] "GET /docs HTTP/2.0" 200 5678 "static text"
 
  */
+
+
+
+string str_replace (string source, const string &text_to_find, const string &replace_width)
+{
+  size_t pos = source.find (text_to_find);
+  if (pos == string::npos)
+     return source;
+
+  source.replace (pos, replace_width.length(), replace_width);
+
+  return source;
+}
+
 
 vector <string> split_string_to_vector (const string &s, char delimeter)
 {
@@ -191,11 +204,19 @@ string get_datetime_with_msecs (const string &format)
 }
 
 
-CTpl::CTpl (const string &fname): CPairFile (fname, false)
+CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
 {
-  tlogstring  = get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
+  mode = amode;
 
   rnd_generator = new std::mt19937 (rnd_dev());
+  logstrings["nginx"] = "RND_IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ";
+
+
+  tlogstring  = get_string ("LOGSTRING", logstrings[mode]);
+
+  //tlogstring  = get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
+
+
 }
 
 
@@ -213,27 +234,38 @@ string CTpl::prepare_log_string()
 
 //  logstring = templatefile->get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
 
-  logstring = tlogstring;
+  string logstring = tlogstring;
 
-  ip = gen_random_ip();
+  ip = get_string ("IP", "1111.1111.1111.1111");
+//  cout << "ip = get_string IP: " << ip << endl;
 
-  logstring.replace (logstring.find("IP"), string("IP").size(), ip);
+  //str_replace (logstring, "COOOL", "FOOOOOOOOOOOOOOOOOOl");
+
+
+  //logstring.replace (logstring.find("IP"), string("IP").size(), ip);
+
+  //logstring.replace (logstring.find("COOL"), string("COOL").size(), "^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+
+
+  logstring.replace (logstring.find("RND_IP"), string("RND_IP").size(), gen_random_ip());
 
   user = get_string ("USER", "WORD|NUMBER");
 
 
   if (user == "NUMBER")
-     logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_number(8));
+     //logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_number(8));
+    str_replace (logstring, "USER", gen_user_number(8));
   else
   if (user == "WORD")
-     logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_word(8));
+     //logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_word(8));
+      str_replace (logstring, "USER", gen_user_word(8));
   else
       {
        //get random
        if (get_rnd (0, 1) == 0)
-          logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_number(8));
+          str_replace (logstring, "USER", gen_user_number(8));
        else
-           logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_word(8));
+          str_replace (logstring, "USER", gen_user_word(8));
       }
 
 
@@ -259,6 +291,8 @@ string CTpl::prepare_log_string()
      logstring.replace(logstring.find("REQUEST"), string("REQUEST").size(), vreq[0]);
   else
       logstring.replace(logstring.find("REQUEST"), string("REQUEST").size(), vreq[get_rnd (0, vreq.size()-1)]);
+
+
 
 
   return logstring;
