@@ -20,7 +20,7 @@
 IP=IP
 USER=WORD|NUMBER
 DATETIME={{dd/mm/yyyy:hh:mm:ss z}}
-REQUEST=GET|POST
+REQUEST=GET|POST|PUT|PATCH|DELETE
 URI=api|docs
 PROTOCOL=HTTP/1.1|HTTP/2.0
 STATUS=200|403
@@ -52,9 +52,17 @@ vector <string> split_string_to_vector (const string &s, char delimeter)
 }
 
 
+int CTpl::get_rnd (int a, int b)
+{
+   std::uniform_int_distribution <> distrib (a, b);
+   return distrib (*rnd_generator);
+}
+
+
+
 string CTpl::gen_random_ip()
 {
-  std::uniform_int_distribution<> distrib(0, 255);
+  std::uniform_int_distribution<> distrib (0, 255);
 
   ostringstream st;
 
@@ -72,126 +80,38 @@ string CTpl::gen_random_ip()
   return st.str();
 }
 
-/*
-string gen_random_ip()
+
+
+string CTpl::gen_user_number (size_t len)
 {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> distrib(0, 255);
-
-  ostringstream st;
-
-  st << distrib (gen);
-  st << ".";
-
-  st << distrib (gen);
-  st << ".";
-
-  st << distrib (gen);
-  st << ".";
-
-  st << distrib (gen);
-
-  return st.str();
-}
-*/
-
-
-/*
-string gen_random_ip()
-{
-  ostringstream st;
-  //srand(time(0));
-
-//      int num = (rand() % (upper - lower + 1)) + lower
-
-  int num = (rand() % (255 - 0 + 1));
-
-  st << num;
-  st << ".";
-
-  num = (rand() % (255 - 0 + 1));
-  st << num;
-  st << ".";
-
-  num = (rand() % (255 - 0 + 1));
-  st << num;
-  st << ".";
-
-  num = (rand() % (255 - 0 + 1));
-  st << num;
-
-  return st.str();
-}
-*/
-/*
-string gen_user_number_old (size_t len)
-{
-  ostringstream st;
-  //srand(time(0));
-
-  for (size_t i = 0; i < len; i++)
-      {
-       int num = (rand() % (9 - 0 + 1));
-       st << num;
-      }
-
-  return st.str();
-}
-*/
-
-
-string gen_user_number (size_t len)
-{
-  std::random_device rd;
-  std::mt19937 gen(rd());
   std::uniform_int_distribution<> distrib(0, 9);
 
   ostringstream st;
 
   for (size_t i = 0; i < len; i++)
       {
-       st << distrib (gen);
+       st << distrib (*rnd_generator);
       }
 
   return st.str();
 }
 
 
-string gen_user_word (size_t len)
+string CTpl::gen_user_word (size_t len)
 {
   ostringstream st;
 
-  std::random_device rd;
-  std::mt19937 gen(rd());
   std::uniform_int_distribution<> distrib(0, 25);
 
   for (size_t i = 0; i < len; i++)
       {
-       int g = distrib (gen);
+       int g = distrib (*rnd_generator);
        char d = static_cast<char> (g + 'a');
        st << d;
       }
 
   return st.str();
 }
-
-/*
-string gen_user_word (size_t len)
-{
-  ostringstream st;
-  //srand(time(0));
-
-  for (size_t i = 0; i < len; i++)
-      {
-       int g = std::rand()%25;
-       char d = static_cast<char> (g + 'a');
-       st << d;
-      }
-
-  return st.str();
-}
-*/
 
 /*
 
@@ -237,13 +157,12 @@ If timezone cannot be termined, no characters	CDT
 
 */
 
-string get_datetime (const string &format)
+string CTpl::get_datetime (const string &format)
 {
   auto t = std::time (nullptr);
   auto tm = *std::localtime(&t);
 
   std::ostringstream oss;
-  //oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
   oss << std::put_time (&tm, format.c_str());
 
   auto result = oss.str();
@@ -274,10 +193,7 @@ string get_datetime_with_msecs (const string &format)
 
 CTpl::CTpl (const string &fname): CPairFile (fname, false)
 {
-//  templatefile = new CPairFile (fname);
-
   tlogstring  = get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
-
 
   rnd_generator = new std::mt19937 (rnd_dev());
 }
@@ -285,7 +201,6 @@ CTpl::CTpl (const string &fname): CPairFile (fname, false)
 
 CTpl::~CTpl()
 {
-
   delete rnd_generator;
 }
 
@@ -293,7 +208,6 @@ CTpl::~CTpl()
 
 string CTpl::prepare_log_string()
 {
-  //srand(time(0));
 
 //  logstring = get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
 
@@ -307,6 +221,7 @@ string CTpl::prepare_log_string()
 
   user = get_string ("USER", "WORD|NUMBER");
 
+
   if (user == "NUMBER")
      logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_number(8));
   else
@@ -315,13 +230,15 @@ string CTpl::prepare_log_string()
   else
       {
        //get random
-       srand(time(0));
-       int num = rand() % 2;
-       if (num == 0)
+       if (get_rnd (0, 1) == 0)
           logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_number(8));
        else
-            logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_word(8));
+           logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_word(8));
       }
+
+
+
+   //cout << "v[0]:" << v[0] << endl;
 
   //ADD TIMESTAMP macro
 
@@ -329,7 +246,19 @@ string CTpl::prepare_log_string()
   logstring.replace(logstring.find("DATETIME"), string("DATETIME").size(), get_datetime (datetime));
   //add msecs support
 
-  //string request = get_string ("USER", "WORD");
+
+    //vector <string> v = split_string_to_vector (user, '|');
+  //if (v.size() == 1)
+
+
+//  st << distrib (*rnd_generator);
+
+  string request = get_string ("REQUEST", "GET|POST|PUT|PATCH|DELETE");
+  vector <string> vreq = split_string_to_vector (request, '|');
+  if (vreq.size() == 1)
+     logstring.replace(logstring.find("REQUEST"), string("REQUEST").size(), vreq[0]);
+  else
+      logstring.replace(logstring.find("REQUEST"), string("REQUEST").size(), vreq[get_rnd (0, vreq.size()-1)]);
 
 
   return logstring;

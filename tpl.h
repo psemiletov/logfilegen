@@ -34,7 +34,15 @@ public:
   CTpl (const string &fname);
   ~CTpl();
 
+  int get_rnd (int a, int b);
+
+
   string gen_random_ip();
+  string gen_user_number (size_t len);
+  string gen_user_word (size_t len);
+  string get_datetime (const string &format);
+
+
 
 
   string prepare_log_string();
