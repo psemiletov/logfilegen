@@ -34,6 +34,9 @@ public:
   string user;
   string datetime;
   string request;
+  string uri;
+  string protocol;
+
   string status;
   string body_bytes_sent;
   string http_referer;

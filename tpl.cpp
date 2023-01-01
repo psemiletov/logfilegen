@@ -237,7 +237,7 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
 
  */
 
- logstrings["nginx"] = "$remote_addr - $remote_user [$time_local] \"$request\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\"";
+ logstrings["nginx"] = "$remote_addr - $remote_user [$time_local] \"$request$uri$protocol\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\"";
 
 
 
@@ -277,7 +277,7 @@ string CTpl::prepare_log_string()
       logstring.replace (logstring.find("$remote_addr"), string("$remote_addr").size(), ip);
 
 
-  user = get_string ("$remote_user", "WORD|NUMBER");
+  user = get_string ("$remote_user", "WORD|NUMBER"); //WORD|NUMBER or -
 
   if (user == "NUMBER")
     str_replace (logstring, "$remote_user", gen_user_number(8));
@@ -312,6 +312,17 @@ string CTpl::prepare_log_string()
   else
       str_replace (logstring, "$request", vreq[get_rnd (0, vreq.size()-1)]);
 
+  //////////////
+
+
+  uri = get_string ("$uri", " /");
+  str_replace (logstring, "$uri", uri);
+
+  protocol = get_string ("$protocol", " HTTP/1.1");
+  str_replace (logstring, "$protocol", protocol);
+
+
+//////////////
 
   status = get_string ("$status", "200|404");
 
