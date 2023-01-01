@@ -324,7 +324,7 @@ string CTpl::prepare_log_string()
      seq_val = true;
     }
 
-  pos = status.find (",");
+  pos = status.find ("-");
 
   if (pos != string::npos)
     {
@@ -343,16 +343,43 @@ string CTpl::prepare_log_string()
       str_replace (logstring, "$status", vstatus[get_rnd (0, vstatus.size()-1)]);
      }
 
-
   if (range_val)
      {
-      vector <string> vstatus = split_string_to_vector (status, ',');
+      vector <string> vstatus = split_string_to_vector (status, '-');
 
       int a = atoi (vstatus[0].c_str());
       int b = atoi (vstatus[1].c_str()) + 1;
 
       str_replace (logstring, "$status", std::to_string (get_rnd (a, b)));
      }
+
+
+  single_val = true;
+  range_val = false;
+
+  body_bytes_sent = get_string ("$status", "100-10000");
+
+  pos = body_bytes_sent.find ("-");
+
+  if (pos != string::npos)
+    {
+     single_val = false;
+     range_val = true;
+    }
+
+  if (single_val)
+    str_replace (logstring, "$body_bytes_sent", body_bytes_sent);
+
+  if (range_val)
+     {
+      vector <string> vstatus = split_string_to_vector (body_bytes_sent, '-');
+
+      int a = atoi (vstatus[0].c_str());
+      int b = atoi (vstatus[1].c_str()) + 1;
+
+      str_replace (logstring, "$body_bytes_sent", std::to_string (get_rnd (a, b)));
+     }
+
 
 
 

@@ -34,8 +34,10 @@ public:
   string user;
   string datetime;
   string request;
-
   string status;
+  string body_bytes_sent;
+  string http_referer;
+  string http_user_agent;
 
   CTpl (const string &fname, const string &amode);
   ~CTpl();
