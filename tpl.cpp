@@ -291,7 +291,6 @@ string CTpl::prepare_log_string()
           str_replace (logstring, "$remote_user", gen_user_number(8));
        else
           str_replace (logstring, "$remote_user", gen_user_word(8));
-
       }
 
   //ADD TIMESTAMP macro
@@ -299,6 +298,10 @@ string CTpl::prepare_log_string()
   datetime = get_string ("$time_local", "%x:%X");
   str_replace (logstring, "$time_local", get_datetime (datetime));
 
+
+  //Must be more complex, i.e
+  //"GET / HTTP/1.1"
+  ///favicon.ico HTTP/1.1"
 
   request = get_string ("$request", "GET|POST|PUT|PATCH|DELETE");
 
