@@ -241,7 +241,7 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
 
 
 
-  tlogstring  = get_string ("LOGSTRING", logstrings[mode]);
+  tlogstring  = get_string ("$logstring", logstrings[mode]);
 
   //tlogstring  = get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
 
