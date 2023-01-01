@@ -30,10 +30,12 @@ public:
   string mode; //nginx, apache, etc
 
   string tlogstring;
-  //string logstring;
   string ip;
   string user;
   string datetime;
+  string request;
+
+  string status;
 
   CTpl (const string &fname, const string &amode);
   ~CTpl();

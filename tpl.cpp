@@ -14,6 +14,9 @@
 #include "tpl.h"
 
 
+//full nginx vars see at
+//http://nginx.org/en/docs/varindex.html
+
 /*
 
 IP=IP
@@ -40,6 +43,15 @@ STATIC_TEXT="static text"
 
 string str_replace (string &source, const string &text_to_find, const string &replace_with)
 {
+  if (source.empty())
+      return source;
+
+  if (text_to_find.empty())
+      return source;
+
+  if (replace_with.empty())
+      return source;
+
   size_t pos = source.find (text_to_find);
 
   if (pos == string::npos)
@@ -210,7 +222,23 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
   mode = amode;
 
   rnd_generator = new std::mt19937 (rnd_dev());
-  logstrings["nginx"] = "RND_IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ";
+  //logstrings["nginx"] = "RND_IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ";
+
+//from from ngx_http_log_module.c
+/*
+
+
+
+  ngx_http_combined_fmt =
+    ngx_string("$remote_addr - $remote_user [$time_local] "
+               "\"$request\" $status $body_bytes_sent "
+               "\"$http_referer\" \"$http_user_agent\"");
+
+
+ */
+
+ logstrings["nginx"] = "$remote_addr - $remote_user [$time_local] \"$request\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\"";
+
 
 
   tlogstring  = get_string ("LOGSTRING", logstrings[mode]);
@@ -228,19 +256,118 @@ CTpl::~CTpl()
 
 
 
+
 string CTpl::prepare_log_string()
 {
 
-//  logstring = get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
+  string logstring = tlogstring;
 
-//  logstring = templatefile->get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
+//  cout << "ip = get_string IP: " << ip << endl;
+
+
+  //logstring.replace (logstring.find("IP"), string("IP").size(), ip);
+
+  //logstring.replace (logstring.find("COOL"), string("COOL").size(), "^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+
+  ip = get_string ("$remote_addr", "IP_RANDOM");
+
+  if (ip == "IP_RANDOM")
+     logstring.replace (logstring.find("$remote_addr"), string("$remote_addr").size(), gen_random_ip());
+  else
+      logstring.replace (logstring.find("$remote_addr"), string("$remote_addr").size(), ip);
+
+
+  user = get_string ("$remote_user", "WORD|NUMBER");
+
+  if (user == "NUMBER")
+    str_replace (logstring, "$remote_user", gen_user_number(8));
+  else
+  if (user == "WORD")
+      str_replace (logstring, "$remote_user", gen_user_word(8));
+  else
+      {
+       //get random
+       if (get_rnd (0, 1) == 0)
+          str_replace (logstring, "$remote_user", gen_user_number(8));
+       else
+          str_replace (logstring, "$remote_user", gen_user_word(8));
+
+      }
+
+  //ADD TIMESTAMP macro
+
+  datetime = get_string ("$time_local", "%x:%X");
+  str_replace (logstring, "$time_local", get_datetime (datetime));
+
+
+  request = get_string ("$request", "GET|POST|PUT|PATCH|DELETE");
+
+  vector <string> vreq = split_string_to_vector (request, '|');
+
+  if (vreq.size() == 1)
+     str_replace (logstring, "$request", vreq[0]);
+  else
+      str_replace (logstring, "$request", vreq[get_rnd (0, vreq.size()-1)]);
+
+
+  status = get_string ("$status", "200|404");
+
+  bool single_val = true;
+  bool range_val = false;
+  bool seq_val = false;
+
+  size_t pos = status.find ("|");
+
+  if (pos != string::npos)
+    {
+     single_val = false;
+     seq_val = true;
+    }
+
+  pos = status.find (",");
+
+  if (pos != string::npos)
+    {
+     single_val = false;
+     range_val = true;
+    }
+
+
+  if (single_val)
+    str_replace (logstring, "$status", status);
+
+
+  if (seq_val)
+     {
+      vector <string> vstatus = split_string_to_vector (status, '|');
+      str_replace (logstring, "$status", vstatus[get_rnd (0, vstatus.size()-1)]);
+     }
+
+
+  if (range_val)
+     {
+      vector <string> vstatus = split_string_to_vector (status, ',');
+
+      int a = atoi (vstatus[0].c_str());
+      int b = atoi (vstatus[1].c_str()) + 1;
+
+      str_replace (logstring, "$status", std::to_string (get_rnd (a, b)));
+     }
+
+
+
+  return logstring;
+};
+
+/*
+string CTpl::prepare_log_string()
+{
+
 
   string logstring = tlogstring;
 
 //  ip = get_string ("IP", "1111.1111.1111.1111");
 //  cout << "ip = get_string IP: " << ip << endl;
-
-  str_replace (logstring, "COOOL", "FOOOOOOOOOOOOOOOOOOl");
 
 
   //logstring.replace (logstring.find("IP"), string("IP").size(), ip);
@@ -251,9 +378,6 @@ string CTpl::prepare_log_string()
   logstring.replace (logstring.find("RND_IP"), string("RND_IP").size(), gen_random_ip());
 
   user = get_string ("USER", "WORD|NUMBER");
-
-//    user = get_string ("USER", "WORD");
-
 
   if (user == "NUMBER")
     //logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_number(8));
@@ -274,7 +398,6 @@ string CTpl::prepare_log_string()
       //    logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_word(8));
 
       }
-
 
 
    //cout << "v[0]:" << v[0] << endl;
@@ -300,7 +423,6 @@ string CTpl::prepare_log_string()
       logstring.replace(logstring.find("REQUEST"), string("REQUEST").size(), vreq[get_rnd (0, vreq.size()-1)]);
 
 
-
-
   return logstring;
 };
+*/
