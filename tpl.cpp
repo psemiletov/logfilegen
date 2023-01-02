@@ -39,6 +39,21 @@ STATIC_TEXT="static text"
 
  */
 
+#define VN_SINGLE 1
+#define VN_SEQ 2
+#define VN_RANGE 3
+
+
+int get_value_nature (const string &s)
+{
+  if (s.find ("|") != string::npos)
+     return VN_SEQ;
+
+  if (s.find ("-") != string::npos)
+     return VN_RANGE;
+
+  return VN_SINGLE;
+}
 
 
 string str_replace (string &source, const string &text_to_find, const string &replace_with)
@@ -222,28 +237,12 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
   mode = amode;
 
   rnd_generator = new std::mt19937 (rnd_dev());
-  //logstrings["nginx"] = "RND_IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ";
-
-//from from ngx_http_log_module.c
-/*
-
-
-
-  ngx_http_combined_fmt =
-    ngx_string("$remote_addr - $remote_user [$time_local] "
-               "\"$request\" $status $body_bytes_sent "
-               "\"$http_referer\" \"$http_user_agent\"");
-
-
- */
 
  logstrings["nginx"] = "$remote_addr - $remote_user [$time_local] \"$request$uri$protocol\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\"";
 
 
 
   tlogstring  = get_string ("$logstring", logstrings[mode]);
-
-  //tlogstring  = get_string ("LOGSTRING", "IP - USER [DATETIME +0000] \"REQUEST / URI PROTOCOL\" STATUS BYTES \" STATIC_TEXT \" ");
 
 
 }
@@ -325,7 +324,7 @@ string CTpl::prepare_log_string()
 //////////////
 
   status = get_string ("$status", "200|404");
-
+/*
   bool single_val = true;
   bool range_val = false;
   bool seq_val = false;
@@ -346,18 +345,20 @@ string CTpl::prepare_log_string()
      range_val = true;
     }
 
+*/
+  int nv = get_value_nature (status);
 
-  if (single_val)
+  if (nv == VN_SINGLE)
     str_replace (logstring, "$status", status);
 
 
-  if (seq_val)
+  if (nv == VN_SEQ)
      {
       vector <string> vstatus = split_string_to_vector (status, '|');
       str_replace (logstring, "$status", vstatus[get_rnd (0, vstatus.size()-1)]);
      }
 
-  if (range_val)
+  if (nv == VN_RANGE)
      {
       vector <string> vstatus = split_string_to_vector (status, '-');
 
@@ -368,24 +369,17 @@ string CTpl::prepare_log_string()
      }
 
 
-  single_val = true;
-  range_val = false;
 
   body_bytes_sent = get_string ("$status", "100-10000");
 
-  pos = body_bytes_sent.find ("-");
+  nv = get_value_nature (body_bytes_sent);
 
-  if (pos != string::npos)
-    {
-     single_val = false;
-     range_val = true;
-    }
 
-  if (single_val)
-    str_replace (logstring, "$body_bytes_sent", body_bytes_sent);
+  if (nv == VN_SINGLE)
+      str_replace (logstring, "$body_bytes_sent", body_bytes_sent);
 
-  if (range_val)
-     {
+  if (nv == VN_RANGE)
+      {
       vector <string> vstatus = split_string_to_vector (body_bytes_sent, '-');
 
       int a = atoi (vstatus[0].c_str());
