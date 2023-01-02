@@ -244,6 +244,36 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
 
   tlogstring  = get_string ("$logstring", logstrings[mode]);
 
+  ip = get_string ("$remote_addr", "IP_RANDOM");
+
+  user = get_string ("$remote_user", "WORD|NUMBER"); //WORD|NUMBER or -
+
+   //ADD TIMESTAMP macro
+
+  datetime = get_string ("$time_local", "%x:%X");
+
+  request = get_string ("$request", "GET|POST|PUT|PATCH|DELETE");
+
+  v_request = split_string_to_vector (request, '|');
+
+  //add more options
+  uri = get_string ("$uri", " /");
+
+  status = get_string ("$status", "200|404");
+
+  int nv = get_value_nature (status);
+
+
+
+
+  body_bytes_sent = get_string ("$body_bytes_sent", "100-10000");
+
+  nv = get_value_nature (body_bytes_sent);
+
+  if (nv == VN_RANGE)
+      v_body_bytes_sent = split_string_to_vector (body_bytes_sent, '-');
+
+
 
 }
 
@@ -261,60 +291,54 @@ string CTpl::prepare_log_string()
 
   string logstring = tlogstring;
 
-//  cout << "ip = get_string IP: " << ip << endl;
-
-
-  //logstring.replace (logstring.find("IP"), string("IP").size(), ip);
-
-  //logstring.replace (logstring.find("COOL"), string("COOL").size(), "^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-
-  ip = get_string ("$remote_addr", "IP_RANDOM");
 
   if (ip == "IP_RANDOM")
-     logstring.replace (logstring.find("$remote_addr"), string("$remote_addr").size(), gen_random_ip());
+     logstring.replace (logstring.find ("$remote_addr"), string ("$remote_addr").size(), gen_random_ip());
   else
-      logstring.replace (logstring.find("$remote_addr"), string("$remote_addr").size(), ip);
+      logstring.replace (logstring.find ("$remote_addr"), string ("$remote_addr").size(), ip);
 
-
-  user = get_string ("$remote_user", "WORD|NUMBER"); //WORD|NUMBER or -
 
   if (user == "NUMBER")
-    str_replace (logstring, "$remote_user", gen_user_number(8));
+    str_replace (logstring, "$remote_user", gen_user_number (8));
   else
   if (user == "WORD")
-      str_replace (logstring, "$remote_user", gen_user_word(8));
+      str_replace (logstring, "$remote_user", gen_user_word (8));
   else
       {
-       //get random
        if (get_rnd (0, 1) == 0)
-          str_replace (logstring, "$remote_user", gen_user_number(8));
+          str_replace (logstring, "$remote_user", gen_user_number (8));
        else
-          str_replace (logstring, "$remote_user", gen_user_word(8));
+          str_replace (logstring, "$remote_user", gen_user_word (8));
       }
 
-  //ADD TIMESTAMP macro
 
-  datetime = get_string ("$time_local", "%x:%X");
   str_replace (logstring, "$time_local", get_datetime (datetime));
+
+
+
+  int nv = get_value_nature (status);
+
+  if (nv == VN_SEQ)
+      v_status = split_string_to_vector (status, '|');
+
+  if (nv == VN_RANGE)
+      v_status = split_string_to_vector (status, '-');
+
 
 
   //Must be more complex, i.e
   //"GET / HTTP/1.1"
   ///favicon.ico HTTP/1.1"
 
-  request = get_string ("$request", "GET|POST|PUT|PATCH|DELETE");
 
-  vector <string> vreq = split_string_to_vector (request, '|');
-
-  if (vreq.size() == 1)
-     str_replace (logstring, "$request", vreq[0]);
+  if (v_request.size() == 1)
+     str_replace (logstring, "$request", v_request[0]);
   else
-      str_replace (logstring, "$request", vreq[get_rnd (0, vreq.size()-1)]);
+      str_replace (logstring, "$request", v_request[get_rnd (0, v_request.size()-1)]);
 
   //////////////
 
 
-  uri = get_string ("$uri", " /");
   str_replace (logstring, "$uri", uri);
 
   protocol = get_string ("$protocol", " HTTP/1.1");
@@ -323,30 +347,8 @@ string CTpl::prepare_log_string()
 
 //////////////
 
-  status = get_string ("$status", "200|404");
-/*
-  bool single_val = true;
-  bool range_val = false;
-  bool seq_val = false;
 
-  size_t pos = status.find ("|");
-
-  if (pos != string::npos)
-    {
-     single_val = false;
-     seq_val = true;
-    }
-
-  pos = status.find ("-");
-
-  if (pos != string::npos)
-    {
-     single_val = false;
-     range_val = true;
-    }
-
-*/
-  int nv = get_value_nature (status);
+  nv = get_value_nature (status);
 
   if (nv == VN_SINGLE)
     str_replace (logstring, "$status", status);
@@ -354,41 +356,33 @@ string CTpl::prepare_log_string()
 
   if (nv == VN_SEQ)
      {
-      vector <string> vstatus = split_string_to_vector (status, '|');
-      str_replace (logstring, "$status", vstatus[get_rnd (0, vstatus.size()-1)]);
+      str_replace (logstring, "$status", v_status[get_rnd (0, v_status.size()-1)]);
      }
 
   if (nv == VN_RANGE)
      {
-      vector <string> vstatus = split_string_to_vector (status, '-');
-
-      int a = atoi (vstatus[0].c_str());
-      int b = atoi (vstatus[1].c_str()) + 1;
+      int a = atoi (v_status[0].c_str());
+      int b = atoi (v_status[1].c_str()) + 1;
 
       str_replace (logstring, "$status", std::to_string (get_rnd (a, b)));
      }
 
 
 
-  body_bytes_sent = get_string ("$status", "100-10000");
+  body_bytes_sent = get_string ("$body_bytes_sent", "100-10000");
 
   nv = get_value_nature (body_bytes_sent);
-
 
   if (nv == VN_SINGLE)
       str_replace (logstring, "$body_bytes_sent", body_bytes_sent);
 
   if (nv == VN_RANGE)
       {
-      vector <string> vstatus = split_string_to_vector (body_bytes_sent, '-');
-
-      int a = atoi (vstatus[0].c_str());
-      int b = atoi (vstatus[1].c_str()) + 1;
+      int a = atoi (v_body_bytes_sent[0].c_str());
+      int b = atoi (v_body_bytes_sent[1].c_str()) + 1;
 
       str_replace (logstring, "$body_bytes_sent", std::to_string (get_rnd (a, b)));
      }
-
-
 
 
   return logstring;

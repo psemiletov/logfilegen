@@ -33,12 +33,21 @@ public:
   string ip;
   string user;
   string datetime;
+
   string request;
+  vector <string> v_request;
+
+
   string uri;
   string protocol;
 
   string status;
+  vector <string> v_status;
+
   string body_bytes_sent;
+  vector <string> v_body_bytes_sent;
+
+
   string http_referer;
   string http_user_agent;
 
