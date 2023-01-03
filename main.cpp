@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <vector>
 #include <iostream>
+#include <fstream>
 #include <thread>
 #include <chrono>
 #include <unistd.h>
@@ -156,6 +157,7 @@ Params initialization order and overrides:
       params.duration = opts_config.get_int ("duration", 3);
       params.rate = opts_config.get_int ("rate", 5);
       params.logfile = opts_config.get_string ("logfile", "test.log");
+
       params.templatefile = opts_config.get_string ("templatefile", "test.tp");
       params.mode = opts_config.get_string ("mode", "nginx");
 
@@ -184,6 +186,10 @@ Params initialization order and overrides:
   params.templatefile = opts_envars.get_string ("templatefile", params.templatefile);
   params.mode = opts_envars.get_string ("mode", params.mode);
 
+  if (params.logfile[0] != '/')
+         //path is local
+      params.logfile = current_path() + "/" + params.logfile;
+
 
   params.print();
 
@@ -207,6 +213,26 @@ Params initialization order and overrides:
   CTpl tpl (fname_template, params.mode);
 
 
+  ofstream file_out;
+  bool file_out_error = false;
+
+  file_out.open (params.logfile, std::ios::out | std::ios::app);
+
+  if (file_out.fail())
+     {
+      //  throw std::ios_base::failure(std::strerror(errno));
+
+      file_out_error = true;
+      cout << "cannot create " << params.logfile << "\n";
+     }
+  else
+     file_out.exceptions (file_out.exceptions() | std::ios::failbit | std::ifstream::badbit);
+
+
+
+
+
+
 /*******************************
 MAIN LOOP
 ******************************/
@@ -223,15 +249,12 @@ MAIN LOOP
 
    while (true)
          {
-          next_frame += std::chrono::milliseconds(1000 / params.rate);
+          next_frame += std::chrono::milliseconds (1000 / params.rate);
 
           frame_counter++;
 
-          //std::cout << "seconds_counter: " << seconds_counter << endl;
-//          std::cout << "frame_counter: " << frame_counter << endl;
-
-           //simple output to screen
-          //cout << tpl.prepare_log_string() << endl;
+          std::cout << "seconds_counter: " << seconds_counter << endl;
+          std::cout << "frame_counter: " << frame_counter << endl;
 
 
           if (frame_counter == params.rate)
@@ -255,9 +278,15 @@ MAIN LOOP
           //simple output to screen
           //cout << tpl.prepare_log_string() << endl;
 
-          cout << tpl.prepare_log_string() << "\n";
+          string log_string = tpl.prepare_log_string();
 
-
+          cout << log_string << "\n";
+/*
+          if (! file_out_error)
+             {
+              file_out << log_string << "\n";
+             }
+*/
          // std::cout << std::time(0) << endl;
 
           std::this_thread::sleep_until(next_frame);
