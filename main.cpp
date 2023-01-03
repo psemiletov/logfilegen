@@ -249,7 +249,10 @@ MAIN LOOP
 
    while (true)
          {
-          next_frame += std::chrono::milliseconds (1000 / params.rate);
+//          next_frame += std::chrono::milliseconds (1000 / params.rate);
+          next_frame += std::chrono::nanoseconds (1000000000 / params.rate);
+
+
 
           frame_counter++;
 
