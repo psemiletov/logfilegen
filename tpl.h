@@ -52,7 +52,11 @@ public:
 
 
   string http_referer;
+
   string http_user_agent;
+  vector <string> v_http_user_agent;
+
+
 
   CTpl (const string &fname, const string &amode);
   ~CTpl();

@@ -279,6 +279,16 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
       v_body_bytes_sent = split_string_to_vector (body_bytes_sent, '-');
 
 
+  http_referer = get_string ("$http_referer", "-");
+
+
+  http_user_agent = get_string ("$http_user_agent", "Mozilla|Chrome|Vivaldi|Opera");
+  nv = get_value_nature (http_user_agent);
+
+  if (nv == VN_SEQ)
+      v_http_user_agent = split_string_to_vector (http_user_agent, '|');
+
+
 
 }
 
@@ -382,7 +392,6 @@ string CTpl::prepare_log_string()
 
 
 
-  body_bytes_sent = get_string ("$body_bytes_sent", "100-10000");
 
   nv = get_value_nature (body_bytes_sent);
 
@@ -398,73 +407,19 @@ string CTpl::prepare_log_string()
      }
 
 
-  return logstring;
-};
-
-/*
-string CTpl::prepare_log_string()
-{
+  str_replace (logstring, "$http_referer", http_referer);
 
 
-  string logstring = tlogstring;
+   nv = get_value_nature (http_user_agent);
 
-//  ip = get_string ("IP", "1111.1111.1111.1111");
-//  cout << "ip = get_string IP: " << ip << endl;
-
-
-  //logstring.replace (logstring.find("IP"), string("IP").size(), ip);
-
-  //logstring.replace (logstring.find("COOL"), string("COOL").size(), "^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+  if (nv == VN_SINGLE)
+    str_replace (logstring, "$http_user_agent", status);
 
 
-  logstring.replace (logstring.find("RND_IP"), string("RND_IP").size(), gen_random_ip());
-
-  user = get_string ("USER", "WORD|NUMBER");
-
-  if (user == "NUMBER")
-    //logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_number(8));
-    str_replace (logstring, "USER", gen_user_number(8));
-  else
-  if (user == "WORD")
-     //logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_word(8));
-      str_replace (logstring, "USER", gen_user_word(8));
-  else
-      {
-       //get random
-       if (get_rnd (0, 1) == 0)
-          //logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_number(8));
-
-          str_replace (logstring, "USER", gen_user_number(8));
-       else
-          str_replace (logstring, "USER", gen_user_word(8));
-      //    logstring.replace(logstring.find("USER"), string("USER").size(), gen_user_word(8));
-
-      }
-
-
-   //cout << "v[0]:" << v[0] << endl;
-
-  //ADD TIMESTAMP macro
-
-  datetime = get_string ("DATETIME", "%x:%X");
-  logstring.replace(logstring.find("DATETIME"), string("DATETIME").size(), get_datetime (datetime));
-  //add msecs support
-
-
-    //vector <string> v = split_string_to_vector (user, '|');
-  //if (v.size() == 1)
-
-
-//  st << distrib (*rnd_generator);
-
-  string request = get_string ("REQUEST", "GET|POST|PUT|PATCH|DELETE");
-  vector <string> vreq = split_string_to_vector (request, '|');
-  if (vreq.size() == 1)
-     logstring.replace(logstring.find("REQUEST"), string("REQUEST").size(), vreq[0]);
-  else
-      logstring.replace(logstring.find("REQUEST"), string("REQUEST").size(), vreq[get_rnd (0, vreq.size()-1)]);
+  if (nv == VN_SEQ)
+      str_replace (logstring, "$http_user_agent", v_http_user_agent[get_rnd (0, v_http_user_agent.size()-1)]);
 
 
   return logstring;
 };
-*/
+
