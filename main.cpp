@@ -139,6 +139,8 @@ Params initialization order and overrides:
 
 //Try to load params from config
 
+  cout << "LOAD CONFIG" << endl;
+
   string fname_config = "/etc/logfilegen/logfilegen.conf";
 
   if (! file_exists (fname_config))
@@ -147,8 +149,8 @@ Params initialization order and overrides:
   if (! file_exists (fname_config))
       fname_config = current_path() + "/logfilegen.conf";
 
-  if (file_exists (fname_config))
-     {
+  //if (file_exists (fname_config))
+   //  {
       cout << "Load parameters from config file: " << fname_config << endl;
 
       //load params from config:
@@ -161,11 +163,17 @@ Params initialization order and overrides:
       params.templatefile = opts_config.get_string ("templatefile", "test.tp");
       params.mode = opts_config.get_string ("mode", "nginx");
 
-     }
-   else
-       cout << "No config file exists" << endl;
+    // }
+   //else
+     //  cout << "!!!! No config file exists" << endl;
+
+  params.print();
+
 
 // Load params from command line
+
+  cout << "LOAD COMMAND LINE" << endl;
+
 
   CPairFile opts_cmdline (argc, argv);
 
@@ -176,7 +184,11 @@ Params initialization order and overrides:
   params.mode = opts_cmdline.get_string ("mode", params.mode);
 
 
+  params.print();
+
 // load params from ENV
+  cout << "LOAD VARS" << endl;
+
 
   CPairFile opts_envars (envars);
 
@@ -209,8 +221,8 @@ Params initialization order and overrides:
   cout << "fname_template: " << fname_template << endl;
 
 
-
   CTpl tpl (fname_template, params.mode);
+
 
 
   ofstream file_out;
@@ -227,8 +239,6 @@ Params initialization order and overrides:
      }
   else
      file_out.exceptions (file_out.exceptions() | std::ios::failbit | std::ifstream::badbit);
-
-
 
 
 
@@ -251,8 +261,6 @@ MAIN LOOP
          {
 //          next_frame += std::chrono::milliseconds (1000 / params.rate);
           next_frame += std::chrono::nanoseconds (1000000000 / params.rate);
-
-
 
           frame_counter++;
 

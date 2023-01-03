@@ -223,7 +223,7 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
 
   rnd_generator = new std::mt19937 (rnd_dev());
 
- logstrings["nginx"] = "$remote_addr - $remote_user [$time_local] \"$request $uri $protocol\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\"";
+  logstrings["nginx"] = "$remote_addr - $remote_user [$time_local] \"$request $uri $protocol\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\"";
 
 
 
