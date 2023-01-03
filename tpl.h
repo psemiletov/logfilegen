@@ -42,6 +42,7 @@ public:
   vector <string> v_uri;
 
   string protocol;
+  vector <string> v_protocol;
 
   string status;
   vector <string> v_status;

@@ -223,7 +223,7 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
 
   rnd_generator = new std::mt19937 (rnd_dev());
 
- logstrings["nginx"] = "$remote_addr - $remote_user [$time_local] \"$request$uri$protocol\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\"";
+ logstrings["nginx"] = "$remote_addr - $remote_user [$time_local] \"$request $uri $protocol\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\"";
 
 
 
@@ -242,10 +242,19 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
   v_request = split_string_to_vector (request, '|');
 
   //add more options
-  uri = get_string ("$uri", " /");
+  uri = get_string ("$uri", " /|/favico.ico|/doc");
 
   int nv = get_value_nature (uri);
 
+  if (nv == VN_SEQ)
+      v_uri = split_string_to_vector (uri, '|');
+
+
+  protocol = get_string ("$protocol", "HTTP/1.1");
+
+  nv = get_value_nature (protocol);
+  if (nv == VN_SEQ)
+      v_protocol = split_string_to_vector (protocol, '|');
 
 
   nv = get_value_nature (status);
@@ -332,11 +341,21 @@ string CTpl::prepare_log_string()
 
   //////////////
 
+  nv = get_value_nature (uri);
 
-  str_replace (logstring, "$uri", uri);
+  if (nv == VN_SEQ)
+      str_replace (logstring, "$uri", v_uri[get_rnd (0, v_uri.size()-1)]);
+   else
+      str_replace (logstring, "$uri", uri);
 
-  protocol = get_string ("$protocol", " HTTP/1.1");
-  str_replace (logstring, "$protocol", protocol);
+
+
+  nv = get_value_nature (protocol);
+  if (nv == VN_SEQ)
+      str_replace (logstring, "$uri", v_protocol[get_rnd (0, v_protocol.size()-1)]);
+   else
+//  protocol = get_string ("$protocol", "HTTP/1.1");
+       str_replace (logstring, "$protocol", protocol);
 
 
 //////////////
