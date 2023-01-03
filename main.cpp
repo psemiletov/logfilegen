@@ -253,9 +253,9 @@ MAIN LOOP
           //WRITE TO LOG HERE
 
           //simple output to screen
-          cout << tpl.prepare_log_string() << endl;
-         //   string xx = tpl.prepare_log_string();
+          //cout << tpl.prepare_log_string() << endl;
 
+          cout << tpl.prepare_log_string() << "\n";
 
 
          // std::cout << std::time(0) << endl;
