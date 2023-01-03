@@ -19,21 +19,6 @@
 
 /*
 
-IP=IP
-USER=WORD|NUMBER
-DATETIME={{dd/mm/yyyy:hh:mm:ss z}}
-REQUEST=GET|POST|PUT|PATCH|DELETE
-URI=api|docs
-PROTOCOL=HTTP/1.1|HTTP/2.0
-STATUS=200|403
-BYTES=0-5000
-STATIC_TEXT="static text"
-
-
-
- {{ IP }} - {{ USER }} [{{ DATETIME }}] "{{ REQUEST }} /{{ URI }} {{ PROTOCOL }}" {{ STATUS }} {{ BYTES }} "{{ STATIC_TEXT }}"
-
-
  209.124.125.232 - abcd1234 [22/Dec/2022:18:56:54 +0000] "GET /api HTTP/1.1" 403 1234 "static text"
 209.124.125.132 - 5678efgi [22/Dec/2022:18:56:55 +0000] "GET /docs HTTP/2.0" 200 5678 "static text"
 
@@ -259,9 +244,18 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
   //add more options
   uri = get_string ("$uri", " /");
 
-  status = get_string ("$status", "200|404");
+  int nv = get_value_nature (uri);
 
-  int nv = get_value_nature (status);
+
+
+  nv = get_value_nature (status);
+
+  if (nv == VN_SEQ)
+      v_status = split_string_to_vector (status, '|');
+
+  if (nv == VN_RANGE)
+      v_status = split_string_to_vector (status, '-');
+
 
 
 

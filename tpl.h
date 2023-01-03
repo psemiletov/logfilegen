@@ -39,6 +39,8 @@ public:
 
 
   string uri;
+  vector <string> v_uri;
+
   string protocol;
 
   string status;
