@@ -257,6 +257,9 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
       v_protocol = split_string_to_vector (protocol, '|');
 
 
+  status = get_string ("$status", "200|404");
+
+
   nv = get_value_nature (status);
 
   if (nv == VN_SEQ)
@@ -264,7 +267,6 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
 
   if (nv == VN_RANGE)
       v_status = split_string_to_vector (status, '-');
-
 
 
 
@@ -368,9 +370,7 @@ string CTpl::prepare_log_string()
 
 
   if (nv == VN_SEQ)
-     {
       str_replace (logstring, "$status", v_status[get_rnd (0, v_status.size()-1)]);
-     }
 
   if (nv == VN_RANGE)
      {
