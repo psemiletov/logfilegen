@@ -253,8 +253,8 @@ MAIN LOOP
 
           frame_counter++;
 
-          std::cout << "seconds_counter: " << seconds_counter << endl;
-          std::cout << "frame_counter: " << frame_counter << endl;
+//          std::cout << "seconds_counter: " << seconds_counter << endl;
+  //        std::cout << "frame_counter: " << frame_counter << endl;
 
 
           if (frame_counter == params.rate)
@@ -280,16 +280,16 @@ MAIN LOOP
 
           string log_string = tpl.prepare_log_string();
 
-          cout << log_string << "\n";
-/*
+  //        cout << log_string << "\n";
+
           if (! file_out_error)
              {
               file_out << log_string << "\n";
              }
-*/
+
          // std::cout << std::time(0) << endl;
 
-          std::this_thread::sleep_until(next_frame);
+          std::this_thread::sleep_until (next_frame);
          }
 
 
