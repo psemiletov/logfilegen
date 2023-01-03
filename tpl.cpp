@@ -235,7 +235,15 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
 
    //ADD TIMESTAMP macro
 
-  datetime = get_string ("$time_local", "%x:%X");
+  //add $time_iso8601
+  //add $time_custom with user-defined format instead of below
+
+  //%d/%b/%Y:%H:%M:%S %z
+
+  //datetime = get_string ("$time_local", "%x:%X");
+  datetime = get_string ("$time_local", "%d/%b/%Y:%H:%M:%S %z");
+
+
 
   request = get_string ("$request", "GET|POST|PUT|PATCH|DELETE");
 
