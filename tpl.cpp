@@ -34,7 +34,7 @@ int get_value_nature (const string &s)
   if (s.find ("|") != string::npos)
      return VN_SEQ;
 
-  if (s.find ("-") != string::npos)
+  if (s.find ("..") != string::npos)
      return VN_RANGE;
 
   return VN_SINGLE;
@@ -63,7 +63,38 @@ string str_replace (string &source, const string &text_to_find, const string &re
 }
 
 
-vector <string> split_string_to_vector (const string &s, char delimeter)
+vector <string> split_string_to_vector (const string& s, const string& delimeter, const bool keep_empty = true)
+{
+  vector <string> result;
+
+  if (delimeter.empty())
+     {
+      result.push_back(s);
+      return result;
+     }
+
+  string::const_iterator substart = s.begin(), subend;
+
+  while (true)
+       {
+        subend = search (substart, s.end(), delimeter.begin(), delimeter.end());
+
+        string temp (substart, subend);
+
+        if (keep_empty || ! temp.empty())
+            result.push_back (temp);
+
+        if (subend == s.end())
+            break;
+
+        substart = subend + delimeter.size();
+       }
+
+  return result;
+}
+
+
+vector <string> split_string_to_vector2 (const string &s, char delimeter)
 {
   string ts;
   stringstream ss (s);
@@ -247,7 +278,7 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
 
   request = get_string ("$request", "GET|POST|PUT|PATCH|DELETE");
 
-  v_request = split_string_to_vector (request, '|');
+  v_request = split_string_to_vector (request, "|");
 
   //add more options
   uri = get_string ("$uri", " /|/favico.ico|/doc");
@@ -255,14 +286,14 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
   int nv = get_value_nature (uri);
 
   if (nv == VN_SEQ)
-      v_uri = split_string_to_vector (uri, '|');
+      v_uri = split_string_to_vector (uri, "|");
 
 
   protocol = get_string ("$protocol", "HTTP/1.1");
 
   nv = get_value_nature (protocol);
   if (nv == VN_SEQ)
-      v_protocol = split_string_to_vector (protocol, '|');
+      v_protocol = split_string_to_vector (protocol, "|");
 
 
   status = get_string ("$status", "200|404");
@@ -271,20 +302,20 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
   nv = get_value_nature (status);
 
   if (nv == VN_SEQ)
-      v_status = split_string_to_vector (status, '|');
+      v_status = split_string_to_vector (status, "|");
 
   if (nv == VN_RANGE)
-      v_status = split_string_to_vector (status, '-');
+      v_status = split_string_to_vector (status, "..");
 
 
 
 
-  body_bytes_sent = get_string ("$body_bytes_sent", "100-10000");
+  body_bytes_sent = get_string ("$body_bytes_sent", "100..10000");
 
   nv = get_value_nature (body_bytes_sent);
 
   if (nv == VN_RANGE)
-      v_body_bytes_sent = split_string_to_vector (body_bytes_sent, '-');
+      v_body_bytes_sent = split_string_to_vector (body_bytes_sent, "..");
 
 
   http_referer = get_string ("$http_referer", "-");
@@ -294,7 +325,7 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
   nv = get_value_nature (http_user_agent);
 
   if (nv == VN_SEQ)
-      v_http_user_agent = split_string_to_vector (http_user_agent, '|');
+      v_http_user_agent = split_string_to_vector (http_user_agent, "|");
 
 
 
@@ -342,10 +373,10 @@ string CTpl::prepare_log_string()
   int nv = get_value_nature (status);
 
   if (nv == VN_SEQ)
-      v_status = split_string_to_vector (status, '|');
+      v_status = split_string_to_vector (status, "|");
 
   if (nv == VN_RANGE)
-      v_status = split_string_to_vector (status, '-');
+      v_status = split_string_to_vector (status, "..");
 
 
 

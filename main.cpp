@@ -14,6 +14,7 @@
 #include <stdio.h>  // for FILENAME_MAX
 #include <sys/stat.h>
 #include <csignal>
+#include <sys/statvfs.h>
 
 #ifdef WINDOWS
 #include <direct.h>
@@ -90,6 +91,14 @@ void signal_handler (int signal)
   g_signal_status = signal;
 }
 
+/*
+int get_free_space (const string &path)
+{
+  statvfs buf;
+  int r = statvfs (path.c_str(), &buf);
+
+}
+*/
 
 string get_home_dir()
 {
