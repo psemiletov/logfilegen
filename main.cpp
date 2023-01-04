@@ -15,6 +15,8 @@
 #include <sys/stat.h>
 #include <csignal>
 
+#include <filesystem>
+
 #include <sys/statvfs.h>
 
 #ifdef WINDOWS
@@ -97,7 +99,7 @@ void signal_handler (int signal)
 }
 
 
-int get_free_space (const string &path)
+size_t get_free_space (const string &path)
 {
   struct statvfs buf;
 
@@ -107,6 +109,18 @@ int get_free_space (const string &path)
      return -1;
 
   return buf.f_bfree * buf.f_bsize;
+}
+
+
+string get_file_path (const string &path)
+{
+  string result;
+
+  const size_t last_slash_idx = path.rfind('\\');
+  if (std::string::npos != last_slash_idx)
+      result = path.substr(0, last_slash_idx);
+
+  return result;
 }
 
 
@@ -258,10 +272,48 @@ Params initialization order and overrides:
       cout << "cannot create " << params.logfile << "\n";
      }
   else
-     file_out.exceptions (file_out.exceptions() | std::ios::failbit | std::ifstream::badbit);
+      file_out.exceptions (file_out.exceptions() | std::ios::failbit | std::ifstream::badbit);
 
 
 
+//check is there free space on disk where logfile will be created
+
+ //params.logfile
+
+//get_file_path
+
+ //C++ 17
+
+  std::filesystem::__cxx11::path logpath = current_path();
+  filesystem::space_info sinfo = std::filesystem::space (logpath);
+
+  cout << "Free space on " << logpath << ": " << sinfo.available << " bytes" << endl;
+
+//  how many space we occupy with logstrings?
+
+  string test_string = tpl.prepare_log_string();
+  size_t test_string_size = test_string.size() + (test_string.size() / 2);
+
+  cout << "test_string_size, bytes: " << test_string_size  << endl;
+
+
+  std::uintmax_t  lines_total = params.duration * params.rate;
+
+  cout << "lines_total: " << lines_total  << endl;
+
+
+  std::uintmax_t size_needed = lines_total * test_string_size;
+
+   cout << "size_needed, bytes: " << size_needed << endl;
+
+
+  if (size_needed >= sinfo.available )
+     {
+      //exit from program
+
+      cout << "Output file will be too large with current parameters, exiting!" << endl;
+      return 0;
+     }
 
 /*******************************
 MAIN LOOP
