@@ -24,11 +24,13 @@ The configuration variables defines how work logfilegen when run. They can be de
 
 You can use following configuration variables:
 
-**duration=integer value** - how many seconds runs the lines gerenation cycle
+**pure=bool** - "true" or "false" (default). It "true" we just generate log strings in memoty without actual file output
 
-**rate=integer value** - how many lines we generate at each cycle iteration
+**duration=integer** - how many seconds runs the lines gerenation cycle
 
-**templatefile=string value** - file name of the template that is used for logfile record generation. (See Templates section)
+**rate=integer** - how many lines we generate at each cycle iteration
+
+**templatefile=string** - file name of the template that is used for logfile record generation. (See Templates section)
 
 
 

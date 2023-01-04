@@ -14,6 +14,7 @@
 #include <stdio.h>  // for FILENAME_MAX
 #include <sys/stat.h>
 #include <csignal>
+
 #include <sys/statvfs.h>
 
 #ifdef WINDOWS
@@ -52,6 +53,8 @@ public:
   int duration; //duration of log generation, in seconds
   int rate;  //during the log generation, how many lines per second will be written
 
+  bool pure;
+
   bool append;
   bool create;
   bool verbose;
@@ -69,6 +72,8 @@ void CParameters::print()
   cout << "templatefile: " << templatefile << endl;
   cout << "logfile: " << logfile << endl;
 
+
+  cout << "pure: " << pure << endl;
 
   cout << "mode: " << mode << endl;
   cout << "append: " << append << endl;
@@ -91,14 +96,19 @@ void signal_handler (int signal)
   g_signal_status = signal;
 }
 
-/*
+
 int get_free_space (const string &path)
 {
-  statvfs buf;
+  struct statvfs buf;
+
   int r = statvfs (path.c_str(), &buf);
 
+  if (r < 0)
+     return -1;
+
+  return buf.f_bfree * buf.f_bsize;
 }
-*/
+
 
 string get_home_dir()
 {
@@ -171,6 +181,7 @@ Params initialization order and overrides:
 
       params.templatefile = opts_config.get_string ("templatefile", "test.tp");
       params.mode = opts_config.get_string ("mode", "nginx");
+      params.pure = opts_config.get_bool ("pure", "false");
 
     // }
    //else
@@ -302,6 +313,7 @@ MAIN LOOP
 
   //        cout << log_string << "\n";
 
+          if (! params.pure)
           if (! file_out_error)
              {
               file_out << log_string << "\n";

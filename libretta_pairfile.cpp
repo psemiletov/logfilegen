@@ -78,6 +78,24 @@ void CPairFile::set_int (const string &key, int value)
 }
 
 
+bool CPairFile::get_bool (const string &key, bool def_value)
+{
+  if (values.size() == 0)
+     return def_value;
+
+  bool result = def_value;
+
+  if (values[key].size() == 0)
+     return result;
+
+  if (values[key] == "true")
+     return true;
+
+  return false;
+}
+
+
+
 int CPairFile::get_int (const string &key, int def_value)
 {
   if (values.size() == 0)
