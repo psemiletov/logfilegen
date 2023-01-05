@@ -638,6 +638,8 @@ CTpl2::CTpl2 (const string &fname, const string &amode)
 cout <<   "CTpl2::CTpl2 (const string &fname, const string &amode) 11111111111111" << endl;
 
 
+ cout <<  "LOAD TEMPLATE " << fname << endl;
+
   pf = new CPairFile (fname, false);
 
   mode = amode;
@@ -646,11 +648,13 @@ cout <<   "CTpl2::CTpl2 (const string &fname, const string &amode) 1111111111111
 
   logstrings["nginx"] = "$remote_addr - $remote_user [$time_local] \"$request $uri $protocol\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\"";
 
-
+    string ls = pf->get_string("$logstring", logstrings[mode]);
 
   //DEFAULTS
 
-    vars.insert (std::make_pair ("$logstring", new CVar (logstrings[mode])));
+    vars.insert (std::make_pair ("$logstring", new CVar (ls)));
+
+
     vars.insert (std::make_pair ("$remote_addr", new CVar ("IP_RANDOM")));
     vars.insert (std::make_pair ("$remote_user", new CVar ("WORD|NUMBER")));
     vars.insert (std::make_pair ("$time_local", new CVar ("%d/%b/%Y:%H:%M:%S %z")));
@@ -660,7 +664,6 @@ cout <<   "CTpl2::CTpl2 (const string &fname, const string &amode) 1111111111111
     vars.insert (std::make_pair ("$status", new CVar ("1..9999")));
     vars.insert (std::make_pair ("$body_bytes_sent", new CVar ("1..9999")));
     vars.insert (std::make_pair ("$http_referer", new CVar ("-")));
-    vars.insert (std::make_pair ("$remote_addr", new CVar ("IP_RANDOM")));
     vars.insert (std::make_pair ("$http_user_agent", new CVar ("Mozilla|Chrome|Vivaldi|Opera")));
 
 
@@ -669,6 +672,14 @@ cout <<   "CTpl2::CTpl2 (const string &fname, const string &amode) 1111111111111
   // for (map <string, string>::const_iterator it = pf->values.begin(); it != pf->values.end(); it++)
       //std::cout << it->first << " = " << it->second << "; ";
     //   vars[it->first] = CVar (it->second, rnd_generator);
+
+       for (map <string, string>::const_iterator it = pf->values.begin(); it != pf->values.end(); it++)
+             vars.insert (std::make_pair (it->first, new CVar (it->second)));
+
+
+      //std::cout << it->first << " = " << it->second << "; ";
+    //   vars[it->first] = CVar (it->second, rnd_generator);
+
 
 cout <<   "CTpl2::CTpl2 (const string &fname, const string &amode) 222222222222" << endl;
 
@@ -686,6 +697,9 @@ string CTpl2::prepare_log_string()
       cout << "$logstring mandatory variable is not defined!" << endl;
       return "";
     }
+
+
+    cout << "LOGSTRING: " <<  logstring << endl;
 
 
    for (auto itr = vars.begin(); itr != vars.end(); ++itr)

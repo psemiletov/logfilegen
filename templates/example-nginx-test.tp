@@ -4,4 +4,6 @@ $time_local=%x:%X
 $request=POST
 $status=200|404
 $body_bytes_sent=100..10000
-$logstring=$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
+$testvar=HELLO|WORLD
+$logstring=$testvar $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
+
