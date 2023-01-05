@@ -65,6 +65,7 @@ public:
 
 void CParameters::print()
 {
+
   cout << "------------ Print parameters -------------" << endl;
 
   cout << "duration: " << duration << endl;
@@ -77,7 +78,7 @@ void CParameters::print()
 
   cout << "mode: " << mode << endl;
   cout << "debug: " << debug << endl;
-  cout << "bstdout: " << bstdout << endl;
+  cout << "stdout: " << bstdout << endl;
 
   cout << "------------ **************** -------------" << endl;
 
@@ -169,7 +170,6 @@ Params initialization order and overrides:
 
 //Try to load params from config
 
-  cout << "LOAD CONFIG -- 111111111111111" << endl;
 
   string fname_config = "/etc/logfilegen/logfilegen.conf";
 
@@ -181,7 +181,7 @@ Params initialization order and overrides:
 
    cout << "Load parameters from config file: " << fname_config << endl;
 
-      //load params from config:
+   //load params from config:
    CPairFile opts_config (fname_config);
 
    params.duration = opts_config.get_int ("duration", 3);
@@ -192,7 +192,9 @@ Params initialization order and overrides:
    params.mode = opts_config.get_string ("mode", "nginx");
    params.pure = opts_config.get_bool ("pure", false);
 
-  params.print();
+
+   //if (params.debug)
+   params.print();
 
 
 
@@ -200,7 +202,7 @@ Params initialization order and overrides:
 // Load params from command line
 
 
-  cout << "LOAD COMMAND LINE" << endl;
+  cout << "Load params from command line" << endl;
 
 
   CPairFile opts_cmdline (argc, argv);
@@ -216,7 +218,7 @@ Params initialization order and overrides:
   params.print();
 
 // load params from ENV
-  cout << "LOAD VARS" << endl;
+  cout << "Load ENV" << endl;
 
 
   CPairFile opts_envars (envars);
@@ -255,8 +257,7 @@ Params initialization order and overrides:
       fname_template = current_path() + "/templates/" + params.templatefile;
 
 
-  cout << "fname_template: " << fname_template << endl;
-
+  //cout << "fname_template: " << fname_template << endl;
 
   CTpl tpl (fname_template, params.mode);
 
@@ -264,8 +265,6 @@ Params initialization order and overrides:
 
   ofstream file_out;
   bool file_out_error = false;
-
-  //cout << "!~$$$$$$$$ " << params.bstdout << endl;
 
 
 
@@ -305,7 +304,7 @@ Params initialization order and overrides:
   string test_string = tpl.prepare_log_string();
   size_t test_string_size = test_string.size() + (test_string.size() / 2);
 
-  cout << "test_string_size, bytes: " << test_string_size  << endl;
+//  cout << "test_string_size, bytes: " << test_string_size  << endl;
 
 
   std::uintmax_t  lines_total = params.duration * params.rate;
