@@ -635,10 +635,10 @@ CTpl2::~CTpl2()
 CTpl2::CTpl2 (const string &fname, const string &amode)
 {
 
-cout <<   "CTpl2::CTpl2 (const string &fname, const string &amode) 11111111111111" << endl;
+//cout <<   "CTpl2::CTpl2 (const string &fname, const string &amode) 11111111111111" << endl;
 
 
- cout <<  "LOAD TEMPLATE " << fname << endl;
+ //cout <<  "LOAD TEMPLATE " << fname << endl;
 
   pf = new CPairFile (fname, false);
 
@@ -681,7 +681,7 @@ cout <<   "CTpl2::CTpl2 (const string &fname, const string &amode) 1111111111111
     //   vars[it->first] = CVar (it->second, rnd_generator);
 
 
-cout <<   "CTpl2::CTpl2 (const string &fname, const string &amode) 222222222222" << endl;
+//cout <<   "CTpl2::CTpl2 (const string &fname, const string &amode) 222222222222" << endl;
 
 
 }
@@ -699,7 +699,7 @@ string CTpl2::prepare_log_string()
     }
 
 
-    cout << "LOGSTRING: " <<  logstring << endl;
+ //   cout << "LOGSTRING: " <<  logstring << endl;
 
 
    for (auto itr = vars.begin(); itr != vars.end(); ++itr)
