@@ -53,8 +53,8 @@ void CPairFile::set_float (const string &key, float value)
 
 float CPairFile::get_float (const string &key, float def_value)
 {
-  if (values.size() == 0)
-     return def_value;
+//  if (values.size() == 0)
+ //    return def_value;
 
   float result = def_value; 
 
@@ -80,26 +80,23 @@ void CPairFile::set_int (const string &key, int value)
 
 bool CPairFile::get_bool (const string &key, bool def_value)
 {
-  if (values.size() == 0)
-     return def_value;
-
   bool result = def_value;
 
   if (values[key].size() == 0)
-     return result;
+    return result;
 
   if (values[key] == "true")
      return true;
 
-  return false;
+  return result;
 }
 
 
 
 int CPairFile::get_int (const string &key, int def_value)
 {
-  if (values.size() == 0)
-     return def_value;
+  //if (values.size() == 0)
+    // return def_value;
 
   int result = def_value;
   
@@ -117,8 +114,8 @@ int CPairFile::get_int (const string &key, int def_value)
 string CPairFile::get_string (const string &key, 
                               const string &def_value)
 {
-  if (values.size() == 0)
-     return def_value;
+  //if (values.size() == 0)
+    // return def_value;
 
    string result = def_value;
 
@@ -135,7 +132,6 @@ string CPairFile::get_string (const string &key,
 
 CPairFile::CPairFile (const string &fname, bool from_data)
 {
-//cout << "CPairFile::CPairFile (const string &fname, bool from_data) " << fname << endl;
 
 
   if (from_data)
@@ -159,7 +155,7 @@ CPairFile::CPairFile (const string &fname, bool from_data)
             string a = line.substr (0, pos);
             string b = line.substr (pos + 1, line.size() - pos);
 
-            //cout << a << ":" << b << endl;
+//            cout << a << ":" << b << endl;
             
             values[a] = b;
            }
@@ -167,7 +163,8 @@ CPairFile::CPairFile (const string &fname, bool from_data)
      return; 
     }
  
- 
+
+
   file_name = fname;
   
   ifstream infile (file_name.c_str());
@@ -189,6 +186,9 @@ CPairFile::CPairFile (const string &fname, bool from_data)
         
          string a = line.substr (0, pos);
          string b = line.substr (pos + 1, line.size() - pos);
+
+  //       cout << a << ":" << b << endl;
+
 
          values[a] = b;
         }

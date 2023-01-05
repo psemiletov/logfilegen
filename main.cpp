@@ -56,10 +56,8 @@ public:
   int rate;  //during the log generation, how many lines per second will be written
 
   bool pure;
-
-  bool append;
-  bool create;
-  bool verbose;
+  bool bstdout;
+  bool debug;
 
   void print();
 };
@@ -78,9 +76,8 @@ void CParameters::print()
   cout << "pure: " << pure << endl;
 
   cout << "mode: " << mode << endl;
-  cout << "append: " << append << endl;
-  cout << "create: " << create << endl;
-  cout << "verbose: " << verbose << endl;
+  cout << "debug: " << debug << endl;
+  cout << "bstdout: " << bstdout << endl;
 
   cout << "------------ **************** -------------" << endl;
 
@@ -154,7 +151,7 @@ inline bool file_exists (const std::string& name)
 int main (int argc, char *argv[])
 {
 
-  vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE", "LFG_TEMPLATEFILE"};
+  vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE", "LFG_TEMPLATEFILE", "LFG_DEBUG", "LFG_PURE"};
 
   CParameters params;
 
@@ -172,7 +169,7 @@ Params initialization order and overrides:
 
 //Try to load params from config
 
-  cout << "LOAD CONFIG" << endl;
+  cout << "LOAD CONFIG -- 111111111111111" << endl;
 
   string fname_config = "/etc/logfilegen/logfilegen.conf";
 
@@ -182,29 +179,26 @@ Params initialization order and overrides:
   if (! file_exists (fname_config))
       fname_config = current_path() + "/logfilegen.conf";
 
-  //if (file_exists (fname_config))
-   //  {
-      cout << "Load parameters from config file: " << fname_config << endl;
+   cout << "Load parameters from config file: " << fname_config << endl;
 
       //load params from config:
-      CPairFile opts_config (fname_config);
+   CPairFile opts_config (fname_config);
 
-      params.duration = opts_config.get_int ("duration", 3);
-      params.rate = opts_config.get_int ("rate", 5);
-      params.logfile = opts_config.get_string ("logfile", "test.log");
+   params.duration = opts_config.get_int ("duration", 3);
+   params.rate = opts_config.get_int ("rate", 5);
+   params.logfile = opts_config.get_string ("logfile", "test.log");
 
-      params.templatefile = opts_config.get_string ("templatefile", "test.tp");
-      params.mode = opts_config.get_string ("mode", "nginx");
-      params.pure = opts_config.get_bool ("pure", "false");
-
-    // }
-   //else
-     //  cout << "!!!! No config file exists" << endl;
+   params.templatefile = opts_config.get_string ("templatefile", "test.tp");
+   params.mode = opts_config.get_string ("mode", "nginx");
+   params.pure = opts_config.get_bool ("pure", false);
 
   params.print();
 
 
+
+
 // Load params from command line
+
 
   cout << "LOAD COMMAND LINE" << endl;
 
@@ -216,6 +210,7 @@ Params initialization order and overrides:
   params.logfile = opts_cmdline.get_string ("logfile", params.logfile);
   params.templatefile = opts_cmdline.get_string ("templatefile", params.templatefile);
   params.mode = opts_cmdline.get_string ("mode", params.mode);
+  params.pure = opts_cmdline.get_bool ("pure", params.pure);
 
 
   params.print();
@@ -231,13 +226,21 @@ Params initialization order and overrides:
   params.logfile = opts_envars.get_string ("logfile", params.logfile);
   params.templatefile = opts_envars.get_string ("templatefile", params.templatefile);
   params.mode = opts_envars.get_string ("mode", params.mode);
+  params.pure = opts_envars.get_bool ("pure", params.pure);
+
+  params.print();
+
+
+  if (params.logfile == "stdout")
+     params.bstdout = true;
+  else
+      params.bstdout = false;
 
   if (params.logfile[0] != '/')
          //path is local
       params.logfile = current_path() + "/" + params.logfile;
 
 
-  params.print();
 
 
 //read template
@@ -262,18 +265,24 @@ Params initialization order and overrides:
   ofstream file_out;
   bool file_out_error = false;
 
-  file_out.open (params.logfile, std::ios::out | std::ios::app);
+  //cout << "!~$$$$$$$$ " << params.bstdout << endl;
 
-  if (file_out.fail())
-     {
+
+
+  if (! params.bstdout)
+    {
+     file_out.open (params.logfile, std::ios::out | std::ios::app);
+
+     if (file_out.fail())
+        {
       //  throw std::ios_base::failure(std::strerror(errno));
 
-      file_out_error = true;
-      cout << "cannot create " << params.logfile << "\n";
-     }
-  else
-      file_out.exceptions (file_out.exceptions() | std::ios::failbit | std::ifstream::badbit);
-
+        file_out_error = true;
+        cout << "cannot create " << params.logfile << "\n";
+       }
+    else
+        file_out.exceptions (file_out.exceptions() | std::ios::failbit | std::ifstream::badbit);
+    }
 
 
 //check is there free space on disk where logfile will be created
@@ -284,6 +293,8 @@ Params initialization order and overrides:
 
  //C++ 17
 
+  if (! params.bstdout)
+  {
   std::filesystem::__cxx11::path logpath = current_path();
   filesystem::space_info sinfo = std::filesystem::space (logpath);
 
@@ -314,6 +325,7 @@ Params initialization order and overrides:
       cout << "Output file will be too large with current parameters, exiting!" << endl;
       return 0;
      }
+  }
 
 /*******************************
 MAIN LOOP
@@ -363,14 +375,16 @@ MAIN LOOP
 
           string log_string = tpl.prepare_log_string();
 
-  //        cout << log_string << "\n";
 
           if (! params.pure)
-          if (! file_out_error)
              {
-              file_out << log_string << "\n";
-             }
+              if (params.bstdout)
+                 cout << log_string << "\n";
 
+              if (! file_out_error)
+                file_out << log_string << "\n";
+
+          }
          // std::cout << std::time(0) << endl;
 
           std::this_thread::sleep_until (next_frame);
