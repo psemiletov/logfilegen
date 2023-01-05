@@ -668,17 +668,9 @@ CTpl2::CTpl2 (const string &fname, const string &amode)
 
 
 
-// C++98
-  // for (map <string, string>::const_iterator it = pf->values.begin(); it != pf->values.end(); it++)
-      //std::cout << it->first << " = " << it->second << "; ";
-    //   vars[it->first] = CVar (it->second, rnd_generator);
 
        for (map <string, string>::const_iterator it = pf->values.begin(); it != pf->values.end(); it++)
              vars.insert (std::make_pair (it->first, new CVar (it->second)));
-
-
-      //std::cout << it->first << " = " << it->second << "; ";
-    //   vars[it->first] = CVar (it->second, rnd_generator);
 
 
 //cout <<   "CTpl2::CTpl2 (const string &fname, const string &amode) 222222222222" << endl;
