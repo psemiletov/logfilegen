@@ -15,7 +15,7 @@
 #include <sys/stat.h>
 #include <csignal>
 
-#include <filesystem>
+//#include <filesystem>
 
 #include <sys/statvfs.h>
 
@@ -99,6 +99,8 @@ void signal_handler (int signal)
 
 size_t get_free_space (const string &path)
 {
+  cout << "get_free_space for " << path << endl;
+
   struct statvfs buf;
 
   int r = statvfs (path.c_str(), &buf);
@@ -106,19 +108,27 @@ size_t get_free_space (const string &path)
   if (r < 0)
      return -1;
 
-  return buf.f_bfree * buf.f_bsize;
+  return buf.f_bavail * buf.f_bsize;
 }
 
 
 string get_file_path (const string &path)
 {
-  string result;
+//  cout <<  "string get_file_path (const string &path) " << path << endl;
 
-  const size_t last_slash_idx = path.rfind('\\');
-  if (std::string::npos != last_slash_idx)
-      result = path.substr(0, last_slash_idx);
 
-  return result;
+  char sep = '/';
+
+#ifdef _WIN32
+   sep = '\\';
+#endif
+
+   size_t i = path.rfind (sep, path.length());
+   if (i != string::npos) {
+      return(path.substr(0, i));
+   }
+
+   return("");
 }
 
 
@@ -290,16 +300,27 @@ Params initialization order and overrides:
 
 //get_file_path
 
+  //cout << "get_file_path(params.logfile): " << get_file_path(params.logfile) << endl;
+
+  //cout << "...................... get_free_space: " << get_free_space (get_file_path(params.logfile)) << endl;
+
+
  //C++ 17
 
   if (! params.bstdout)
   {
-  std::filesystem::__cxx11::path logpath = current_path();
-  filesystem::space_info sinfo = std::filesystem::space (logpath);
+    //std::filesystem::__cxx11::path logpath = current_path();
+    //filesystem::space_info sinfo = std::filesystem::space (logpath);
 
-  cout << "Free space on " << logpath << ": " << sinfo.available << " bytes" << endl;
+  //cout << "Free space on " << logpath << ": " << sinfo.available << " bytes" << endl;
+
+
+
+
 
 //  how many space we occupy with logstrings?
+
+  size_t free_space = get_free_space (get_file_path(params.logfile));
 
   string test_string = tpl.prepare_log_string();
   size_t test_string_size = test_string.size() + (test_string.size() / 2);
@@ -307,7 +328,7 @@ Params initialization order and overrides:
 //  cout << "test_string_size, bytes: " << test_string_size  << endl;
 
 
-  std::uintmax_t  lines_total = params.duration * params.rate;
+  std::uintmax_t lines_total = params.duration * params.rate;
 
   cout << "lines_total: " << lines_total  << endl;
 
@@ -317,7 +338,7 @@ Params initialization order and overrides:
    cout << "size_needed, bytes: " << size_needed << endl;
 
 
-  if (size_needed >= sinfo.available )
+  if (size_needed >= free_space/*sinfo.available*/ )
      {
       //exit from program
 

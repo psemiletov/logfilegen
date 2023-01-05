@@ -6,7 +6,6 @@ all: main.cpp
 clean:
 	$(RM) logfilegen
 
-
 uninstall:
 	rm $(prefix)/bin/logfilegen
 
