@@ -298,7 +298,6 @@ CTpl::CTpl (const string &fname, const string &amode): CPairFile (fname, false)
 
   status = get_string ("$status", "200|404");
 
-
   nv = get_value_nature (status);
 
   if (nv == VN_SEQ)
@@ -416,7 +415,6 @@ string CTpl::prepare_log_string()
 
   if (nv == VN_SINGLE)
     str_replace (logstring, "$status", status);
-
 
   if (nv == VN_SEQ)
       str_replace (logstring, "$status", v_status[get_rnd (0, v_status.size()-1)]);
