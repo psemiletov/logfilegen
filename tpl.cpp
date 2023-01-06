@@ -9,7 +9,6 @@
 #include <ctime>
 #include <chrono>
 
-
 #include <sys/time.h>
 
 #include "tpl.h"
@@ -134,6 +133,16 @@ CVar::CVar (const string &val)
 }
 
 
+std::string currentISO8601TimeUTC() {
+  auto now = std::chrono::system_clock::now();
+  auto itt = std::chrono::system_clock::to_time_t(now);
+  std::ostringstream ss;
+  ss << std::put_time(gmtime(&itt), "%FT%TZ");
+  return ss.str();
+}
+
+
+
 string CVar::get_val()
 {
   string result;
@@ -150,6 +159,7 @@ string CVar::get_val()
    //handle macros
 
   //assuming date time
+
   if (result.find ("%") != string::npos)
      result = get_datetime (result);
 
@@ -259,13 +269,20 @@ CTpl::CTpl (const string &fname, const string &amode)
       vars.insert (std::make_pair ("$remote_addr", new CVar ("IP_RANDOM")));
       vars.insert (std::make_pair ("$remote_user", new CVar ("WORD|NUMBER")));
       vars.insert (std::make_pair ("$time_local", new CVar ("%d/%b/%Y:%H:%M:%S %z")));
+      vars.insert (std::make_pair ("$time_iso8601", new CVar ("%Y-%m-%dT%H:%M:%SZ"))); //don't redefine
+
       vars.insert (std::make_pair ("$request", new CVar ("GET|POST|PUT|PATCH|DELETE")));
       vars.insert (std::make_pair ("$uri", new CVar ("/|/favico.ico|/doc")));
+      vars.insert (std::make_pair ("$document_uri", new CVar ("/|/favico.ico|/doc")));
       vars.insert (std::make_pair ("$protocol", new CVar ("HTTP/1.1")));
       vars.insert (std::make_pair ("$status", new CVar ("1..9999")));
       vars.insert (std::make_pair ("$body_bytes_sent", new CVar ("1..9999")));
       vars.insert (std::make_pair ("$http_referer", new CVar ("-")));
       vars.insert (std::make_pair ("$http_user_agent", new CVar ("Mozilla|Chrome|Vivaldi|Opera")));
+
+
+
+
      }
 
   for (map <string, string>::const_iterator it = pf->values.begin(); it != pf->values.end(); it++)
