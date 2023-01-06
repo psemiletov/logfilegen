@@ -27,7 +27,7 @@ All parameters are inner variables that can be set in various ways.
 
 ## Configuration variables
 
-The configuration variables defines how work logfilegen when run. They can be defined via the configuratiuon file, the command line, and environment variables. The overriding order is:
+The configuration variables defines how work logfilegen when run. They can be defined via the configuration file, the command line, and environment variables. The overriding order is:
 
 1. Hardcoded default values
 
@@ -40,15 +40,15 @@ The configuration variables defines how work logfilegen when run. They can be de
 
 You can use following configuration variables:
 
-**pure=bool** - "true" or "false" (default). It "true" we just generate log strings in memory without the actual file output.
+**pure=bool** - "true" or "false" (default). It "true" we just generate log strings in the memory without the actual file output.
 
 **duration=integer** - how many seconds runs the lines gerenation cycle.
 
-**rate=integer** - how many lines we generate at each cycle iteration.
+**rate=integer** - how many lines we generate at the each cycle iteration.
 
-**templatefile=string** - file name of the template that is used for logfile record generation. (See Templates section)
+**templatefile=string** - file name of the template that is used for logfile lines generation. (See Templates section)
 
-**logfile** - file name for the resulting logfile. If no absolute file provided, the program will search in the current directory. You can also use "stdout" (without the quotes) as the file name to output lines on the console.
+**logfile** - file name for the resulting logfile. If no absolute file provided, the program will search in the current directory. You can also use "stdout" (without the quotes) as the file name to output lines to the console.
 
 
 
@@ -63,12 +63,11 @@ The configuration file is called ```logfilegen.conf``` and must be placed to ```
 
 ### Command line parameters
 
-All configuration variables can be **overrided** using command line options in the format ```---key=value```. For example:
+All configuration variables can be **overriden** using command line options in the format ```---key=value```. For example:
 
 ```console
 logfilegen --duration=3
 ```
-
 
 
 ### Environment variables
@@ -80,6 +79,9 @@ All variables above can be also set via enviromnent variables using ```export KE
 **LFG_RATE** - set **rate**
 
 **LFG_TEMPLATEFILE** - set **templatefile**
+
+**LFG_LOGFILE** - set **logfile**
+
 
 Example:
 
@@ -119,12 +121,11 @@ $body_bytes_sent=100..10000
 $logstring=$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
 ```
 
-As you see, all variables (except $logstring) is the [standard nginx veriables](http://nginx.org/en/docs/varindex.html), and here we can assign macros for them.
+As you see, all variables (except ```$logstring```) is the [standard nginx veriables](http://nginx.org/en/docs/varindex.html), and here we can assign macros for them.
 
 The special variable is ```$logstring```, it hold the free from text template of the logging string. The default one is seen above.
 
 The following variables have built-in (but redefinable) values: ```$body_bytes_sent```, ```$logstring```, ```$remote_addr```, ```$remote_user```, ```$request```, ```$status```, ```$time_local```, ```$http_referer```, ```$http_user_agent```.
-
 
 In macros, we can use ranges (i.e. ```1..1111111```) and sequences (```1|3|6|888|HELLO|WORLD```). The ranged value means that macro will be replaced with the randomly taken value within the range. The sequences is the set of values, where one of them will be choosen randomly.
 
