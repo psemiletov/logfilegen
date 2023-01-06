@@ -269,7 +269,7 @@ Params initialization order and overrides:
 
   //cout << "fname_template: " << fname_template << endl;
 
-  CTpl2 tpl2 (fname_template, params.mode);
+  CTpl tpl (fname_template, params.mode);
 
 
 
@@ -286,9 +286,6 @@ Params initialization order and overrides:
   //cout << "8888888888888888888888 tt2:" << tt2 << endl;
 
   //cout << "999999999999999999999" << endl;
-
-
-  CTpl tpl (fname_template, params.mode);
 
 
 
@@ -341,7 +338,7 @@ Params initialization order and overrides:
 
   size_t free_space = get_free_space (get_file_path(params.logfile));
 
-  string test_string = tpl2.prepare_log_string();
+  string test_string = tpl.prepare_log_string();
   size_t test_string_size = test_string.size() + (test_string.size() / 2);
 
 //  cout << "test_string_size, bytes: " << test_string_size  << endl;
@@ -412,7 +409,7 @@ MAIN LOOP
           //simple output to screen
           //cout << tpl.prepare_log_string() << endl;
 
-          string log_string = tpl2.prepare_log_string();
+          string log_string = tpl.prepare_log_string();
 
 
           if (! params.pure)

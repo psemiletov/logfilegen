@@ -21,65 +21,6 @@ using namespace std;
 #define VT_RANGE 3
 
 
-class CTpl: public CPairFile
-{
-public:
-
-  std::random_device rnd_dev;
-  std::mt19937 *rnd_generator;
-
-  map <string, string> logstrings;
-
-
-  string mode; //nginx, apache, etc
-
-  string tlogstring;
-  string ip;
-  string user;
-  string datetime;
-
-  string request;
-  vector <string> v_request;
-
-
-  string uri;
-  vector <string> v_uri;
-
-  string protocol;
-  vector <string> v_protocol;
-
-  string status;
-  vector <string> v_status;
-
-  string body_bytes_sent;
-  vector <string> v_body_bytes_sent;
-
-
-  string http_referer;
-
-  string http_user_agent;
-  vector <string> v_http_user_agent;
-
-
-
-  CTpl (const string &fname, const string &amode);
-  ~CTpl();
-
-  int get_rnd (int a, int b);
-
-
-  string gen_random_ip();
-  string gen_user_number (size_t len);
-  string gen_user_word (size_t len);
-  string get_datetime (const string &format);
-
-
-
-
-  string prepare_log_string();
-};
-
-
 
 class CVar
 {
@@ -110,7 +51,7 @@ public:
 };
 
 
-class CTpl2
+class CTpl
 {
 public:
 
@@ -132,17 +73,10 @@ map <string, CVar*> vars;
 
 
 
-  CTpl2 (const string &fname, const string &amode);
-  ~CTpl2();
+  CTpl (const string &fname, const string &amode);
+  ~CTpl();
 
-  //int get_rnd (int a, int b);
 
-/*
-  string gen_random_ip();
-  string gen_user_number (size_t len);
-  string gen_user_word (size_t len);
-  string get_datetime (const string &format);
-*/
   string prepare_log_string();
 };
 
