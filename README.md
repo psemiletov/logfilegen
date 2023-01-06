@@ -32,6 +32,8 @@ You can use following configuration variables:
 
 **templatefile=string** - file name of the template that is used for logfile record generation. (See Templates section)
 
+You can use "stdout" as the file name to output lines on the console.
+
 
 
 
@@ -109,4 +111,25 @@ As you see, all variables (except $logstring) is the standard nginx veriables (s
 The special variable is **$logstring**, it hold the free from text template of the logging string. The default one is seen above.
 
 In macros, we can use ranges (i.e. 1..1111111) and sequences (1|3|6|888|HELLO|WORLD). The ranged value means that macro will be replaced with the randomly taken value within the range. The sequences is the set of values, where one of them will be choosen randomly.
+
+Each variable can be uses **one time** per line, i.e. there is no ```$status foobar $status``` support.
+
+Among standard nginx variables, you can define your own, for example:
+
+```
+$myvar=HELLO|WOLRD
+$remote_addr=IP_RANDOM
+$remote_user=WORD|NUMBER
+$time_local=%x:%X
+$request=GET|POST|PUT|PATCH|DELETE
+$status=200|404
+$body_bytes_sent=100..10000
+$logstring=$myvar $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
+```
+
+
+
+## INSTALLATION
+
+logfilegen needs g++ or Clang with C++11 version support.
 
