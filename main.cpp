@@ -15,7 +15,6 @@
 #include <sys/stat.h>
 #include <csignal>
 
-//#include <filesystem>
 
 #include <sys/statvfs.h>
 
@@ -114,21 +113,18 @@ size_t get_free_space (const string &path)
 
 string get_file_path (const string &path)
 {
-//  cout <<  "string get_file_path (const string &path) " << path << endl;
-
-
   char sep = '/';
 
 #ifdef _WIN32
    sep = '\\';
 #endif
 
-   size_t i = path.rfind (sep, path.length());
-   if (i != string::npos) {
-      return(path.substr(0, i));
-   }
+  size_t i = path.rfind (sep, path.length());
 
-   return("");
+  if (i != string::npos)
+     return path.substr(0, i);
+
+  return("");
 }
 
 
@@ -155,7 +151,7 @@ string current_path()
 inline bool file_exists (const std::string& name)
 {
   struct stat buffer;
-   return (stat (name.c_str(), &buffer) == 0);
+  return (stat (name.c_str(), &buffer) == 0);
 }
 
 
@@ -194,9 +190,9 @@ Params initialization order and overrides:
    //load params from config:
    CPairFile opts_config (fname_config);
 
-   params.duration = opts_config.get_int ("duration", 3);
-   params.rate = opts_config.get_int ("rate", 5);
-   params.logfile = opts_config.get_string ("logfile", "test.log");
+   params.duration = opts_config.get_int ("duration", 2);
+   params.rate = opts_config.get_int ("rate", 3);
+   params.logfile = opts_config.get_string ("logfile", "stdout");
 
    params.templatefile = opts_config.get_string ("templatefile", "test.tp");
    params.mode = opts_config.get_string ("mode", "nginx");
@@ -205,9 +201,6 @@ Params initialization order and overrides:
 
    //if (params.debug)
   // params.print();
-
-
-
 
 // Load params from command line
 
@@ -251,8 +244,6 @@ Params initialization order and overrides:
   if (params.logfile[0] != '/')
          //path is local
       params.logfile = current_path() + "/" + params.logfile;
-
-
 
 
 //read template

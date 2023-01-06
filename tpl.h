@@ -21,7 +21,6 @@ using namespace std;
 #define VT_RANGE 3
 
 
-
 class CVar
 {
 public:
@@ -33,6 +32,7 @@ public:
 
   int a;
   int b;
+
   vector <string> v;
 
   CVar (const string &val);
@@ -45,9 +45,7 @@ public:
   string gen_word (size_t len);
   string get_datetime (const string &format);
 
-
   string get_val();
-
 };
 
 
@@ -57,25 +55,13 @@ public:
 
   CPairFile *pf;
 
-  //map <string, CVar*> vars;
-
-map <string, CVar*> vars;
-
-
-
+  map <string, CVar*> vars;
   map <string, string> logstrings;
-
-  //  std::random_device rnd_dev;
-//  std::mt19937 *rnd_generator;
-
 
   string mode; //nginx, apache, etc
 
-
-
   CTpl (const string &fname, const string &amode);
   ~CTpl();
-
 
   string prepare_log_string();
 };

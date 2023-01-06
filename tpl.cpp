@@ -19,7 +19,6 @@
 //http://nginx.org/en/docs/varindex.html
 
 
-
 int get_value_nature (const string &s)
 {
   if (s.find ("|") != string::npos)
@@ -84,7 +83,7 @@ vector <string> split_string_to_vector (const string& s, const string& delimeter
   return result;
 }
 
-
+/*
 vector <string> split_string_to_vector2 (const string &s, char delimeter)
 {
   string ts;
@@ -98,8 +97,7 @@ vector <string> split_string_to_vector2 (const string &s, char delimeter)
 
   return tokens;
 }
-
-
+*/
 
 
 int CVar::get_rnd (int ta, int tb)
@@ -109,12 +107,9 @@ int CVar::get_rnd (int ta, int tb)
 }
 
 
-//CVar::CVar (const string &val)
-
 CVar::~CVar()
 {
   delete rnd_generator;
-
 }
 
 
@@ -136,7 +131,6 @@ CVar::CVar (const string &val)
        a = atoi (v[0].c_str());
        b = atoi (v[1].c_str()) + 1;
      }
-
 }
 
 
@@ -159,16 +153,11 @@ string CVar::get_val()
   if (result.find ("%") != string::npos)
      result = get_datetime (result);
 
-
   if (result == "IP_RANDOM")
      result = gen_random_ip();
 
-
-
-
    return result;
 }
-
 
 
 string CVar::gen_random_ip()
@@ -237,77 +226,50 @@ string CVar::get_datetime (const string &format)
 }
 
 
-
-
-
 CTpl::~CTpl()
 {
   delete pf;
-//  delete rnd_generator;
-/*
-  for( map <string, CVar*> itr = vars.begin(); itr != vars.end(); itr++)
-    {
-        delete (vars->second);
-    }
-*/
-     //vars.clear();
 
-
-     for (auto itr = vars.begin(); itr != vars.end(); ++itr) {
+  for (auto itr = vars.begin(); itr != vars.end(); ++itr)
+      {
+       delete (itr->second);
       //  cout << itr->first
         //     << '\t' << itr->second << '\n';
-         delete (itr->second);
-
-    }
-
+      }
 }
-
-
 
 
 CTpl::CTpl (const string &fname, const string &amode)
 {
 
-//cout <<   "CTpl2::CTpl2 (const string &fname, const string &amode) 11111111111111" << endl;
-
-
- //cout <<  "LOAD TEMPLATE " << fname << endl;
-
   pf = new CPairFile (fname, false);
 
   mode = amode;
 
-  //rnd_generator = new std::mt19937 (rnd_dev());
 
   logstrings["nginx"] = "$remote_addr - $remote_user [$time_local] \"$request $uri $protocol\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\"";
 
-    string ls = pf->get_string("$logstring", logstrings[mode]);
+  string ls = pf->get_string("$logstring", logstrings[mode]);
+  vars.insert (std::make_pair ("$logstring", new CVar (ls)));
 
   //DEFAULTS
 
-    vars.insert (std::make_pair ("$logstring", new CVar (ls)));
+  if (mode == "nginx")
+     {
+      vars.insert (std::make_pair ("$remote_addr", new CVar ("IP_RANDOM")));
+      vars.insert (std::make_pair ("$remote_user", new CVar ("WORD|NUMBER")));
+      vars.insert (std::make_pair ("$time_local", new CVar ("%d/%b/%Y:%H:%M:%S %z")));
+      vars.insert (std::make_pair ("$request", new CVar ("GET|POST|PUT|PATCH|DELETE")));
+      vars.insert (std::make_pair ("$uri", new CVar ("/|/favico.ico|/doc")));
+      vars.insert (std::make_pair ("$protocol", new CVar ("HTTP/1.1")));
+      vars.insert (std::make_pair ("$status", new CVar ("1..9999")));
+      vars.insert (std::make_pair ("$body_bytes_sent", new CVar ("1..9999")));
+      vars.insert (std::make_pair ("$http_referer", new CVar ("-")));
+      vars.insert (std::make_pair ("$http_user_agent", new CVar ("Mozilla|Chrome|Vivaldi|Opera")));
+     }
 
-
-    vars.insert (std::make_pair ("$remote_addr", new CVar ("IP_RANDOM")));
-    vars.insert (std::make_pair ("$remote_user", new CVar ("WORD|NUMBER")));
-    vars.insert (std::make_pair ("$time_local", new CVar ("%d/%b/%Y:%H:%M:%S %z")));
-    vars.insert (std::make_pair ("$request", new CVar ("GET|POST|PUT|PATCH|DELETE")));
-    vars.insert (std::make_pair ("$uri", new CVar ("/|/favico.ico|/doc")));
-    vars.insert (std::make_pair ("$protocol", new CVar ("HTTP/1.1")));
-    vars.insert (std::make_pair ("$status", new CVar ("1..9999")));
-    vars.insert (std::make_pair ("$body_bytes_sent", new CVar ("1..9999")));
-    vars.insert (std::make_pair ("$http_referer", new CVar ("-")));
-    vars.insert (std::make_pair ("$http_user_agent", new CVar ("Mozilla|Chrome|Vivaldi|Opera")));
-
-
-
-
-       for (map <string, string>::const_iterator it = pf->values.begin(); it != pf->values.end(); it++)
-             vars.insert (std::make_pair (it->first, new CVar (it->second)));
-
-
-//cout <<   "CTpl2::CTpl2 (const string &fname, const string &amode) 222222222222" << endl;
-
+  for (map <string, string>::const_iterator it = pf->values.begin(); it != pf->values.end(); it++)
+       vars.insert (std::make_pair (it->first, new CVar (it->second)));
 
 }
 
