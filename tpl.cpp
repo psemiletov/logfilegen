@@ -285,24 +285,12 @@ string CTpl::prepare_log_string()
       return "";
     }
 
-
- //   cout << "LOGSTRING: " <<  logstring << endl;
-
-
-   for (auto itr = vars.begin(); itr != vars.end(); ++itr)
+  for (auto itr = vars.begin(); itr != vars.end(); ++itr)
       {
        string variable = itr->first;
        string replacement = itr->second->get_val();
-      //  cout << itr->first
-        //     << '\t' << itr->second << '\n';
-
-    str_replace (logstring, variable, replacement);
-
-
-    }
-
-
+       str_replace (logstring, variable, replacement);
+      }
 
   return logstring;
-
 }
