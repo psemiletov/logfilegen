@@ -53,7 +53,7 @@ The configuration variables defines how work logfilegen when run. They can be de
 
 You can use following configuration variables:
 
-**pure=bool** - "true" or "false" (default). It "true" we just generate log strings in the memory without the actual file output.
+**pure=boolean** - "true" or "false" (default). It "true" we just generate log strings in the memory without the actual file output.
 
 **duration=integer** - how many seconds runs the lines gerenation cycle.
 
@@ -61,9 +61,9 @@ You can use following configuration variables:
 
 **templatefile=string** - file name of the template that is used for logfile lines generation. (See Templates section)
 
-**logfile** - file name for the resulting logfile. If no absolute file provided, the program will search in the current directory. You can also use "stdout" (without the quotes) as the file name to output lines to the console.
+**logfile=strung** - file name for the resulting logfile. If no absolute file provided, the program will search in the current directory. You can also use "stdout" (without the quotes) as the file name to output lines to the console.
 
-
+**debug=boolean** - if true, show debug messages. Be verbose, dude! False by default.
 
 ### logfilegen.conf
 
