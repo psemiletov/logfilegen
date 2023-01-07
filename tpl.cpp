@@ -182,7 +182,8 @@ string CVar::get_val()
 
   //assuming date time
 
-  if (result.find ("%") != string::npos)
+  if (k.find ("$time_") != string::npos)
+  //if (result.find ("%") != string::npos)
      result = get_datetime (result);
 
   if (result == "IP_RANDOM")

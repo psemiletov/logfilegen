@@ -170,3 +170,4 @@ $int_random01=12
 $logstring=$time_iso8601 $testvar $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" $str_random01 test test $int_random01
 ```
 
+All variables that name starts from ``$time_`` logfilegen handle as date time variables and their value must contain date/time format string. For nginx, use [strftime format](https://en.cppreference.com/w/c/chrono/strftime)
