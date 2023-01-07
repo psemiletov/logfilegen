@@ -282,6 +282,29 @@ CTpl::CTpl (const string &fname, const string &amode)
 
   logstrings["nginx"] = "$remote_addr - $remote_user [$time_local] \"$request $uri $protocol\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\"";
 
+  //see https://httpd.apache.org/docs/2.4/mod/mod_log_config.html
+  logstrings["apache"] = "\"%h %l %u %t \"%r\" %>s %b\"";
+
+  /*
+
+   Common Log Format (CLF)
+"%h %l %u %t \"%r\" %>s %b"
+Common Log Format with Virtual Host
+"%v %h %l %u %t \"%r\" %>s %b"
+NCSA extended/combined log format
+"%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\""
+Referer log format
+"%{Referer}i -> %U"
+Agent (Browser) log format
+"%{User-agent}i"
+You can use the %{format}t directive multiple times to build up a time format using the extended format tokens like msec_frac:
+
+Timestamp including milliseconds
+"%{%d/%b/%Y %T}t.%{msec_frac}t %{%z}t"
+
+   */
+
+
   string ls = pf->get_string("$logstring", logstrings[mode]);
   vars.insert (std::make_pair ("$logstring", new CVar ("$logstring", ls)));
 
