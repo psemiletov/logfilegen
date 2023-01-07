@@ -116,7 +116,7 @@ CVar::CVar (const string &key, const string &val)
 {
   k = key;
 
-  cout << "CVar::CVar === key: " << key << " value:" << val << endl;
+//  cout << "CVar::CVar === key: " << key << " value:" << val << endl;
 
   rnd_generator = new std::mt19937 (rnd_dev());
 
@@ -136,7 +136,7 @@ CVar::CVar (const string &key, const string &val)
      }
 }
 
-
+/*
 std::string currentISO8601TimeUTC() {
   auto now = std::chrono::system_clock::now();
   auto itt = std::chrono::system_clock::to_time_t(now);
@@ -144,7 +144,7 @@ std::string currentISO8601TimeUTC() {
   ss << std::put_time(gmtime(&itt), "%FT%TZ");
   return ss.str();
 }
-
+*/
 
 
 string CVar::get_val()
@@ -161,6 +161,13 @@ string CVar::get_val()
       result = v[get_rnd (0, v.size()-1)];
 
    //handle macros
+
+  if (result == "USER_WORD")
+      return gen_word (8); //why 8?
+
+  if (result == "USER_NUMBER")
+      return gen_number (8); //why 8?
+
 
   if (k.find ("$int_random") != string::npos)
     {
@@ -179,7 +186,6 @@ string CVar::get_val()
 
      return result;
     }
-
 
 
   //assuming date time
@@ -306,18 +312,17 @@ Timestamp including milliseconds
 
    */
 
-  string ls = pf->get_string("$logstring", logstrings[mode]);
-
+  //string ls = pf->get_string("$logstring", logstrings[mode]);
 
   //DEFAULTS
 
   if (mode == "nginx")
      {
-      vars.insert (std::make_pair ("$logstring", new CVar ("$logstring", ls)));
 
+      vars.insert (std::make_pair ("$logstring", new CVar ("$logstring", logstrings["nginx"])));
 
       vars.insert (std::make_pair ("$remote_addr", new CVar ("$remote_addr", "IP_RANDOM")));
-      vars.insert (std::make_pair ("$remote_user", new CVar ("$remote_user", "WORD|NUMBER")));
+      vars.insert (std::make_pair ("$remote_user", new CVar ("$remote_user", "USER_WORD|USER_NUMBER")));
       vars.insert (std::make_pair ("$time_local", new CVar ("$time_local", "%d/%b/%Y:%H:%M:%S %z")));
 //      vars.insert (std::make_pair ("$time_iso8601", new CVar ("%Y-%m-%dT%H:%M:%SZ"))); //don't redefine
 
@@ -330,19 +335,6 @@ Timestamp including milliseconds
       vars.insert (std::make_pair ("$http_referer", new CVar ("$http_referer", "-")));
       vars.insert (std::make_pair ("$http_user_agent", new CVar ("$http_user_agent", "Mozilla|Chrome|Vivaldi|Opera")));
      }
-/*
-  bool has_logstring = false;
-
-  for (map <string, string>::const_iterator it = pf->values.begin(); it != pf->values.end(); it++)
-     {
-      vars.insert (std::make_pair (it->first, new CVar (it->first, it->second)));
-      if (it->first == "$logstring")
-         has_logstring = true;
-     }
-
-  if (! has_logstring)
-      vars.insert (std::make_pair ("$logstring", new CVar ("$logstring", ls)));
-*/
 
 
   for (map <string, string>::const_iterator it = pf->values.begin(); it != pf->values.end(); it++)
@@ -356,8 +348,6 @@ Timestamp including milliseconds
 
       vars.insert (std::make_pair (it->first, new CVar (it->first, it->second)));
     }
-
-
 
 
 }

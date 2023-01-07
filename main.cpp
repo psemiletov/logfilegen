@@ -163,8 +163,7 @@ inline bool file_exists (const std::string& name)
 
 int main (int argc, char *argv[])
 {
-  cout << "version: " << VERSION_NUMBER << endl;
-
+//  cout << "version: " << VERSION_NUMBER << endl;
 
   vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE", "LFG_TEMPLATEFILE", "LFG_DEBUG", "LFG_PURE"};
 
@@ -195,7 +194,8 @@ Params initialization order and overrides:
   if (! file_exists (fname_config))
       fname_config = current_path() + "/logfilegen.conf";
 
-   cout << "Load parameters from config file: " << fname_config << endl;
+
+//   cout << "Load parameters from config file: " << fname_config << endl;
 
    //load params from config:
    CPairFile opts_config (fname_config);
@@ -203,19 +203,19 @@ Params initialization order and overrides:
    params.duration = opts_config.get_int ("duration", 2);
    params.rate = opts_config.get_int ("rate", 3);
    params.logfile = opts_config.get_string ("logfile", "stdout");
-
    params.templatefile = opts_config.get_string ("templatefile", "test.tp");
    params.mode = opts_config.get_string ("mode", "nginx");
    params.pure = opts_config.get_bool ("pure", false);
+   params.debug = opts_config.get_bool ("debug", false);
 
 
-   //if (params.debug)
-  // params.print();
+   if (params.debug)
+      params.print();
 
 // Load params from command line
 
-
-  cout << "Load params from command line" << endl;
+   if (params.debug)
+      cout << "Load params from command line" << endl;
 
 
   CPairFile opts_cmdline (argc, argv);
@@ -231,7 +231,9 @@ Params initialization order and overrides:
   //params.print();
 
 // load params from ENV
-  cout << "Load ENV" << endl;
+
+  if (params.debug)
+     cout << "Load ENV" << endl;
 
 
   CPairFile opts_envars (envars);
@@ -273,23 +275,6 @@ Params initialization order and overrides:
   CTpl tpl (fname_template, params.mode);
 
 
-
- // cout << "999999999999999999999" << endl;
-
-
- // cout << "tpl2.logstring" << tpl2.prepare_log_string() << endl;
-
-
- // cout << "999999999999999999999" << endl;
-
-  //string tt2 = tpl2.vars["$logstring"]->v[0];
-
-  //cout << "8888888888888888888888 tt2:" << tt2 << endl;
-
-  //cout << "999999999999999999999" << endl;
-
-
-
   ofstream file_out;
   bool file_out_error = false;
 
@@ -325,44 +310,41 @@ Params initialization order and overrides:
  //C++ 17
 
   if (! params.bstdout)
-  {
-    //std::filesystem::__cxx11::path logpath = current_path();
-    //filesystem::space_info sinfo = std::filesystem::space (logpath);
-
-  //cout << "Free space on " << logpath << ": " << sinfo.available << " bytes" << endl;
-
-
-
-
-
-//  how many space we occupy with logstrings?
-
-  size_t free_space = get_free_space (get_file_path(params.logfile));
-
-  string test_string = tpl.prepare_log_string();
-  size_t test_string_size = test_string.size() + (test_string.size() / 2);
-
-//  cout << "test_string_size, bytes: " << test_string_size  << endl;
-
-
-  std::uintmax_t lines_total = params.duration * params.rate;
-
-  cout << "lines_total: " << lines_total  << endl;
-
-
-  std::uintmax_t size_needed = lines_total * test_string_size;
-
-   cout << "size_needed, bytes: " << size_needed << endl;
-
-
-  if (size_needed >= free_space/*sinfo.available*/ )
      {
-      //exit from program
+     //std::filesystem::__cxx11::path logpath = current_path();
+     //filesystem::space_info sinfo = std::filesystem::space (logpath);
+     //cout << "Free space on " << logpath << ": " << sinfo.available << " bytes" << endl;
 
-      cout << "Output file will be too large with current parameters, exiting!" << endl;
-      return 0;
-     }
-  }
+     //  how many space we occupy with logstrings?
+
+     size_t free_space = get_free_space (get_file_path(params.logfile));
+
+     string test_string = tpl.prepare_log_string();
+     size_t test_string_size = test_string.size() + (test_string.size() / 2);
+
+     //  cout << "test_string_size, bytes: " << test_string_size  << endl;
+
+
+     std::uintmax_t lines_total = params.duration * params.rate;
+
+     if (params.debug)
+        cout << "lines_total: " << lines_total  << endl;
+
+
+     std::uintmax_t size_needed = lines_total * test_string_size;
+
+     if (params.debug)
+        cout << "size_needed, bytes: " << size_needed << endl;
+
+
+     if (size_needed >= free_space/*sinfo.available*/ )
+       {
+        //exit from program
+
+        cout << "Output file will be too large with current parameters, exiting!" << endl;
+        return 0;
+       }
+    }
 
 /*******************************
 MAIN LOOP
@@ -380,7 +362,6 @@ MAIN LOOP
 
    while (true)
          {
-//          next_frame += std::chrono::milliseconds (1000 / params.rate);
           next_frame += std::chrono::nanoseconds (1000000000 / params.rate);
 
           frame_counter++;
@@ -408,10 +389,8 @@ MAIN LOOP
           //WRITE TO LOG HERE
 
           //simple output to screen
-          //cout << tpl.prepare_log_string() << endl;
 
           string log_string = tpl.prepare_log_string();
-
 
           if (! params.pure)
              {
@@ -432,8 +411,11 @@ MAIN LOOP
   auto duration = duration_cast<microseconds>(stop - start);
   auto duration_s = duration_cast<seconds>(stop - start);
 
-  cout << "duration.count (microseconds): " << duration.count() << endl;
-  cout << "duration_s.count (seconds): " << duration_s.count() << endl;
+  if (params.debug)
+     {
+      cout << "duration.count (microseconds): " << duration.count() << endl;
+      cout << "duration_s.count (seconds): " << duration_s.count() << endl;
+     }
 
   return 0;
 }

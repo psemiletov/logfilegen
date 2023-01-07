@@ -138,7 +138,7 @@ As you see, all variables (except ```$logstring``` and special ```type_random```
 
 The special variable is ```$logstring```, it hold the free from text template of the logging string. The default one is seen above.
 
-The following variables have built-in (but redefinable) values: ```$body_bytes_sent```, ```$logstring```, ```$remote_addr```, ```$remote_user```, ```$request```, ```$status```, ```$time_local```, ```$http_referer```, ```$http_user_agent```.
+The following variables have built-in (but redefinable) values: ```$body_bytes_sent```, ```$logstring```, ```$remote_addr```, ```$remote_user```, ```$request```, ```$status```, ```$time_local```, ```$http_referer```, ```$http_user_agent```. The ```$remote_user``` variable can hold any string or macros ```USER_WORD``` or ```USER_NUMBER``` (the last two will be substituted with random-generated string or number).
 
 In macros, we can use ranges (i.e. ```1..1111111```) and sequences (```1|3|6|888|HELLO|WORLD```). The ranged value means that macro will be replaced with the randomly taken value within the range. The sequences is the set of values, where one of them will be choosen randomly.
 
