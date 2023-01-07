@@ -33,9 +33,11 @@ public:
   int a;
   int b;
 
+
+  string k;
   vector <string> v;
 
-  CVar (const string &val);
+  CVar (const string &key, const string &val);
   ~CVar();
 
   int get_rnd (int ta, int tb);

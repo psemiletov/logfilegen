@@ -112,8 +112,10 @@ CVar::~CVar()
 }
 
 
-CVar::CVar (const string &val)
+CVar::CVar (const string &key, const string &val)
 {
+  k = key;
+
   rnd_generator = new std::mt19937 (rnd_dev());
 
   vartype = get_value_nature (val);
@@ -157,6 +159,26 @@ string CVar::get_val()
       result = v[get_rnd (0, v.size()-1)];
 
    //handle macros
+
+  if (k.find ("$int_random") != string::npos)
+    {
+     int i = atoi (v[0].c_str());
+     if (i > 0)
+         result = gen_number (i);
+
+     return result;
+    }
+
+  if (k.find ("$str_random") != string::npos)
+    {
+     int i = atoi (v[0].c_str());
+     if (i > 0)
+         result = gen_word (i);
+
+     return result;
+    }
+
+
 
   //assuming date time
 
@@ -260,25 +282,25 @@ CTpl::CTpl (const string &fname, const string &amode)
   logstrings["nginx"] = "$remote_addr - $remote_user [$time_local] \"$request $uri $protocol\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\"";
 
   string ls = pf->get_string("$logstring", logstrings[mode]);
-  vars.insert (std::make_pair ("$logstring", new CVar (ls)));
+  vars.insert (std::make_pair ("$logstring", new CVar ("$logstring", ls)));
 
   //DEFAULTS
 
   if (mode == "nginx")
      {
-      vars.insert (std::make_pair ("$remote_addr", new CVar ("IP_RANDOM")));
-      vars.insert (std::make_pair ("$remote_user", new CVar ("WORD|NUMBER")));
-      vars.insert (std::make_pair ("$time_local", new CVar ("%d/%b/%Y:%H:%M:%S %z")));
-      vars.insert (std::make_pair ("$time_iso8601", new CVar ("%Y-%m-%dT%H:%M:%SZ"))); //don't redefine
+      vars.insert (std::make_pair ("$remote_addr", new CVar ("$remote_addr", "IP_RANDOM")));
+      vars.insert (std::make_pair ("$remote_user", new CVar ("$remote_user", "WORD|NUMBER")));
+      vars.insert (std::make_pair ("$time_local", new CVar ("$time_local", "%d/%b/%Y:%H:%M:%S %z")));
+//      vars.insert (std::make_pair ("$time_iso8601", new CVar ("%Y-%m-%dT%H:%M:%SZ"))); //don't redefine
 
-      vars.insert (std::make_pair ("$request", new CVar ("GET|POST|PUT|PATCH|DELETE")));
-      vars.insert (std::make_pair ("$uri", new CVar ("/|/favico.ico|/doc")));
-      vars.insert (std::make_pair ("$document_uri", new CVar ("/|/favico.ico|/doc")));
-      vars.insert (std::make_pair ("$protocol", new CVar ("HTTP/1.1")));
-      vars.insert (std::make_pair ("$status", new CVar ("1..9999")));
-      vars.insert (std::make_pair ("$body_bytes_sent", new CVar ("1..9999")));
-      vars.insert (std::make_pair ("$http_referer", new CVar ("-")));
-      vars.insert (std::make_pair ("$http_user_agent", new CVar ("Mozilla|Chrome|Vivaldi|Opera")));
+      vars.insert (std::make_pair ("$request", new CVar ("$request", "GET|POST|PUT|PATCH|DELETE")));
+      vars.insert (std::make_pair ("$uri", new CVar ("$uri", "/|/favico.ico|/doc")));
+      vars.insert (std::make_pair ("$document_uri", new CVar ("$document_uri", "/|/favico.ico|/doc")));
+      vars.insert (std::make_pair ("$protocol", new CVar ("$protocol", "HTTP/1.1")));
+      vars.insert (std::make_pair ("$status", new CVar ("$status", "1..9999")));
+      vars.insert (std::make_pair ("$body_bytes_sent", new CVar ("$body_bytes_sent", "1..9999")));
+      vars.insert (std::make_pair ("$http_referer", new CVar ("$http_referer", "-")));
+      vars.insert (std::make_pair ("$http_user_agent", new CVar ("$http_user_agent", "Mozilla|Chrome|Vivaldi|Opera")));
 
 
 
@@ -286,7 +308,7 @@ CTpl::CTpl (const string &fname, const string &amode)
      }
 
   for (map <string, string>::const_iterator it = pf->values.begin(); it != pf->values.end(); it++)
-       vars.insert (std::make_pair (it->first, new CVar (it->second)));
+       vars.insert (std::make_pair (it->first, new CVar (it->first, it->second)));
 
 }
 
