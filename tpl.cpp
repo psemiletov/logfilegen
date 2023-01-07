@@ -116,6 +116,8 @@ CVar::CVar (const string &key, const string &val)
 {
   k = key;
 
+  cout << "CVar::CVar === key: " << key << " value:" << val << endl;
+
   rnd_generator = new std::mt19937 (rnd_dev());
 
   vartype = get_value_nature (val);
@@ -304,14 +306,16 @@ Timestamp including milliseconds
 
    */
 
-
   string ls = pf->get_string("$logstring", logstrings[mode]);
-  vars.insert (std::make_pair ("$logstring", new CVar ("$logstring", ls)));
+
 
   //DEFAULTS
 
   if (mode == "nginx")
      {
+      vars.insert (std::make_pair ("$logstring", new CVar ("$logstring", ls)));
+
+
       vars.insert (std::make_pair ("$remote_addr", new CVar ("$remote_addr", "IP_RANDOM")));
       vars.insert (std::make_pair ("$remote_user", new CVar ("$remote_user", "WORD|NUMBER")));
       vars.insert (std::make_pair ("$time_local", new CVar ("$time_local", "%d/%b/%Y:%H:%M:%S %z")));
@@ -321,18 +325,40 @@ Timestamp including milliseconds
       vars.insert (std::make_pair ("$uri", new CVar ("$uri", "/|/favico.ico|/doc")));
       vars.insert (std::make_pair ("$document_uri", new CVar ("$document_uri", "/|/favico.ico|/doc")));
       vars.insert (std::make_pair ("$protocol", new CVar ("$protocol", "HTTP/1.1")));
-      vars.insert (std::make_pair ("$status", new CVar ("$status", "1..9999")));
+      vars.insert (std::make_pair ("$status", new CVar ("$status", "200|400")));
       vars.insert (std::make_pair ("$body_bytes_sent", new CVar ("$body_bytes_sent", "1..9999")));
       vars.insert (std::make_pair ("$http_referer", new CVar ("$http_referer", "-")));
       vars.insert (std::make_pair ("$http_user_agent", new CVar ("$http_user_agent", "Mozilla|Chrome|Vivaldi|Opera")));
-
-
-
-
      }
+/*
+  bool has_logstring = false;
 
   for (map <string, string>::const_iterator it = pf->values.begin(); it != pf->values.end(); it++)
-       vars.insert (std::make_pair (it->first, new CVar (it->first, it->second)));
+     {
+      vars.insert (std::make_pair (it->first, new CVar (it->first, it->second)));
+      if (it->first == "$logstring")
+         has_logstring = true;
+     }
+
+  if (! has_logstring)
+      vars.insert (std::make_pair ("$logstring", new CVar ("$logstring", ls)));
+*/
+
+
+  for (map <string, string>::const_iterator it = pf->values.begin(); it != pf->values.end(); it++)
+     {
+      auto f = vars.find (it->first);
+      if (f != vars.end())
+        {
+         delete f->second;
+         vars.erase (f);
+        }
+
+      vars.insert (std::make_pair (it->first, new CVar (it->first, it->second)));
+    }
+
+
+
 
 }
 
@@ -352,6 +378,9 @@ string CTpl::prepare_log_string()
       {
        string variable = itr->first;
        string replacement = itr->second->get_val();
+
+//       cout << "variable: " << variable << " ^^^^ replacement: " << replacement << endl;
+
        str_replace (logstring, variable, replacement);
       }
 

@@ -31,6 +31,11 @@
 #include "tpl.h"
 
 
+#ifndef VERSION_NUMBER
+#define VERSION_NUMBER "0.0.x"
+#endif
+
+
 using namespace std;
 using namespace std::chrono;
 
@@ -66,6 +71,7 @@ void CParameters::print()
 {
 
   cout << "------------ Print parameters -------------" << endl;
+
 
   cout << "duration: " << duration << endl;
   cout << "rate: " << rate << endl;
@@ -157,12 +163,16 @@ inline bool file_exists (const std::string& name)
 
 int main (int argc, char *argv[])
 {
+  cout << "version: " << VERSION_NUMBER << endl;
+
 
   vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE", "LFG_TEMPLATEFILE", "LFG_DEBUG", "LFG_PURE"};
 
   CParameters params;
 
   std::signal (SIGINT, signal_handler);
+
+
 
 
 /*
