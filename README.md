@@ -121,7 +121,7 @@ $body_bytes_sent=100..10000
 $logstring=$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
 ```
 
-As you see, all variables (except ```$logstring```) is the [standard nginx veriables](http://nginx.org/en/docs/varindex.html), and here we can assign macros for them.
+As you see, all variables (except ```$logstring``` and special ```type_random``` variables) is the [standard nginx veriables](http://nginx.org/en/docs/varindex.html), and here we can assign macros for them.
 
 The special variable is ```$logstring```, it hold the free from text template of the logging string. The default one is seen above.
 
@@ -147,5 +147,13 @@ $logstring=$time_iso8601 $testvar $remote_addr - $remote_user [$time_local] "$re
 
 Here we define two custom variables - ``$testvar`` that can be "HELLO" or "WORLD" on each log generation iteration, and ```$time_iso8601``` with ```%Y-%m-%dT%H:%M:%SZ``` date time format.
 
+In the template you can define "randomization" variable for the numbers and strings with a given length. Such variable names must begin with ```$int_random``` or ```$str_random```, and the value is the length of the sequence to generate. Example:
 
+```
+$testvar=HELLO|WORLD
+$time_iso8601=%Y-%m-%dT%H:%M:%SZ
+$str_random01=6
+$int_random01=12
+$logstring=$time_iso8601 $testvar $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" $str_random01 test test $int_random01
+```
 
