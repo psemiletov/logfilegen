@@ -104,7 +104,7 @@ void signal_handler (int signal)
 
 size_t get_free_space (const string &path)
 {
-  cout << "get_free_space for " << path << endl;
+//  cout << "get_free_space for " << path << endl;
 
   struct statvfs buf;
 
@@ -389,7 +389,7 @@ MAIN LOOP
 
            if (g_signal_status == SIGINT)
              {
-              cout << "break the main loop" << endl;
+          //    cout << "break the main loop" << endl;
               break;
              }
 
@@ -408,7 +408,7 @@ MAIN LOOP
               if (! file_out_error)
                  file_out << log_string << "\n";
 
-          }
+             }
          // std::cout << std::time(0) << endl;
 
           std::this_thread::sleep_until (next_frame);
