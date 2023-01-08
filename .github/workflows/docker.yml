@@ -3,6 +3,13 @@ name: Docker
 
 on:
   push:
+    branches:    
+      - main
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - 'TODO'
+      - 'templated/**'
     tags:
       - '*'
   workflow_dispatch:
