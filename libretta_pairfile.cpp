@@ -171,7 +171,7 @@ CPairFile::CPairFile (const string &fname, bool from_data)
 
   if (infile.fail())
      {
-      cout << "CPairFile::CPairFile - Could not open file: " << fname << endl;
+    //  cout << "CPairFile::CPairFile - Could not open file: " << fname << endl;
       return;
      }
 

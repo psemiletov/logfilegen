@@ -368,7 +368,7 @@ string CTpl::prepare_log_string()
 
 
 //#pragma omp parallel for
-for (auto itr = vars.begin(); itr != vars.end(); ++itr)
+  for (auto itr = vars.begin(); itr != vars.end(); ++itr)
       {
        string variable = itr->first;
        string replacement = itr->second->get_val();
