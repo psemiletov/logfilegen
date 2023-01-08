@@ -7,7 +7,6 @@ COPY . /src
 # Build
 WORKDIR /src
 RUN make
-RUN make install
 
 
 # Ubuntu 22.04
