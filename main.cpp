@@ -48,6 +48,20 @@ using namespace std::chrono;
 #endif
 
 
+class CFPrinfWriter
+{
+public:
+
+  FILE *out_file;
+
+  CFPrinfWriter (const string &fname);
+  ~CFPrinfWriter();
+
+  void write (const string &s);
+};
+
+
+
 class CParameters
 {
 public:
@@ -159,6 +173,34 @@ inline bool file_exists (const std::string& name)
   struct stat buffer;
   return (stat (name.c_str(), &buffer) == 0);
 }
+
+
+
+CFPrinfWriter::CFPrinfWriter (const string &fname)
+{
+  out_file = fopen (fname.c_str(), "w"); // write only
+  if (! out_file)
+     cout << "Cannot create file: " << fname;
+
+}
+
+
+CFPrinfWriter::~CFPrinfWriter()
+{
+  if (out_file)
+     fclose (out_file);
+}
+
+
+void CFPrinfWriter::write (const string &s)
+{
+  if (out_file)
+    {
+     fprintf (out_file, s.c_str());
+     fprintf (out_file, "\n");
+    }
+}
+
 
 
 int main (int argc, char *argv[])
@@ -288,14 +330,19 @@ Params initialization order and overrides:
 
 
 
-  //cout << "fname_template: " << fname_template << endl;
+//  cout << "fname_template: " << fname_template << endl;
 
   CTpl tpl (fname_template, params.mode);
+
+
+
+  //CFPrinfWriter
 
 
   ofstream file_out;
   bool file_out_error = false;
 
+//  CFPrinfWriter pw (params.logfile);
 
 
   if (! params.bstdout)
@@ -417,6 +464,7 @@ MAIN LOOP
 
               if (! file_out_error)
                  file_out << log_string << "\n";
+              //  pw.write (log_string);
 
              }
          // std::cout << std::time(0) << endl;

@@ -28,9 +28,9 @@ void CPairFile::save()
   TSPair::const_iterator end = values.end(); 
 
   for (TSPair::const_iterator it = values.begin(); it != end; it++)
-     {
-      myfile << it->first << "=" << it->second << '\n';
-     }
+      {
+       myfile << it->first << "=" << it->second << '\n';
+      }
   
   myfile.close();
 }
@@ -82,8 +82,11 @@ bool CPairFile::get_bool (const string &key, bool def_value)
 {
   bool result = def_value;
 
-  if (values[key].size() == 0)
-    return result;
+//  if (values[key].size() == 0)
+  //   return result;
+
+  if (values.find (key) == values.end())
+     return result;
 
   if (values[key] == "true")
      return true;
@@ -100,9 +103,11 @@ int CPairFile::get_int (const string &key, int def_value)
 
   int result = def_value;
   
-  if (values[key].size() == 0)
-     return result; 
-  
+//  if (values[key].size() == 0)
+  //   return result;
+  if (values.find (key) == values.end())
+     return result;
+
   const char *s = values[key].c_str();
   if (s)
      result = atoi (s);
@@ -119,9 +124,12 @@ string CPairFile::get_string (const string &key,
 
    string result = def_value;
 
-  if (values[key].size() == 0)
-     return result; 
+//  if (values[key].size() == 0)
+  //   return result;
  
+  if (values.find (key) == values.end())
+     return result;
+
   string s = values[key];
   if (! s.empty())
      result = s;
@@ -132,7 +140,6 @@ string CPairFile::get_string (const string &key,
 
 CPairFile::CPairFile (const string &fname, bool from_data)
 {
-
 
   if (from_data)
     {
