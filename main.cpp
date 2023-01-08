@@ -203,7 +203,7 @@ Params initialization order and overrides:
    params.duration = opts_config.get_int ("duration", 2);
    params.rate = opts_config.get_int ("rate", 3);
    params.logfile = opts_config.get_string ("logfile", "stdout");
-   params.templatefile = opts_config.get_string ("templatefile", "test.tp");
+   params.templatefile = opts_config.get_string ("templatefile", "NOTEMPLATEFILE");
    params.mode = opts_config.get_string ("mode", "nginx");
    params.pure = opts_config.get_bool ("pure", false);
    params.debug = opts_config.get_bool ("debug", false);
@@ -260,9 +260,10 @@ Params initialization order and overrides:
 
 //read template
 
-   string fname_template = params.templatefile;
+  string fname_template = params.templatefile;
 
-  if (! params.templatefile.empty())
+  if (params.templatefile != "NOTEMPLATEFILE" && ! params.templatefile.empty())
+//  if (! params.templatefile.empty())
      if (params.templatefile[0] != '/') //path is not absolute
        {
         fname_template = "/etc/logfilegen/templates/" + params.templatefile;
@@ -276,7 +277,16 @@ Params initialization order and overrides:
         if (! file_exists (fname_template))
            fname_template = current_path() + "/" + params.templatefile;
 
+        if (! file_exists (fname_template))
+           {
+            cout << "No template file " << fname_template << " found, exiting" << endl;
+            return 0;
+           }
+
        }
+
+
+
 
   //cout << "fname_template: " << fname_template << endl;
 
