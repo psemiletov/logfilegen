@@ -260,15 +260,19 @@ Params initialization order and overrides:
 
 //read template
 
-  string fname_template;
-  fname_template = "/etc/logfilegen/templates/" + params.templatefile;
+   string fname_template = params.templatefile;
 
-  if (! file_exists (fname_template))
-      fname_template = get_home_dir() + "/.config/logfilegen/templates/" + params.templatefile;
+  if (! params.templatefile.empty())
+     if (params.templatefile[0] != '/') //path is not absolute
+       {
+        fname_template = "/etc/logfilegen/templates/" + params.templatefile;
 
-  if (! file_exists (fname_template))
-      fname_template = current_path() + "/templates/" + params.templatefile;
+        if (! file_exists (fname_template))
+           fname_template = get_home_dir() + "/.config/logfilegen/templates/" + params.templatefile;
 
+        if (! file_exists (fname_template))
+          fname_template = current_path() + "/templates/" + params.templatefile;
+       }
 
   //cout << "fname_template: " << fname_template << endl;
 
@@ -398,7 +402,7 @@ MAIN LOOP
                  cout << log_string << "\n";
 
               if (! file_out_error)
-                file_out << log_string << "\n";
+                 file_out << log_string << "\n";
 
           }
          // std::cout << std::time(0) << endl;

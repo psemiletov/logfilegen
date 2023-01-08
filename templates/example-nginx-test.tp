@@ -1,5 +1,5 @@
 $remote_addr=IP_RANDOM
-$remote_user=WORD|NUMBER
+$remote_user=USER_WORD|USER_NUMBER
 #$time_local=%x:%X
 $request=POST
 $status=200|404

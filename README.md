@@ -71,7 +71,20 @@ The configuration file is called ```logfilegen.conf``` and must be placed to ```
 
 ```logfilegen.conf``` is a simple key=value text file.
 
+Example:
 
+```
+duration=2
+rate=5
+logfile=stdout
+debug=false
+templatefile=example-nginx-test.tp
+#templatefile=t01.tp
+#templatefile=/home/test/test01.tp
+pure=false
+```
+
+Please note that you can "comment-out" lines to disable them.
 
 
 ### Command line parameters
@@ -104,7 +117,7 @@ Example:
 ## Templates
 
 
-Each template file is a simple key=value file, which must be placed to one of the following locations:
+Each template file is a simple key=value file, which, if no absolute path given, must be placed to one of the following locations:
 
 ```
 ./templates
@@ -126,7 +139,7 @@ Example of such file:
 
 ```
 $remote_addr=IP_RANDOM
-$remote_user=WORD|NUMBER
+$remote_user=USER_WORD|USER_NUMBER
 $time_local=%x:%X
 $request=GET|POST|PUT|PATCH|DELETE
 $status=200|404

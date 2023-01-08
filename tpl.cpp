@@ -9,6 +9,8 @@
 #include <ctime>
 #include <chrono>
 
+//#include <omp.h>
+
 #include <sys/time.h>
 
 #include "tpl.h"
@@ -364,13 +366,15 @@ string CTpl::prepare_log_string()
       return "";
     }
 
-  for (auto itr = vars.begin(); itr != vars.end(); ++itr)
+
+//#pragma omp parallel for
+for (auto itr = vars.begin(); itr != vars.end(); ++itr)
       {
        string variable = itr->first;
        string replacement = itr->second->get_val();
 
 //       cout << "variable: " << variable << " ^^^^ replacement: " << replacement << endl;
-
+//#pragma omp critical
        str_replace (logstring, variable, replacement);
       }
 

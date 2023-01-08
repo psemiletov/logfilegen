@@ -3,7 +3,9 @@ prefix=/usr
 endif
 
 CXX = g++
+#CXXFLAGS = -Wall -g -O3 -fopenmp
 CXXFLAGS = -Wall -g -O3
+
 
 all: main.cpp
 	$(CXX) $(CXXFLAGS) -std=c++11 -o logfilegen tpl.cpp libretta_pairfile.cpp main.cpp
