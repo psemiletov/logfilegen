@@ -271,7 +271,11 @@ Params initialization order and overrides:
            fname_template = get_home_dir() + "/.config/logfilegen/templates/" + params.templatefile;
 
         if (! file_exists (fname_template))
-          fname_template = current_path() + "/templates/" + params.templatefile;
+           fname_template = current_path() + "/templates/" + params.templatefile;
+
+        if (! file_exists (fname_template))
+           fname_template = current_path() + "/" + params.templatefile;
+
        }
 
   //cout << "fname_template: " << fname_template << endl;
