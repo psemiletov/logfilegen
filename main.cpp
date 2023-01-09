@@ -396,7 +396,7 @@ Params initialization order and overrides:
      //  cout << "test_string_size, bytes: " << test_string_size  << endl;
 
 
-     std::uintmax_t lines_total = static_cast<std::uintmax_t> params.duration * params.rate;
+     std::uintmax_t lines_total = static_cast<std::uintmax_t> (params.duration) * params.rate;
 
      if (params.debug)
         cout << "lines_total: " << lines_total  << endl;
