@@ -327,6 +327,12 @@ Params initialization order and overrides:
 
        }
 
+  if (params.templatefile[0] == '/') //path is absolute
+     if (! file_exists (fname_template))
+        {
+         cout << "No template file " << fname_template << " found, exiting" << endl;
+         return 0;
+        }
 
 
 
