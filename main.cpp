@@ -327,6 +327,12 @@ Params initialization order and overrides:
 
        }
 
+  if (params.templatefile[0] == '/') //path is absolute
+     if (! file_exists (fname_template))
+        {
+         cout << "No template file " << fname_template << " found, exiting" << endl;
+         return 0;
+        }
 
 
 
@@ -390,7 +396,7 @@ Params initialization order and overrides:
      //  cout << "test_string_size, bytes: " << test_string_size  << endl;
 
 
-     std::uintmax_t lines_total = params.duration * params.rate;
+     std::uintmax_t lines_total = static_cast<std::uintmax_t> (params.duration) * params.rate;
 
      if (params.debug)
         cout << "lines_total: " << lines_total  << endl;

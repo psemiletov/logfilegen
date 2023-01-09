@@ -10,7 +10,7 @@ on:
       - '**.md'
       - 'LICENSE'
       - 'TODO'
-      - 'templated/**'
+      - 'templates/**'
     tags:
       - '*'
   workflow_dispatch:
