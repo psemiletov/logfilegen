@@ -30,6 +30,7 @@ public:
 
   int vartype;
 
+  int rnd_length;
   int a;
   int b;
 

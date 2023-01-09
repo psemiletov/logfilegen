@@ -117,6 +117,8 @@ CVar::~CVar()
 CVar::CVar (const string &key, const string &val)
 {
   k = key;
+  string value = val;
+  rnd_length = 8;
 
 //  cout << "CVar::CVar === key: " << key << " value:" << val << endl;
 
@@ -124,18 +126,45 @@ CVar::CVar (const string &key, const string &val)
 
   vartype = get_value_nature (val);
 
+  if (val.find ("$int_random") != string::npos)
+     {
+      vector <string> vt = split_string_to_vector (value, ":");
+      if (vt.size() == 2)
+        {
+          rnd_length = atoi (vt[1].c_str());
+          value = "INTRNDMZ";
+        }
+
+     }
+
+  if (val.find ("$str_random") != string::npos)
+     {
+      vector <string> vt = split_string_to_vector (value, ":");
+      if (vt.size() == 2)
+        {
+          rnd_length = atoi (vt[1].c_str());
+          value = "STRRNDMZ";
+        }
+
+     }
+
+
   if (vartype == VT_SINGLE)
-     v.push_back (val);
+     v.push_back (value);
   else
   if (vartype == VT_SEQ)
-      v = split_string_to_vector (val, "|");
+      v = split_string_to_vector (value, "|");
   else
   if (vartype == VT_RANGE)
      {
-       v = split_string_to_vector (val, "..");
+       v = split_string_to_vector (value, "..");
        a = atoi (v[0].c_str());
        b = atoi (v[1].c_str()) + 1;
      }
+
+
+
+
 }
 
 /*
@@ -165,10 +194,18 @@ string CVar::get_val()
    //handle macros
 
   if (result == "USER_WORD")
-      return gen_word (8); //why 8?
+      return gen_word (rnd_length);
 
   if (result == "USER_NUMBER")
-      return gen_number (8); //why 8?
+      return gen_number (rnd_length);
+
+  if (result == "INTRNDMZ")
+      return gen_number (rnd_length);
+
+  if (result == "STRRNDMZ")
+      return gen_word (rnd_length);
+
+
 
 
   if (k.find ("$int_random") != string::npos)
@@ -368,7 +405,8 @@ string CTpl::prepare_log_string()
 
 
 //#pragma omp parallel for
-  for (auto itr = vars.begin(); itr != vars.end(); ++itr)
+/*
+for (auto itr = vars.begin(); itr != vars.end(); ++itr)
       {
        string variable = itr->first;
        string replacement = itr->second->get_val();
@@ -377,6 +415,20 @@ string CTpl::prepare_log_string()
 //#pragma omp critical
        str_replace (logstring, variable, replacement);
       }
+*/
+
+   for (auto itr = vars.end(); itr != vars.begin(); --itr)
+      {
+       string variable = itr->first;
+       string replacement = itr->second->get_val();
+
+//       cout << "variable: " << variable << " ^^^^ replacement: " << replacement << endl;
+//#pragma omp critical
+       str_replace (logstring, variable, replacement);
+      }
+
+
+
 
   return logstring;
 }
