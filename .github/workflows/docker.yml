@@ -3,13 +3,19 @@ name: Docker
 
 on:
   push:
+    branches:    
+      - main
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - 'TODO'
+      - 'templated/**'
     tags:
       - '*'
   workflow_dispatch:
 
 
 env:
-  DOCKERHUB_REPOSITORY: psemiletov/logfilegen
   PLATFORMS: linux/amd64,linux/arm64
 
 
@@ -42,5 +48,5 @@ jobs:
           platforms: ${{ env.PLATFORMS }}
           push: true
           tags: |
-            ${{ env.DOCKERHUB_REPOSITORY }}:latest
-            ${{ env.DOCKERHUB_REPOSITORY }}:${{ env.GITHUB_TAG }}
+            ${{ secrets.DOCKERHUB_REPOSITORY }}:latest
+            ${{ secrets.DOCKERHUB_REPOSITORY }}:${{ env.GITHUB_TAG }}
