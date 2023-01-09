@@ -416,8 +416,10 @@ for (auto itr = vars.begin(); itr != vars.end(); ++itr)
        str_replace (logstring, variable, replacement);
       }
 */
-
-   for (auto itr = vars.end(); itr != vars.begin(); --itr)
+/*
+ *
+ *
+   for (auto itr = vars.end(); itr != vars.begin(); itr--)
       {
        string variable = itr->first;
        string replacement = itr->second->get_val();
@@ -427,7 +429,19 @@ for (auto itr = vars.begin(); itr != vars.end(); ++itr)
        str_replace (logstring, variable, replacement);
       }
 
+*/
 
+    map <string, CVar*>::reverse_iterator it;
+
+   for (it = vars.rbegin(); it != vars.rend(); it++)
+      {
+       string variable = it->first;
+       string replacement = it->second->get_val();
+
+//       cout << "variable: " << variable << " ^^^^ replacement: " << replacement << endl;
+//#pragma omp critical
+       str_replace (logstring, variable, replacement);
+      }
 
 
   return logstring;
