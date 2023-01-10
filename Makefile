@@ -19,4 +19,7 @@ uninstall:
 install: logfilegen
 	install -m 0755 logfilegen $(prefix)/bin/logfilegen
 
+test:
+	logfilegen --help
+
 #.PHONY: install
