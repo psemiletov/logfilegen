@@ -70,5 +70,24 @@ public:
 };
 
 
+
+class CTpl2
+{
+public:
+
+  CPairFile *pf;
+
+  vector <CVar> vars;
+  map <string, string> logstrings;
+
+  string mode; //nginx, apache, etc
+
+  CTpl2 (const string &fname, const string &amode);
+  //~CTpl();
+
+  string prepare_log_string();
+};
+
+
 #endif
 

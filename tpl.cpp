@@ -431,8 +431,10 @@ for (auto itr = vars.begin(); itr != vars.end(); ++itr)
 
 */
 
-    map <string, CVar*>::reverse_iterator it;
 
+//change to     for (auto it = mymap.rbegin(); it != mymap.rend(); it++)
+
+   map <string, CVar*>::reverse_iterator it;
    for (it = vars.rbegin(); it != vars.rend(); it++)
       {
        string variable = it->first;
@@ -445,4 +447,142 @@ for (auto itr = vars.begin(); itr != vars.end(); ++itr)
 
 
   return logstring;
+}
+
+
+
+CTpl2::CTpl2 (const string &fname, const string &amode)
+{
+/*
+  pf = new CPairFile (fname, false);
+
+  mode = amode;
+
+
+  logstrings["nginx"] = "$remote_addr - $remote_user [$time_local] \"$request $uri $protocol\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\"";
+
+  //see https://httpd.apache.org/docs/2.4/mod/mod_log_config.html
+  logstrings["apache"] = "\"%h %l %u %t \"%r\" %>s %b\"";
+*/
+  /*
+
+   Common Log Format (CLF)
+"%h %l %u %t \"%r\" %>s %b"
+Common Log Format with Virtual Host
+"%v %h %l %u %t \"%r\" %>s %b"
+NCSA extended/combined log format
+"%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\""
+Referer log format
+"%{Referer}i -> %U"
+Agent (Browser) log format
+"%{User-agent}i"
+You can use the %{format}t directive multiple times to build up a time format using the extended format tokens like msec_frac:
+
+Timestamp including milliseconds
+"%{%d/%b/%Y %T}t.%{msec_frac}t %{%z}t"
+
+   */
+
+  //string ls = pf->get_string("$logstring", logstrings[mode]);
+
+  //DEFAULTS
+/*
+  if (mode == "nginx")
+     {
+
+      vars.push_back ("$logstring", CVar ("$logstring", logstrings["nginx"]));
+
+      vars.push_back ("$remote_addr", CVar ("$remote_addr", "IP_RANDOM"));
+      vars.push_back ("$remote_user", CVar ("$remote_user", "USER_WORD|USER_NUMBER"));
+      vars.push_back ("$time_local", CVar ("$time_local", "%d/%b/%Y:%H:%M:%S %z"));
+//      vars.insert (std::make_pair ("$time_iso8601", new CVar ("%Y-%m-%dT%H:%M:%SZ"))); //don't redefine
+
+      vars.push_back ("$request", CVar ("$request", "GET|POST|PUT|PATCH|DELETE"));
+      vars.push_back ("$uri", CVar ("$uri", "/|/favico.ico|/doc"));
+      vars.push_back ("$document_uri", CVar ("$document_uri", "/|/favico.ico|/doc"));
+      vars.push_back ("$protocol", CVar ("$protocol", "HTTP/1.1"));
+      vars.push_back ("$status", CVar ("$status", "200|400"));
+      vars.push_back ("$body_bytes_sent", CVar ("$body_bytes_sent", "1..9999"));
+      vars.push_back ("$http_referer", CVar ("$http_referer", "-"));
+      vars.push_back ("$http_user_agent", CVar ("$http_user_agent", "Mozilla|Chrome|Vivaldi|Opera"));
+     }
+
+
+  for (map <string, string>::const_iterator it = pf->values.begin(); it != pf->values.end(); it++)
+     {
+      auto f = vars.find (it->first);
+      if (f != vars.end())
+        {
+         delete f->second;
+         vars.erase (f);
+        }
+
+      vars.insert (std::make_pair (it->first, new CVar (it->first, it->second)));
+    }
+
+
+   sort (vars.begin(), vars.end(), greater<string>());
+*/
+}
+
+
+
+string CTpl2::prepare_log_string()
+{
+/*
+  string logstring = vars["$logstring"]->get_val();
+  if (logstring.empty())
+    {
+      cout << "$logstring mandatory variable is not defined!" << endl;
+      return "";
+    }
+*/
+
+//#pragma omp parallel for
+/*
+for (auto itr = vars.begin(); itr != vars.end(); ++itr)
+      {
+       string variable = itr->first;
+       string replacement = itr->second->get_val();
+
+//       cout << "variable: " << variable << " ^^^^ replacement: " << replacement << endl;
+//#pragma omp critical
+       str_replace (logstring, variable, replacement);
+      }
+*/
+/*
+ *
+ *
+   for (auto itr = vars.end(); itr != vars.begin(); itr--)
+      {
+       string variable = itr->first;
+       string replacement = itr->second->get_val();
+
+//       cout << "variable: " << variable << " ^^^^ replacement: " << replacement << endl;
+//#pragma omp critical
+       str_replace (logstring, variable, replacement);
+      }
+
+*/
+
+//for (auto it = begin (vector); it != end (vector); ++it) {
+  //  it->doSomething ();
+//}
+
+
+//change to     for (auto it = mymap.rbegin(); it != mymap.rend(); it++)
+/*
+   map <string, CVar*>::reverse_iterator it;
+   for (it = vars.rbegin(); it != vars.rend(); it++)
+      {
+       string variable = it->first;
+       string replacement = it->second->get_val();
+
+//       cout << "variable: " << variable << " ^^^^ replacement: " << replacement << endl;
+//#pragma omp critical
+       str_replace (logstring, variable, replacement);
+      }
+*/
+
+  return string(); //logstring;
 }
