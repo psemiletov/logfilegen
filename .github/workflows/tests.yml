@@ -1,0 +1,37 @@
+name: Tests
+
+
+on:
+  push:
+    branches:
+      - '**'
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE'
+      - 'TODO'
+      - 'templates/**'
+    tags:
+      - '*'
+  workflow_dispatch:
+
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prerequisites
+        run: |
+          sudo apt update
+          sudo apt install git make g++
+
+      - name: Build
+        run: make
+
+      - name: Install
+        run: sudo make install
+
+      - name: Test
+        run: make test

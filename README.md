@@ -1,6 +1,10 @@
 # logfilegen
 The server log file generator
 
+[![Tests](../../actions/workflows/tests.yml/badge.svg)](../../actions/workflows/tests.yml)
+[![Docker](../../actions/workflows/docker.yml/badge.svg)](../../actions/workflows/docker.yml)
+
+
 [Dockerhub repo](https://hub.docker.com/repository/docker/psemiletov/logfilegen/general)
 
 
