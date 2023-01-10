@@ -9,6 +9,7 @@
 #include <vector>
 #include <map>
 #include <random>
+#include <memory>
 
 
 #include "libretta_pairfile.h"
@@ -77,13 +78,14 @@ public:
 
   CPairFile *pf;
 
-  vector <CVar> vars;
+  vector <CVar*> vars;
+
   map <string, string> logstrings;
 
   string mode; //nginx, apache, etc
 
   CTpl2 (const string &fname, const string &amode);
-  //~CTpl();
+  ~CTpl2();
 
   string prepare_log_string();
 };

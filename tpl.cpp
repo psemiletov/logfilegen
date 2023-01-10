@@ -453,7 +453,7 @@ for (auto itr = vars.begin(); itr != vars.end(); ++itr)
 
 CTpl2::CTpl2 (const string &fname, const string &amode)
 {
-/*
+
   pf = new CPairFile (fname, false);
 
   mode = amode;
@@ -463,7 +463,7 @@ CTpl2::CTpl2 (const string &fname, const string &amode)
 
   //see https://httpd.apache.org/docs/2.4/mod/mod_log_config.html
   logstrings["apache"] = "\"%h %l %u %t \"%r\" %>s %b\"";
-*/
+
   /*
 
    Common Log Format (CLF)
@@ -486,28 +486,31 @@ Timestamp including milliseconds
   //string ls = pf->get_string("$logstring", logstrings[mode]);
 
   //DEFAULTS
-/*
+
   if (mode == "nginx")
      {
 
-      vars.push_back ("$logstring", CVar ("$logstring", logstrings["nginx"]));
 
-      vars.push_back ("$remote_addr", CVar ("$remote_addr", "IP_RANDOM"));
-      vars.push_back ("$remote_user", CVar ("$remote_user", "USER_WORD|USER_NUMBER"));
-      vars.push_back ("$time_local", CVar ("$time_local", "%d/%b/%Y:%H:%M:%S %z"));
+
+
+      vars.push_back (new CVar ("$logstring", logstrings["nginx"]));
+
+      vars.push_back (new CVar ("$remote_addr", "IP_RANDOM"));
+      vars.push_back (new CVar ("$remote_user", "USER_WORD|USER_NUMBER"));
+      vars.push_back (new CVar ("$time_local", "%d/%b/%Y:%H:%M:%S %z"));
 //      vars.insert (std::make_pair ("$time_iso8601", new CVar ("%Y-%m-%dT%H:%M:%SZ"))); //don't redefine
 
-      vars.push_back ("$request", CVar ("$request", "GET|POST|PUT|PATCH|DELETE"));
-      vars.push_back ("$uri", CVar ("$uri", "/|/favico.ico|/doc"));
-      vars.push_back ("$document_uri", CVar ("$document_uri", "/|/favico.ico|/doc"));
-      vars.push_back ("$protocol", CVar ("$protocol", "HTTP/1.1"));
-      vars.push_back ("$status", CVar ("$status", "200|400"));
-      vars.push_back ("$body_bytes_sent", CVar ("$body_bytes_sent", "1..9999"));
-      vars.push_back ("$http_referer", CVar ("$http_referer", "-"));
-      vars.push_back ("$http_user_agent", CVar ("$http_user_agent", "Mozilla|Chrome|Vivaldi|Opera"));
-     }
+      vars.push_back (new CVar ("$request", "GET|POST|PUT|PATCH|DELETE"));
+      vars.push_back (new CVar ("$uri", "/|/favico.ico|/doc"));
+      vars.push_back (new CVar ("$document_uri", "/|/favico.ico|/doc"));
+      vars.push_back (new CVar ("$protocol", "HTTP/1.1"));
+      vars.push_back (new CVar ("$status", "200|400"));
+      vars.push_back (new CVar ("$body_bytes_sent", "1..9999"));
+      vars.push_back (new CVar ("$http_referer", "-"));
+      vars.push_back (new CVar ("$http_user_agent", "Mozilla|Chrome|Vivaldi|Opera"));
 
 
+/*
   for (map <string, string>::const_iterator it = pf->values.begin(); it != pf->values.end(); it++)
      {
       auto f = vars.find (it->first);
@@ -520,11 +523,11 @@ Timestamp including milliseconds
       vars.insert (std::make_pair (it->first, new CVar (it->first, it->second)));
     }
 
-
-   sort (vars.begin(), vars.end(), greater<string>());
 */
-}
+//   sort (vars.begin(), vars.end(), greater<string>());
 
+}
+}
 
 
 string CTpl2::prepare_log_string()
@@ -585,4 +588,18 @@ for (auto itr = vars.begin(); itr != vars.end(); ++itr)
 */
 
   return string(); //logstring;
+}
+
+
+
+CTpl2::~CTpl2()
+{
+  delete pf;
+
+  for (auto itr = vars.begin(); itr != vars.end(); ++itr)
+      {
+       delete (*itr);
+      //  cout << itr->first
+        //     << '\t' << itr->second << '\n';
+      }
 }
