@@ -39,6 +39,8 @@ public:
   double fa;
   double fb;
 
+  int precision;
+
 
   string k; //key
   vector <string> v; //values

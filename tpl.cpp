@@ -121,7 +121,7 @@ string CVar::gen_msecs()
   std::string s;
   std::stringstream sstream;
   sstream.setf(std::ios::fixed);
-  sstream.precision(3);
+  sstream.precision (precision);
   sstream << distrib (*rnd_generator);
 
   return sstream.str();
@@ -140,6 +140,7 @@ CVar::CVar (const string &key, const string &val)
   k = key;
   string value = val;
   rnd_length = 8;
+  precision = 3;
 
 //  cout << "CVar::CVar === key: " << key << " value:" << val << endl;
 
@@ -194,11 +195,17 @@ CVar::CVar (const string &key, const string &val)
        v = split_string_to_vector (value, "..");
 
        //check int or float
-      if (v[0].find (".") != string::npos)
+      size_t pos = v[0].find (".");
+
+      if (pos != string::npos)
          {
           vartype = VT_FLOATRANGE;
           fa = atof (v[0].c_str());
           fb = atof (v[1].c_str());
+
+          //get precision
+          precision = v[0].size() - pos - 1;
+
          }
        else
            {
