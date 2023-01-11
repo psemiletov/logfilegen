@@ -20,6 +20,7 @@ using namespace std;
 #define VT_SINGLE 1
 #define VT_SEQ 2
 #define VT_RANGE 3
+#define VT_FLOATRANGE 4
 
 
 class CVar
@@ -35,21 +36,34 @@ public:
   int a;
   int b;
 
+  double fa;
+  double fb;
 
-  string k;
-  vector <string> v;
+
+  string k; //key
+  vector <string> v; //values
 
   CVar (const string &key, const string &val);
   ~CVar();
 
   int get_rnd (int ta, int tb);
 
+
   string gen_random_ip();
   string gen_number (size_t len);
   string gen_word (size_t len);
+
+  string gen_msecs();
+
   string get_datetime (const string &format);
 
   string get_val();
+/*
+  bool operator > (const CVar &v) const
+      {
+        return (k > k.k);
+      }
+*/
 };
 
 

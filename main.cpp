@@ -32,7 +32,7 @@
 
 
 #ifndef VERSION_NUMBER
-#define VERSION_NUMBER "0.0.x"
+#define VERSION_NUMBER "0.2.0"
 #endif
 
 

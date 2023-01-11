@@ -108,6 +108,27 @@ int CVar::get_rnd (int ta, int tb)
 }
 
 
+string CVar::gen_msecs()
+{
+  //cout << "fa:" << fa << " fb:" << fb << endl;
+  std::uniform_real_distribution <> distrib (fa, fb);
+
+  //cout << "---------" << endl;
+  //cout << distrib (*rnd_generator) << endl;
+  //cout << "---------" << endl;
+
+
+  std::string s;
+  std::stringstream sstream;
+  sstream.setf(std::ios::fixed);
+  sstream.precision(3);
+  sstream << distrib (*rnd_generator);
+
+  return sstream.str();
+}
+
+
+
 CVar::~CVar()
 {
   delete rnd_generator;
@@ -134,7 +155,6 @@ CVar::CVar (const string &key, const string &val)
           rnd_length = atoi (vt[1].c_str());
           value = "INTRNDMZ";
         }
-
      }
 
   if (val.find ("$str_random") != string::npos)
@@ -145,10 +165,24 @@ CVar::CVar (const string &key, const string &val)
           rnd_length = atoi (vt[1].c_str());
           value = "STRRNDMZ";
         }
-
      }
 
+  //bool float_range = false;
+/*
+  if (val.find ("$msec_random") != string::npos)
+     {
+      cout << "$msec_random" << endl;
+      float_range = true;
+      vector <string> vt = split_string_to_vector (value, ":");
+      if (vt.size() == 2)
+         value = vt[1];
 
+      vartype = VT_FLOATRANGE;
+
+      cout << "value: " << value << endl;
+
+     }
+*/
   if (vartype == VT_SINGLE)
      v.push_back (value);
   else
@@ -158,12 +192,20 @@ CVar::CVar (const string &key, const string &val)
   if (vartype == VT_RANGE)
      {
        v = split_string_to_vector (value, "..");
-       a = atoi (v[0].c_str());
-       b = atoi (v[1].c_str()) + 1;
+
+       //check int or float
+      if (v[0].find (".") != string::npos)
+         {
+          vartype = VT_FLOATRANGE;
+          fa = atof (v[0].c_str());
+          fb = atof (v[1].c_str());
+         }
+       else
+           {
+            a = atoi (v[0].c_str());
+            b = atoi (v[1].c_str());
+           }
      }
-
-
-
 
 }
 
@@ -190,8 +232,14 @@ string CVar::get_val()
   else
   if (vartype == VT_SEQ)
       result = v[get_rnd (0, v.size()-1)];
+  else
+  if (vartype == VT_FLOATRANGE)
+     result = gen_msecs();
+
 
    //handle macros
+
+//   cout << "result: " << result << endl;
 
   if (result == "USER_WORD")
       return gen_word (rnd_length);
@@ -205,7 +253,12 @@ string CVar::get_val()
   if (result == "STRRNDMZ")
       return gen_word (rnd_length);
 
+//  if (result == "MSECRNDMZ")
+  //    return gen_msecs();
 
+
+ // if (k.find ("$msec_random") != string::npos)
+   //  return gen_msecs();
 
 
   if (k.find ("$int_random") != string::npos)
@@ -230,7 +283,6 @@ string CVar::get_val()
   //assuming date time
 
   if (k.find ("$time_") != string::npos)
-  //if (result.find ("%") != string::npos)
      result = get_datetime (result);
 
   if (result == "IP_RANDOM")
@@ -360,6 +412,16 @@ Timestamp including milliseconds
 
       vars.insert (std::make_pair ("$logstring", new CVar ("$logstring", logstrings["nginx"])));
 
+
+      vars.insert (std::make_pair ("$msec_random", new CVar ("$msec_random", "0.1..60.0")));
+      vars.insert (std::make_pair ("$request_time", new CVar ("$request_time", "0.1..60.0")));
+      vars.insert (std::make_pair ("$connection_time", new CVar ("$connection_time", "0.1..60.0")));
+
+  //    vars.insert (std::make_pair ("$msec", new CVar ("$msec", "1.0..60.0")));
+
+
+
+
       vars.insert (std::make_pair ("$remote_addr", new CVar ("$remote_addr", "IP_RANDOM")));
       vars.insert (std::make_pair ("$remote_user", new CVar ("$remote_user", "USER_WORD|USER_NUMBER")));
       vars.insert (std::make_pair ("$time_local", new CVar ("$time_local", "%d/%b/%Y:%H:%M:%S %z")));
@@ -404,34 +466,6 @@ string CTpl::prepare_log_string()
     }
 
 
-//#pragma omp parallel for
-/*
-for (auto itr = vars.begin(); itr != vars.end(); ++itr)
-      {
-       string variable = itr->first;
-       string replacement = itr->second->get_val();
-
-//       cout << "variable: " << variable << " ^^^^ replacement: " << replacement << endl;
-//#pragma omp critical
-       str_replace (logstring, variable, replacement);
-      }
-*/
-/*
- *
- *
-   for (auto itr = vars.end(); itr != vars.begin(); itr--)
-      {
-       string variable = itr->first;
-       string replacement = itr->second->get_val();
-
-//       cout << "variable: " << variable << " ^^^^ replacement: " << replacement << endl;
-//#pragma omp critical
-       str_replace (logstring, variable, replacement);
-      }
-
-*/
-
-
 //change to     for (auto it = mymap.rbegin(); it != mymap.rend(); it++)
 
    map <string, CVar*>::reverse_iterator it;
@@ -449,6 +483,25 @@ for (auto itr = vars.begin(); itr != vars.end(); ++itr)
   return logstring;
 }
 
+
+/*
+struct less_than_key
+{
+    inline bool operator() (const CVar& v1, const CVar& v2)
+    {
+        return (v1.key < v2.key);
+    }
+};
+*/
+
+
+struct less_than_key
+{
+    inline bool operator() (CVar *v1, const CVar *v2)
+    {
+        return (v1->k < v2->k);
+    }
+};
 
 
 CTpl2::CTpl2 (const string &fname, const string &amode)
@@ -509,7 +562,28 @@ Timestamp including milliseconds
       vars.push_back (new CVar ("$http_referer", "-"));
       vars.push_back (new CVar ("$http_user_agent", "Mozilla|Chrome|Vivaldi|Opera"));
 
+      //SORT HERE
 
+   //     std::sort (vars.begin(), vars.end(), less_than_key());
+
+    //   std::sort(vars.begin(), vars.end(),greater<CVar>());
+      //LOOP
+
+
+      /*
+
+        std::vector<Type> v = ....;
+std::string myString = ....;
+auto it = find_if(v.begin(), v.end(), [&myString](const Type& obj) {return obj.getName() == myString;})
+
+if (it != v.end())
+{
+  // found element. it is an iterator to the first matching element.
+  // if you really need the index, you can also get it:
+  auto index = std::distance(v.begin(), it);
+}
+
+       */
 /*
   for (map <string, string>::const_iterator it = pf->values.begin(); it != pf->values.end(); it++)
      {
