@@ -1,0 +1,46 @@
+name: Release
+
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag
+        required: false
+
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: ${{ github.event.inputs.tag != '' || github.ref_name != '' || !cancelled() }}
+    steps:
+      - name: Compute tag
+        run: if [[ -z "${{ github.event.inputs.tag }}" ]]; then echo "GITHUB_TAG=${{ github.ref_name }}" >> "${GITHUB_ENV}"; else echo "GITHUB_TAG=${{ github.event.inputs.tag }}" >> "${GITHUB_ENV}"; fi
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prerequisites
+        run: |
+          sudo apt update
+          sudo apt install git make g++
+
+      - name: Build
+        run: make
+
+      - name: SHA summ
+        run: sha256sum logfilegen > logfilegen.sha256.txt
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          append_body: true
+          tag_name: ${{ env.GITHUB_TAG }}
+          files: |
+            logfilegen
+            logfilegen.sha256.txt
