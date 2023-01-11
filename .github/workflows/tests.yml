@@ -10,6 +10,7 @@ on:
       - 'LICENSE'
       - 'TODO'
       - 'templates/**'
+      - '.github/ISSUE_TEMPLATE/**'
     tags:
       - '*'
   workflow_dispatch:
