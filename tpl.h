@@ -9,14 +9,13 @@
 #include <vector>
 #include <map>
 #include <random>
-#include <memory>
-
 
 #include "pairfile.h"
 
+
 using namespace std;
 
-
+#define VT_NONE 0
 #define VT_SINGLE 1
 #define VT_SEQ 2
 #define VT_RANGE 3
@@ -31,16 +30,13 @@ public:
   std::random_device rnd_dev;
 
   int vartype;
-
+  int precision;
   int rnd_length;
   int a;
   int b;
 
   double fa;
   double fb;
-
-  int precision;
-
 
   string k; //key
   vector <string> v; //values
@@ -50,13 +46,10 @@ public:
 
   int get_rnd (int ta, int tb);
 
-
   string gen_random_ip();
   string gen_number (size_t len);
   string gen_word (size_t len);
-
   string gen_msecs();
-
   string get_datetime (const string &format);
 
   string get_val();
@@ -82,26 +75,6 @@ public:
 
   CTpl (const string &fname, const string &amode);
   ~CTpl();
-
-  string prepare_log_string();
-};
-
-
-
-class CTpl2
-{
-public:
-
-  CPairFile *pf;
-
-  vector <CVar*> vars;
-
-  map <string, string> logstrings;
-
-  string mode; //nginx, apache, etc
-
-  CTpl2 (const string &fname, const string &amode);
-  ~CTpl2();
 
   string prepare_log_string();
 };
