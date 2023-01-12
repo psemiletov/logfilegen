@@ -2,8 +2,8 @@
  *   this code by Peter Semiletov is Public Domain         *
  **********************************************************/
 
-#ifndef LIBRETTA_PAIRFILE_H
-#define LIBRETTA_PAIRFILE_H
+#ifndef PAIRFILE_H
+#define PAIRFILE_H
 
 #include <string>
 #include <vector>

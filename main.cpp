@@ -16,18 +16,9 @@
 #include <csignal>
 
 
-#include <sys/statvfs.h>
 
-#ifdef WINDOWS
-#include <direct.h>
-#define get_cur_dir _getcwd
-#else
-#include <unistd.h>
-#define get_cur_dir getcwd
-#endif
-
-
-#include "libretta_pairfile.h"
+#include "pairfile.h"
+#include "utl.h"
 #include "tpl.h"
 
 
@@ -40,12 +31,6 @@ using namespace std;
 using namespace std::chrono;
 
 
-
-#ifdef WINDOWS
-#define DIR_SEPARATOR '\\'
-#else
-#define DIR_SEPARATOR '/'
-#endif
 
 
 class CFPrinfWriter
@@ -115,64 +100,6 @@ void signal_handler (int signal)
   g_signal_status = signal;
 }
 
-
-size_t get_free_space (const string &path)
-{
-//  cout << "get_free_space for " << path << endl;
-
-  struct statvfs buf;
-
-  int r = statvfs (path.c_str(), &buf);
-
-  if (r < 0)
-     return -1;
-
-  return buf.f_bavail * buf.f_bsize;
-}
-
-
-string get_file_path (const string &path)
-{
-  char sep = '/';
-
-#ifdef _WIN32
-   sep = '\\';
-#endif
-
-  size_t i = path.rfind (sep, path.length());
-
-  if (i != string::npos)
-     return path.substr(0, i);
-
-  return("");
-}
-
-
-string get_home_dir()
-{
-  string homedir = getenv ("HOME");
-  return homedir;
-}
-
-
-string current_path()
-{
-  char path [FILENAME_MAX];
-  string result;
-
-  if (! get_cur_dir (path, sizeof (path)))
-     return result;
-
-  result = path;
-  return result;
-}
-
-
-inline bool file_exists (const std::string& name)
-{
-  struct stat buffer;
-  return (stat (name.c_str(), &buffer) == 0);
-}
 
 
 

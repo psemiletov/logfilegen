@@ -12,7 +12,7 @@
 #include <memory>
 
 
-#include "libretta_pairfile.h"
+#include "pairfile.h"
 
 using namespace std;
 

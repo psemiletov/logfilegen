@@ -9,11 +9,11 @@
 #include <ctime>
 #include <chrono>
 
-//#include <omp.h>
 
 #include <sys/time.h>
 
 #include "tpl.h"
+#include "utl.h"
 
 
 //full nginx vars see at
@@ -31,74 +31,6 @@ int get_value_nature (const string &s)
   return VT_SINGLE;
 }
 
-
-string str_replace (string &source, const string &text_to_find, const string &replace_with)
-{
-  if (source.empty())
-      return source;
-
-  if (text_to_find.empty())
-      return source;
-
-  if (replace_with.empty())
-      return source;
-
-  size_t pos = source.find (text_to_find);
-
-  if (pos == string::npos)
-     return source;
-
-  source.replace (pos, text_to_find.size(), replace_with);
-
-  return source;
-}
-
-
-vector <string> split_string_to_vector (const string& s, const string& delimeter, const bool keep_empty = true)
-{
-  vector <string> result;
-
-  if (delimeter.empty())
-     {
-      result.push_back(s);
-      return result;
-     }
-
-  string::const_iterator substart = s.begin(), subend;
-
-  while (true)
-       {
-        subend = search (substart, s.end(), delimeter.begin(), delimeter.end());
-
-        string temp (substart, subend);
-
-        if (keep_empty || ! temp.empty())
-            result.push_back (temp);
-
-        if (subend == s.end())
-            break;
-
-        substart = subend + delimeter.size();
-       }
-
-  return result;
-}
-
-/*
-vector <string> split_string_to_vector2 (const string &s, char delimeter)
-{
-  string ts;
-  stringstream ss (s);
-  vector <string> tokens;
-
-  while (getline (ss, ts, delimeter))
-        {
-         tokens.push_back (ts);
-        }
-
-  return tokens;
-}
-*/
 
 
 int CVar::get_rnd (int ta, int tb)
