@@ -7,7 +7,8 @@ add_definitions(-DVERSION_NUMBER="\\"${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_
 
 
 set(SOURCES
-    libretta_pairfile.cpp
+    utl.cpp
+    pairfile.cpp
     tpl.cpp
     main.cpp
 )
