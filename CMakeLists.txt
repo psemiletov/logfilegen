@@ -10,6 +10,7 @@ set(SOURCES
     utl.cpp
     pairfile.cpp
     tpl.cpp
+    cycle.cpp
     main.cpp
 )
 

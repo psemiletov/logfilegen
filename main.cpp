@@ -16,10 +16,10 @@
 #include <csignal>
 
 
-
 #include "pairfile.h"
 #include "utl.h"
 #include "tpl.h"
+#include "cycle.h"
 
 
 #ifndef VERSION_NUMBER
@@ -46,47 +46,6 @@ public:
 };
 
 
-
-class CParameters
-{
-public:
-
-  string templatefile; //templatefile name from /logfilegen/templates
-  string logfile; //output logfile name with full path
-  string mode;    //"nginx" or "apache"
-
-  int duration; //duration of log generation, in seconds
-  int rate;  //during the log generation, how many lines per second will be written
-
-  bool pure;
-  bool bstdout;
-  bool debug;
-
-  void print();
-};
-
-
-void CParameters::print()
-{
-
-  cout << "------------ Print parameters -------------" << endl;
-
-
-  cout << "duration: " << duration << endl;
-  cout << "rate: " << rate << endl;
-  cout << "templatefile: " << templatefile << endl;
-  cout << "logfile: " << logfile << endl;
-
-
-  cout << "pure: " << pure << endl;
-
-  cout << "mode: " << mode << endl;
-  cout << "debug: " << debug << endl;
-  cout << "stdout: " << bstdout << endl;
-
-  cout << "------------ **************** -------------" << endl;
-
-}
 
 
 namespace
@@ -139,8 +98,6 @@ int main (int argc, char *argv[])
   CParameters params;
 
   std::signal (SIGINT, signal_handler);
-
-
 
 
 /*
@@ -275,8 +232,6 @@ Params initialization order and overrides:
   ofstream file_out;
   bool file_out_error = false;
 
-//  CFPrinfWriter pw (params.logfile);
-
 
   if (! params.bstdout)
     {
@@ -294,24 +249,9 @@ Params initialization order and overrides:
     }
 
 
-//check is there free space on disk where logfile will be created
-
- //params.logfile
-
-//get_file_path
-
-  //cout << "get_file_path(params.logfile): " << get_file_path(params.logfile) << endl;
-
-  //cout << "...................... get_free_space: " << get_free_space (get_file_path(params.logfile)) << endl;
-
-
- //C++ 17
 
   if (! params.bstdout)
      {
-     //std::filesystem::__cxx11::path logpath = current_path();
-     //filesystem::space_info sinfo = std::filesystem::space (logpath);
-     //cout << "Free space on " << logpath << ": " << sinfo.available << " bytes" << endl;
 
      //  how many space we occupy with logstrings?
 
@@ -321,7 +261,6 @@ Params initialization order and overrides:
      size_t test_string_size = test_string.size() + (test_string.size() / 2);
 
      //  cout << "test_string_size, bytes: " << test_string_size  << endl;
-
 
      std::uintmax_t lines_total = static_cast<std::uintmax_t> (params.duration) * params.rate;
 
@@ -382,11 +321,6 @@ MAIN LOOP
           //    cout << "break the main loop" << endl;
               break;
              }
-
-
-          //WRITE TO LOG HERE
-
-          //simple output to screen
 
           string log_string = tpl.prepare_log_string();
 
