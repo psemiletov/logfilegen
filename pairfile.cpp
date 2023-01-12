@@ -13,6 +13,8 @@
 
 
 #include "pairfile.h"
+#include "utl.h"
+
 
 using namespace std;
 
@@ -119,14 +121,8 @@ int CPairFile::get_int (const string &key, int def_value)
 string CPairFile::get_string (const string &key, 
                               const string &def_value)
 {
-  //if (values.size() == 0)
-    // return def_value;
+  string result = def_value;
 
-   string result = def_value;
-
-//  if (values[key].size() == 0)
-  //   return result;
- 
   if (values.find (key) == values.end())
      return result;
 
@@ -265,8 +261,6 @@ CPairFile::CPairFile (vector <string> envars)
          }
      }
 
-
-
   string line;
 
   while (getline (st, line))
@@ -289,4 +283,21 @@ CPairFile::CPairFile (vector <string> envars)
         }
 
 }
+
+
+size_t CPairFile::get_file_size (const string &key, const string &def_value)
+{
+  size_t result = string_to_file_size (def_value);
+
+  if (values.find (key) == values.end())
+     return result;
+
+  string s = values[key];
+  if (s.empty())
+     return result;
+
+
+  return string_to_file_size (s);
+}
+
 

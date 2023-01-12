@@ -25,7 +25,8 @@ public:
   int get_int (const string &key, int def_value = 0);
   float get_float (const string &key, float def_value = 0.0f);
   string get_string (const string &key, const string &def_value = "");
-  
+  size_t get_file_size (const string &key, const string &def_value = "64k"); //return value in bytes
+
   void set_string (const string &key, const string &value);
   void set_int (const string &key, int value);
   void set_float (const string &key, float value);

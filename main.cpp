@@ -40,12 +40,12 @@ int main (int argc, char *argv[])
 //  cout << "version: " << VERSION_NUMBER << endl;
 
 
-
-  vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE", "LFG_TEMPLATEFILE", "LFG_DEBUG", "LFG_PURE"};
+  vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE",
+                            "LFG_TEMPLATEFILE", "LFG_DEBUG", "LFG_PURE",
+                            "LFG_MAX_LOG_FILE_SIZE", "LFG_MAX_LOG_FILES"};
 
   CParameters params;
 
-//  std::signal (SIGINT, signal_handler);
 
 //Try to load params from config
 
@@ -71,6 +71,8 @@ int main (int argc, char *argv[])
    params.mode = opts_config.get_string ("mode", "nginx");
    params.pure = opts_config.get_bool ("pure", false);
    params.debug = opts_config.get_bool ("debug", false);
+   params.max_log_files = opts_config.get_int ("max_log_files", 3);
+   params.max_log_file_size = opts_config.get_string ("max_log_file_size", "64k");
 
 
    if (params.debug)
@@ -91,6 +93,12 @@ int main (int argc, char *argv[])
   params.mode = opts_cmdline.get_string ("mode", params.mode);
   params.pure = opts_cmdline.get_bool ("pure", params.pure);
 
+  params.max_log_files = opts_cmdline.get_int ("max_log_files", params.max_log_files);
+  params.max_log_file_size = opts_cmdline.get_string ("max_log_file_size", params.max_log_file_size);
+
+
+
+
 
   //params.print();
 
@@ -109,6 +117,14 @@ int main (int argc, char *argv[])
   params.mode = opts_envars.get_string ("mode", params.mode);
   params.pure = opts_envars.get_bool ("pure", params.pure);
 
+  params.max_log_files = opts_envars.get_int ("max_log_files", params.max_log_files);
+  params.max_log_file_size = opts_envars.get_file_size ("max_log_file_size", params.max_log_file_size);
+
+  params.max_log_files = opts_envars.get_int ("max_log_files", params.max_log_files);
+  params.max_log_file_size = opts_envars.get_string ("max_log_file_size", params.max_log_file_size);
+
+
+
   //params.print();
 
 
@@ -117,8 +133,7 @@ int main (int argc, char *argv[])
   else
       params.bstdout = false;
 
-  if (params.logfile[0] != '/')
-         //path is local
+  if (params.logfile[0] != '/')          //path is local
       params.logfile = current_path() + "/" + params.logfile;
 
 
@@ -127,25 +142,24 @@ int main (int argc, char *argv[])
   string fname_template = params.templatefile;
 
   if (params.templatefile != "NOTEMPLATEFILE" && ! params.templatefile.empty())
-//  if (! params.templatefile.empty())
      if (params.templatefile[0] != '/') //path is not absolute
-       {
-        fname_template = "/etc/logfilegen/templates/" + params.templatefile;
+        {
+         fname_template = "/etc/logfilegen/templates/" + params.templatefile;
 
-        if (! file_exists (fname_template))
-           fname_template = get_home_dir() + "/.config/logfilegen/templates/" + params.templatefile;
+         if (! file_exists (fname_template))
+            fname_template = get_home_dir() + "/.config/logfilegen/templates/" + params.templatefile;
 
-        if (! file_exists (fname_template))
-           fname_template = current_path() + "/templates/" + params.templatefile;
+         if (! file_exists (fname_template))
+            fname_template = current_path() + "/templates/" + params.templatefile;
 
-        if (! file_exists (fname_template))
-           fname_template = current_path() + "/" + params.templatefile;
+         if (! file_exists (fname_template))
+            fname_template = current_path() + "/" + params.templatefile;
 
-        if (! file_exists (fname_template))
-           {
-            cout << "No template file " << fname_template << " found, exiting" << endl;
-            return 0;
-           }
+         if (! file_exists (fname_template))
+            {
+             cout << "No template file " << fname_template << " found, exiting" << endl;
+             return 0;
+            }
 
        }
 

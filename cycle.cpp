@@ -44,6 +44,8 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname)
   params = prms;
   fname_template = fname;
 
+  logrotator = new CLogRotator (fname_template, params->max_log_files, string_to_file_size (params->max_log_file_size));
+
 }
 
 
@@ -51,7 +53,7 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname)
 CGenCycleUnrated::~CGenCycleUnrated()
 {
   delete tpl;
-
+  delete logrotator;
 }
 
 

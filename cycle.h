@@ -10,19 +10,17 @@
 #include <thread>
 #include <chrono>
 #include <unistd.h>
-#include <stdio.h>  // for FILENAME_MAX
-#include <sys/stat.h>
 #include <csignal>
 
 
 #include "pairfile.h"
 #include "utl.h"
 #include "tpl.h"
+#include "logrot.h"
 
 
 using namespace std;
 using namespace std::chrono;
-
 
 
 
@@ -36,6 +34,9 @@ public:
 
   int duration; //duration of log generation, in seconds
   int rate;  //during the log generation, how many lines per second will be written
+
+  size_t max_log_files;
+  string max_log_file_size;
 
   bool pure;
   bool bstdout;
@@ -53,6 +54,8 @@ public:
 
   CParameters *params;
   CTpl *tpl;
+
+  CLogRotator *logrotator;
 
   ofstream file_out;
   bool file_out_error;
