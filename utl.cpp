@@ -47,6 +47,39 @@ using namespace std;
 
 
 
+
+
+string get_file_ext (const string &fname)
+{
+  std::string::size_type i = fname.rfind('.');
+  if (i != std::string::npos)
+     return fname.substr (i+1);
+  else
+      return string();
+}
+
+
+string replace_file_ext (const string &fname, const string &ext)
+{
+  string result = fname;
+  string::size_type i = fname.rfind ('.', fname.length());
+  if (i != string::npos)
+      result.replace (i+1, ext.length(), ext);
+
+  return result;
+}
+
+
+string increase_file_ext (const string &fname)
+{
+  string ext = get_file_ext (fname);
+  int i = atoi (ext.c_str());
+  i++;
+  ext = std::to_string(i);
+  return replace_file_ext (fname, ext);
+}
+
+
 string get_file_path (const string &path)
 {
   char sep = '/';
