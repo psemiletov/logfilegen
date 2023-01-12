@@ -1,11 +1,13 @@
 # logfilegen
 The server log file generator
 
+[![Release](../../actions/workflows/release.yml/badge.svg)](../../actions/workflows/release.yml)
 [![Tests](../../actions/workflows/tests.yml/badge.svg)](../../actions/workflows/tests.yml)
+
 [![Docker](../../actions/workflows/docker.yml/badge.svg)](../../actions/workflows/docker.yml)
+[![Docker downloads](https://img.shields.io/docker/pulls/psemiletov/logfilegen.svg)](https://hub.docker.com/r/psemiletov/logfilegen)
 
-
-[Dockerhub repo](https://hub.docker.com/repository/docker/psemiletov/logfilegen/general)
+[Dockerhub repo](https://hub.docker.com/r/psemiletov/logfilegen/general)
 
 
 THIS SOFTWARE IS IN ALPHA STATE!!!!
