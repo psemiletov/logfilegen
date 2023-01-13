@@ -170,7 +170,7 @@ int main (int argc, char *argv[])
 //  cout << "fname_template: " << fname_template << endl;
 
   CGenCycleUnrated cycle (&params, fname_template);
-  if (cycle.init())
+  if (cycle.open_logfile())
      cycle.loop();
 
   return 0;

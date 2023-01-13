@@ -69,8 +69,10 @@ public:
   CGenCycleUnrated (CParameters *prms, const string &fname);
   ~CGenCycleUnrated();
 
-  bool init();
+//  bool init();
+  bool open_logfile();
   void loop();
+
 
 
 };

@@ -47,12 +47,15 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname)
   fname_template = fname;
   log_current_size = 0;
 
-  cout << "AAAAAAAAAAA: " << params->max_log_file_size << endl;
+//  cout << "AAAAAAAAAAA: " << params->max_log_file_size << endl;
 
-  size_t i = string_to_file_size (params->max_log_file_size);
-  cout << "IIIIIIIIIII: " << i << endl;
+//  size_t i = string_to_file_size (params->max_log_file_size);
+//  cout << "IIIIIIIIIII: " << i << endl;
 
   logrotator = new CLogRotator (fname_template, params->max_log_files, string_to_file_size (params->max_log_file_size));
+  tpl = new CTpl (fname_template, params->mode);
+
+  std::signal (SIGINT, f_signal_handler);
 
 }
 
@@ -65,12 +68,8 @@ CGenCycleUnrated::~CGenCycleUnrated()
 }
 
 
-bool CGenCycleUnrated::init()
+bool CGenCycleUnrated::open_logfile()
 {
-  std::signal (SIGINT, f_signal_handler);
-
-
-  tpl = new CTpl (fname_template, params->mode);
 
   file_out_error = false;
 
@@ -82,8 +81,6 @@ bool CGenCycleUnrated::init()
           log_current_size = get_file_size (params->logfile);
           if (params->debug)
              cout << "log_current_size, bytes: " << log_current_size << endl;
-
-
           //etc
          }
 
@@ -111,11 +108,9 @@ bool CGenCycleUnrated::init()
      //  how many space we occupy with logstrings?
 
       size_t free_space = get_free_space (get_file_path (params->logfile));
-
       string test_string = tpl->prepare_log_string();
       //test_string_size = test_string.size() + (test_string.size() / 2);
       test_string_size = test_string.size();
-
 
      //  cout << "test_string_size, bytes: " << test_string_size  << endl;
 
@@ -132,7 +127,6 @@ bool CGenCycleUnrated::init()
       if (params->debug)
          cout << "size_needed, bytes: " << size_needed << endl;
 
-
       if (size_needed >= free_space)
         {
          //exit from program
@@ -145,6 +139,14 @@ bool CGenCycleUnrated::init()
 
    return true;
 }
+
+/*
+bool CGenCycleUnrated::open_logfile()
+{
+
+
+}
+*/
 
 
 void CGenCycleUnrated::loop()
@@ -203,16 +205,20 @@ void CGenCycleUnrated::loop()
 
                  if (log_current_size > logrotator->max_log_file_size)
                     {
-                     if (params->debug)
-                        cout << "ROTATE" << endl;
+                   // if (params->debug)
+                     //   cout << "ROTATE" << endl;
 
                      //begin rotate:
                      //close file
+                      file_out.close();
+                      log_current_size = 0;
 
                      //rotate
+                      logrotator->rotate();
 
                      //open new file to write
-
+                      if  (!open_logfile())
+                         break;
 
                     }
 

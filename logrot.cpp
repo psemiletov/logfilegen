@@ -1,5 +1,7 @@
 #include <iostream>
+
 #include "logrot.h"
+#include "utl.h"
 
 CLogRotator::CLogRotator (const string &fname, size_t maxfiles, size_t maxfilesize)
 {
@@ -19,6 +21,7 @@ CLogRotator::CLogRotator (const string &fname, size_t maxfiles, size_t maxfilesi
 
 void CLogRotator::rotate()
 {
+  cout << "CLogRotator::rotate()" << endl;
 
 
 }
