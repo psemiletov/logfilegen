@@ -27,6 +27,10 @@ void CLogRotator::rotate()
     //find existing numbered logfiles...
   string fname = source_filename + ".0";
 
+  //test
+  rename (source_filename.c_str(), fname.c_str());
+
+  /*
   cout << "fname: " << fname << endl;
 
   if (! file_exists (fname)) //no rotated files
@@ -37,6 +41,7 @@ void CLogRotator::rotate()
 
        return;
       }
+*/
 
     /*
    cout << "MORE THAN 0" << endl;
