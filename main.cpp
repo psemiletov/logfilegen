@@ -97,8 +97,8 @@ int main (int argc, char *argv[])
 
 
 
-
-  //params.print();
+ if (params.debug)
+    params.print();
 
 // load params from ENV
 
@@ -115,15 +115,12 @@ int main (int argc, char *argv[])
   params.mode = opts_envars.get_string ("mode", params.mode);
   params.pure = opts_envars.get_bool ("pure", params.pure);
 
-  params.max_log_files = opts_envars.get_int ("max_log_files", params.max_log_files);
-  params.max_log_file_size = opts_envars.get_file_size ("max_log_file_size", params.max_log_file_size);
 
   params.max_log_files = opts_envars.get_int ("max_log_files", params.max_log_files);
   params.max_log_file_size = opts_envars.get_string ("max_log_file_size", params.max_log_file_size);
 
-
-
-  //params.print();
+  if (params.debug)
+      params.print();
 
 
   if (params.logfile == "stdout")

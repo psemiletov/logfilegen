@@ -1,7 +1,6 @@
 #include "cycle.h"
 
 
-
 namespace
 {
   volatile std::sig_atomic_t g_signal;
@@ -27,6 +26,9 @@ void CParameters::print()
   cout << "templatefile: " << templatefile << endl;
   cout << "logfile: " << logfile << endl;
 
+  cout << "max_log_files: " << max_log_files << endl;
+  cout << "max_log_file_size: " << max_log_file_size << endl;
+
 
   cout << "pure: " << pure << endl;
 
@@ -44,6 +46,11 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname)
   params = prms;
   fname_template = fname;
   log_current_size = 0;
+
+  cout << "AAAAAAAAAAA: " << params->max_log_file_size << endl;
+
+  size_t i = string_to_file_size (params->max_log_file_size);
+  cout << "IIIIIIIIIII: " << i << endl;
 
   logrotator = new CLogRotator (fname_template, params->max_log_files, string_to_file_size (params->max_log_file_size));
 
@@ -157,7 +164,6 @@ void CGenCycleUnrated::loop()
           //next_frame += std::chrono::microseconds (1000000 / params->rate);
 
 
-
           //frame_counter++;
 
 //          std::cout << "seconds_counter: " << seconds_counter << endl;
@@ -195,9 +201,23 @@ void CGenCycleUnrated::loop()
                  //log_current_size += log_string.size();
                  log_current_size += test_string_size;
 
+                 if (log_current_size > logrotator->max_log_file_size)
+                    {
+                     if (params->debug)
+                        cout << "ROTATE" << endl;
+
+                     //begin rotate:
+                     //close file
+
+                     //rotate
+
+                     //open new file to write
+
+
+                    }
+
 
                 }
-              //  pw.write (log_string);
 
              }
          // std::cout << std::time(0) << endl;

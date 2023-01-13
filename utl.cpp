@@ -200,6 +200,8 @@ vector <string> split_string_to_vector (const string& s, const string& delimeter
 
 size_t string_to_file_size (const string &val)
 {
+cout << "string_to_file_size: " << val << endl;
+
   size_t result = 0;
   const char *st = val.c_str();
   if (st)

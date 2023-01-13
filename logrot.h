@@ -22,6 +22,7 @@ public:
   vector <string> filename;
 
   CLogRotator (const string &fname, size_t maxfiles, size_t maxfilesize);
+  void rotate();
 
 };
 

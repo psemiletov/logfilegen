@@ -241,7 +241,7 @@ CPairFile::CPairFile (vector <string> envars)
 
   for (size_t i = 0; i < envars.size(); i++)
       {
-       const char* env_p = std::getenv(envars[i].c_str());
+       const char* env_p = std::getenv (envars[i].c_str());
        if (env_p)
           {
            string param = envars[i];
