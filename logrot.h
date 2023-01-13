@@ -19,7 +19,7 @@ public:
   size_t max_log_file_size;
 
   string source_filename;
-  vector <string> filename;
+  vector <string> filenames;
 
   CLogRotator (const string &fname, size_t maxfiles, size_t maxfilesize);
   void rotate();

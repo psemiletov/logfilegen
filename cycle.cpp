@@ -52,7 +52,7 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname)
 //  size_t i = string_to_file_size (params->max_log_file_size);
 //  cout << "IIIIIIIIIII: " << i << endl;
 
-  logrotator = new CLogRotator (fname_template, params->max_log_files, string_to_file_size (params->max_log_file_size));
+  logrotator = new CLogRotator (params->logfile, params->max_log_files, string_to_file_size (params->max_log_file_size));
   tpl = new CTpl (fname_template, params->mode);
 
   std::signal (SIGINT, f_signal_handler);
@@ -79,6 +79,7 @@ bool CGenCycleUnrated::open_logfile()
          {
           //get current file size
           log_current_size = get_file_size (params->logfile);
+
           if (params->debug)
              cout << "log_current_size, bytes: " << log_current_size << endl;
           //etc
@@ -203,7 +204,7 @@ void CGenCycleUnrated::loop()
                  //log_current_size += log_string.size();
                  log_current_size += test_string_size;
 
-                 if (log_current_size > logrotator->max_log_file_size)
+                 if (log_current_size >= logrotator->max_log_file_size)
                     {
                    // if (params->debug)
                      //   cout << "ROTATE" << endl;
@@ -218,7 +219,10 @@ void CGenCycleUnrated::loop()
 
                      //open new file to write
                       if  (!open_logfile())
-                         break;
+                         {
+                          cout << "cannot re-open: " << params->logfile << endl;
+                          break;
+                         }
 
                     }
 

@@ -69,7 +69,7 @@ int main (int argc, char *argv[])
    params.mode = opts_config.get_string ("mode", "nginx");
    params.pure = opts_config.get_bool ("pure", false);
    params.debug = opts_config.get_bool ("debug", false);
-   params.max_log_files = opts_config.get_int ("max_log_files", 3);
+   params.max_log_files = opts_config.get_int ("max_log_files", 4);
    params.max_log_file_size = opts_config.get_string ("max_log_file_size", "64k");
 
 
