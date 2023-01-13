@@ -43,6 +43,7 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname)
 {
   params = prms;
   fname_template = fname;
+  log_current_size = 0;
 
   logrotator = new CLogRotator (fname_template, params->max_log_files, string_to_file_size (params->max_log_file_size));
 
@@ -67,18 +68,32 @@ bool CGenCycleUnrated::init()
   file_out_error = false;
 
   if (! params->bstdout)
-    {
-     file_out.open (params->logfile, std::ios::out | std::ios::app);
+     {
+      if (file_exists (params->logfile))
+         {
+          //get current file size
+          log_current_size = get_file_size (params->logfile);
+          if (params->debug)
+             cout << "log_current_size, bytes: " << log_current_size << endl;
 
-     if (file_out.fail())
-        {
+
+          //etc
+         }
+
+
+      file_out.open (params->logfile, std::ios::app);
+
+  //   file_out.open (params->logfile, std::ios::out | std::ios::ate);
+
+      if (file_out.fail())
+         {
       //  throw std::ios_base::failure(std::strerror(errno));
 
-        file_out_error = true;
-        cout << "cannot create " << params->logfile << "\n";
-       }
-    else
-        file_out.exceptions (file_out.exceptions() | std::ios::failbit | std::ifstream::badbit);
+          file_out_error = true;
+          cout << "cannot create " << params->logfile << "\n";
+         }
+      else
+          file_out.exceptions (file_out.exceptions() | std::ios::failbit | std::ifstream::badbit);
     }
 
 
@@ -88,39 +103,41 @@ bool CGenCycleUnrated::init()
 
      //  how many space we occupy with logstrings?
 
-     size_t free_space = get_free_space (get_file_path (params->logfile));
+      size_t free_space = get_free_space (get_file_path (params->logfile));
 
-     string test_string = tpl->prepare_log_string();
-     size_t test_string_size = test_string.size() + (test_string.size() / 2);
+      string test_string = tpl->prepare_log_string();
+      //test_string_size = test_string.size() + (test_string.size() / 2);
+      test_string_size = test_string.size();
+
 
      //  cout << "test_string_size, bytes: " << test_string_size  << endl;
 
-     std::uintmax_t lines_total = static_cast<std::uintmax_t> (params->duration) * params->rate;
+      std::uintmax_t lines_total = static_cast<std::uintmax_t> (params->duration) * params->rate;
 
-     if (params->debug)
-        cout << "lines_total: " << lines_total  << endl;
-
-
-     std::uintmax_t size_needed = lines_total * test_string_size;
-
-     if (params->debug)
-        cout << "size_needed, bytes: " << size_needed << endl;
+      if (params->debug)
+         cout << "lines_total: " << lines_total  << endl;
 
 
-     if (size_needed >= free_space/*sinfo.available*/ )
-       {
-        //exit from program
+      std::uintmax_t size_needed = lines_total * test_string_size;
 
-        cout << "Output file will be too large with current parameters, exiting!" << endl;
-        return false;
-       }
-    }
+      size_needed += log_current_size;
+
+      if (params->debug)
+         cout << "size_needed, bytes: " << size_needed << endl;
+
+
+      if (size_needed >= free_space)
+        {
+         //exit from program
+
+         cout << "Output file will be too large with current parameters, exiting!" << endl;
+         return false;
+        }
+     }
 
 
    return true;
-
 }
-
 
 
 void CGenCycleUnrated::loop()
@@ -137,18 +154,23 @@ void CGenCycleUnrated::loop()
    while (true)
          {
           next_frame += std::chrono::nanoseconds (1000000000 / params->rate);
+          //next_frame += std::chrono::microseconds (1000000 / params->rate);
 
-          frame_counter++;
+
+
+          //frame_counter++;
 
 //          std::cout << "seconds_counter: " << seconds_counter << endl;
   //        std::cout << "frame_counter: " << frame_counter << endl;
-
 
           if (frame_counter == params->rate)
              {
               frame_counter = 0;
               seconds_counter++;
              }
+
+
+           frame_counter++;
 
           if (seconds_counter == params->duration)
              break;
@@ -159,6 +181,7 @@ void CGenCycleUnrated::loop()
               break;
              }
 
+
           string log_string = tpl->prepare_log_string();
 
           if (! params->pure)
@@ -167,7 +190,13 @@ void CGenCycleUnrated::loop()
                  cout << log_string << "\n";
 
               if (! file_out_error)
+                {
                  file_out << log_string << "\n";
+                 //log_current_size += log_string.size();
+                 log_current_size += test_string_size;
+
+
+                }
               //  pw.write (log_string);
 
              }
@@ -186,7 +215,6 @@ void CGenCycleUnrated::loop()
       cout << "duration.count (microseconds): " << duration.count() << endl;
       cout << "duration_s.count (seconds): " << duration_s.count() << endl;
      }
-
 
 
 }

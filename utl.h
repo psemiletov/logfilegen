@@ -12,12 +12,10 @@ using namespace std;
 
 //File utils
 
+size_t get_file_size (const string &fname);
 string get_file_ext (const string &fname);
 string replace_file_ext (const string &fname, const string &ext);
 string increase_file_ext (const string &fname);
-
-
-
 string get_file_path (const string &path);
 string get_home_dir();
 string current_path();

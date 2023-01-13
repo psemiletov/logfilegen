@@ -57,8 +57,11 @@ public:
 
   CLogRotator *logrotator;
 
+  size_t log_current_size; //in bytes
+
   ofstream file_out;
   bool file_out_error;
+  size_t test_string_size;
 
   string fname_template;
 

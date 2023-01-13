@@ -47,6 +47,12 @@ using namespace std;
 
 
 
+size_t get_file_size (const string &fname)
+{
+  struct stat buf;
+  stat (fname.c_str(), &buf);
+  return buf.st_size;
+}
 
 
 string get_file_ext (const string &fname)
