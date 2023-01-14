@@ -11,10 +11,12 @@
 
 using namespace std;
 
-#include <sys/statvfs.h>
+//#include <sys/statvfs.h>
 #include <sys/stat.h>
 
 #include <algorithm>
+#include <filesystem>
+
 
 #include <cstdint>
 #include <cstdlib>
@@ -122,9 +124,11 @@ string current_path()
   return result;
 }
 
-
+/*
 size_t get_free_space (const string &path)
 {
+
+
   struct statvfs buf;
 
   int r = statvfs (path.c_str(), &buf);
@@ -133,6 +137,20 @@ size_t get_free_space (const string &path)
      return -1;
 
   return buf.f_bavail * buf.f_bsize;
+}
+*/
+
+
+size_t get_free_space (const string &path)
+{
+  if (path.empty())
+     return 0;
+
+//  cout << "get_free_space:" <<  path << endl;
+
+  std::filesystem::path p (path);
+  const std::filesystem::space_info i = std::filesystem::space (p);
+  return i.available;
 }
 
 
@@ -200,7 +218,6 @@ vector <string> split_string_to_vector (const string& s, const string& delimeter
 
 size_t string_to_file_size (const string &val)
 {
-cout << "string_to_file_size: " << val << endl;
 
   size_t result = 0;
   const char *st = val.c_str();

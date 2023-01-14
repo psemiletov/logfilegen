@@ -72,9 +72,9 @@ You can use following configuration variables:
 
 **logfile=string** - file name for the resulting logfile. If no absolute file provided, the program will search in the current directory. You can also use "stdout" (without the quotes) as the file name to output lines to the console.
 
-**max_log_files=integer** - maximum log files used in log rotation.
+**logcount=integer** - maximum log files used in log rotation.
 
-**max_log_file_size=integer** - maximum log file size (in bytes by default). If exeeds, the log rotation will happen. The value can be with the suffix "k" to set the kilobytes and "m" for the megabytes, i.e. ```64k``` or ```16m```. The default value is ```16m```.
+**logsize=integer** - maximum log file size (in bytes by default). If exeeds, the log rotation will happen. The value can be with the suffix "k" to set the kilobytes and "m" for the megabytes, "g" for Gb, i.e. ```64k``` or ```16m```. The default value is ```16m```.
 
 **debug=boolean** - if true, show debug messages. Be verbose, dude! False by default.
 

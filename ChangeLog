@@ -1,2 +1,7 @@
+* free space evaluation fixes
+* C++17 minimum dependency
++ Windows source compatibility
+* max_log_files renamed to logcount
+* max_log_file_size renamed to logsize
 + max_log_files, max_log_file_size config variables (see Readme)
 + $msec_random, $request_time, $connection_time variables with default values 0.1..60

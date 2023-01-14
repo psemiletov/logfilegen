@@ -61,6 +61,7 @@ public:
 
   ofstream file_out;
   bool file_out_error;
+  bool no_free_space;
   size_t test_string_size;
 
   string fname_template;

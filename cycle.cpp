@@ -27,7 +27,7 @@ void CParameters::print()
   cout << "logfile: " << logfile << endl;
 
   cout << "max_log_files: " << max_log_files << endl;
-  cout << "max_log_file_size: " << max_log_file_size << endl;
+  cout << "logsize: " << max_log_file_size << endl;
 
 
   cout << "pure: " << pure << endl;
@@ -46,6 +46,7 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname)
   params = prms;
   fname_template = fname;
   log_current_size = 0;
+  no_free_space = false;
 
   logrotator = new CLogRotator (params->logfile, params->max_log_files, string_to_file_size (params->max_log_file_size));
   tpl = new CTpl (fname_template, params->mode);
@@ -74,10 +75,10 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname)
          //exit from program
 
          cout << "Output files will not fit to the available disk space with current parameters, exiting!" << endl;
-         return false;
+         no_free_space = true;
+         //return;
         }
      }
-
 
 }
 
@@ -94,7 +95,7 @@ bool CGenCycleUnrated::open_logfile()
 
   file_out_error = false;
 
-  if (! params->bstdout)
+  if (! params->bstdout && ! no_free_space)
      {
       if (file_exists (params->logfile))
          {
@@ -114,50 +115,11 @@ bool CGenCycleUnrated::open_logfile()
       //  throw std::ios_base::failure(std::strerror(errno));
           file_out_error = true;
           cout << "cannot create " << params->logfile << "\n";
+          return false;
          }
       else
           file_out.exceptions (file_out.exceptions() | std::ios::failbit | std::ifstream::badbit);
     }
-
-/*
-  if (! params->bstdout)
-     {
-
-     //  how many space we occupy with logstrings?
-
-      size_t free_space = get_free_space (get_file_path (params->logfile));
-      string test_string = tpl->prepare_log_string();
-      //test_string_size = test_string.size() + (test_string.size() / 2);
-      test_string_size = test_string.size();
-
-     //  cout << "test_string_size, bytes: " << test_string_size  << endl;
-
-      std::uintmax_t lines_total = static_cast<std::uintmax_t> (params->duration) * params->rate;
-
-      if (params->debug)
-         cout << "lines_total: " << lines_total  << endl;
-
-
-      std::uintmax_t size_needed = lines_total * test_string_size;
-
-      size_needed += log_current_size;
-
-      if (params->debug)
-         cout << "size_needed, bytes: " << size_needed << endl;
-
-      if (size_needed >= free_space)
-        {
-         //exit from program
-
-         cout << "Output file will be too large with current parameters, exiting!" << endl;
-         return false;
-        }
-     }
-*/
-
-
-
-
 
    return true;
 }
@@ -209,7 +171,7 @@ void CGenCycleUnrated::loop()
               if (params->bstdout)
                  cout << log_string << "\n";
 
-              if (! file_out_error)
+              if (! file_out_error && ! no_free_space)
                 {
                  file_out << log_string << "\n";
                  log_current_size += log_string.size();

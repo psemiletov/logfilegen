@@ -23,7 +23,7 @@
 
 
 #ifndef VERSION_NUMBER
-#define VERSION_NUMBER "0.2.0"
+#define VERSION_NUMBER "0.3.0"
 #endif
 
 
@@ -40,7 +40,7 @@ int main (int argc, char *argv[])
 
   vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE",
                             "LFG_TEMPLATEFILE", "LFG_DEBUG", "LFG_PURE",
-                            "LFG_MAX_LOG_FILE_SIZE", "LFG_MAX_LOG_FILES"};
+                            "LFG_LOGSIZE", "LFG_LOGCOUNT"};
 
   CParameters params;
 
@@ -69,8 +69,8 @@ int main (int argc, char *argv[])
    params.mode = opts_config.get_string ("mode", "nginx");
    params.pure = opts_config.get_bool ("pure", false);
    params.debug = opts_config.get_bool ("debug", false);
-   params.max_log_files = opts_config.get_int ("max_log_files", 5);
-   params.max_log_file_size = opts_config.get_string ("max_log_file_size", "16m");
+   params.max_log_files = opts_config.get_int ("logcount", 5);
+   params.max_log_file_size = opts_config.get_string ("logsize", "16m");
 
 
    if (params.debug)
@@ -91,8 +91,8 @@ int main (int argc, char *argv[])
   params.mode = opts_cmdline.get_string ("mode", params.mode);
   params.pure = opts_cmdline.get_bool ("pure", params.pure);
 
-  params.max_log_files = opts_cmdline.get_int ("max_log_files", params.max_log_files);
-  params.max_log_file_size = opts_cmdline.get_string ("max_log_file_size", params.max_log_file_size);
+  params.max_log_files = opts_cmdline.get_int ("logcount", params.max_log_files);
+  params.max_log_file_size = opts_cmdline.get_string ("logsize", params.max_log_file_size);
 
 
 
@@ -116,8 +116,8 @@ int main (int argc, char *argv[])
   params.pure = opts_envars.get_bool ("pure", params.pure);
 
 
-  params.max_log_files = opts_envars.get_int ("max_log_files", params.max_log_files);
-  params.max_log_file_size = opts_envars.get_string ("max_log_file_size", params.max_log_file_size);
+  params.max_log_files = opts_envars.get_int ("logcount", params.max_log_files);
+  params.max_log_file_size = opts_envars.get_string ("logsize", params.max_log_file_size);
 
   if (params.debug)
       params.print();

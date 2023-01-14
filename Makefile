@@ -8,7 +8,7 @@ CXXFLAGS = -Wall -g -O3
 
 
 all: main.cpp
-	$(CXX) $(CXXFLAGS) -std=c++11 -o logfilegen utl.cpp tpl.cpp pairfile.cpp cycle.cpp logrot.cpp main.cpp
+	$(CXX) $(CXXFLAGS) -std=c++17 -o logfilegen utl.cpp tpl.cpp pairfile.cpp cycle.cpp logrot.cpp main.cpp
 
 clean:
 	$(RM) logfilegen
