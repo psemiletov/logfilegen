@@ -52,6 +52,33 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname)
 
   std::signal (SIGINT, f_signal_handler);
 
+
+  if (! params->bstdout)
+     {
+
+     //  how many space we occupy with all logfiles?
+
+      size_t free_space = get_free_space (get_file_path (params->logfile));
+      size_t size_needed = logrotator->max_log_file_size * logrotator->max_log_files;
+
+      string test_string = tpl->prepare_log_string();
+      test_string_size = test_string.size();
+
+     //  cout << "test_string_size, bytes: " << test_string_size  << endl;
+
+      if (params->debug)
+         cout << "size_needed, bytes: " << size_needed << endl;
+
+      if (size_needed >= free_space)
+        {
+         //exit from program
+
+         cout << "Output files will not fit to the available disk space with current parameters, exiting!" << endl;
+         return false;
+        }
+     }
+
+
 }
 
 
@@ -128,30 +155,6 @@ bool CGenCycleUnrated::open_logfile()
      }
 */
 
-  if (! params->bstdout)
-     {
-
-     //  how many space we occupy with logstrings?
-
-      size_t free_space = get_free_space (get_file_path (params->logfile));
-      size_t size_needed = logrotator->max_log_file_size * logrotator->max_log_files;
-
-      string test_string = tpl->prepare_log_string();
-      test_string_size = test_string.size();
-
-     //  cout << "test_string_size, bytes: " << test_string_size  << endl;
-
-      if (params->debug)
-         cout << "size_needed, bytes: " << size_needed << endl;
-
-      if (size_needed >= free_space)
-        {
-         //exit from program
-
-         cout << "Output files will be too large with current parameters, exiting!" << endl;
-         return false;
-        }
-     }
 
 
 
