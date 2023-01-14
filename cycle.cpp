@@ -47,11 +47,6 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname)
   fname_template = fname;
   log_current_size = 0;
 
-//  cout << "AAAAAAAAAAA: " << params->max_log_file_size << endl;
-
-//  size_t i = string_to_file_size (params->max_log_file_size);
-//  cout << "IIIIIIIIIII: " << i << endl;
-
   logrotator = new CLogRotator (params->logfile, params->max_log_files, string_to_file_size (params->max_log_file_size));
   tpl = new CTpl (fname_template, params->mode);
 
@@ -82,9 +77,7 @@ bool CGenCycleUnrated::open_logfile()
 
           if (params->debug)
              cout << "log_current_size, bytes: " << log_current_size << endl;
-          //etc
          }
-
 
       file_out.open (params->logfile, std::ios::app);
 
@@ -93,14 +86,12 @@ bool CGenCycleUnrated::open_logfile()
       if (file_out.fail())
          {
       //  throw std::ios_base::failure(std::strerror(errno));
-
           file_out_error = true;
           cout << "cannot create " << params->logfile << "\n";
          }
       else
           file_out.exceptions (file_out.exceptions() | std::ios::failbit | std::ifstream::badbit);
     }
-
 
 
   if (! params->bstdout)
@@ -141,14 +132,6 @@ bool CGenCycleUnrated::open_logfile()
    return true;
 }
 
-/*
-bool CGenCycleUnrated::open_logfile()
-{
-
-
-}
-*/
-
 
 void CGenCycleUnrated::loop()
 {
@@ -167,8 +150,6 @@ void CGenCycleUnrated::loop()
           //next_frame += std::chrono::microseconds (1000000 / params->rate);
 
 
-          //frame_counter++;
-
 //          std::cout << "seconds_counter: " << seconds_counter << endl;
   //        std::cout << "frame_counter: " << frame_counter << endl;
 
@@ -179,12 +160,12 @@ void CGenCycleUnrated::loop()
              }
 
 
-           frame_counter++;
+          frame_counter++;
 
           if (seconds_counter == params->duration)
-             break;
+              break;
 
-           if (g_signal == SIGINT)
+          if (g_signal == SIGINT)
              {
           //    cout << "break the main loop" << endl;
               break;
@@ -201,8 +182,8 @@ void CGenCycleUnrated::loop()
               if (! file_out_error)
                 {
                  file_out << log_string << "\n";
-                 //log_current_size += log_string.size();
-                 log_current_size += test_string_size;
+                 log_current_size += log_string.size();
+                 //log_current_size += test_string_size;
 
                  if (log_current_size >= logrotator->max_log_file_size)
                     {
@@ -218,17 +199,13 @@ void CGenCycleUnrated::loop()
                       logrotator->rotate();
 
                      //open new file to write
-                      if  (!open_logfile())
+                      if (! open_logfile())
                          {
                           cout << "cannot re-open: " << params->logfile << endl;
                           break;
                          }
-
                     }
-
-
                 }
-
              }
          // std::cout << std::time(0) << endl;
 
@@ -245,6 +222,5 @@ void CGenCycleUnrated::loop()
       cout << "duration.count (microseconds): " << duration.count() << endl;
       cout << "duration_s.count (seconds): " << duration_s.count() << endl;
      }
-
 
 }
