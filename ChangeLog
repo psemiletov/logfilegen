@@ -1,2 +1,2 @@
-+ max_log_files, max_log_files config variables (see Readme)
++ max_log_files, max_log_file_size config variables (see Readme)
 + $msec_random, $request_time, $connection_time variables with default values 0.1..60
