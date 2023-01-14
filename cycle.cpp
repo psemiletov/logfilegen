@@ -55,7 +55,6 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname)
 }
 
 
-
 CGenCycleUnrated::~CGenCycleUnrated()
 {
   delete tpl;
@@ -222,5 +221,8 @@ void CGenCycleUnrated::loop()
       cout << "duration.count (microseconds): " << duration.count() << endl;
       cout << "duration_s.count (seconds): " << duration_s.count() << endl;
      }
+
+
+  file_out.close();
 
 }
