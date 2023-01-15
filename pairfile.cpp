@@ -84,9 +84,6 @@ bool CPairFile::get_bool (const string &key, bool def_value)
 {
   bool result = def_value;
 
-//  if (values[key].size() == 0)
-  //   return result;
-
   if (values.find (key) == values.end())
      return result;
 
@@ -167,7 +164,6 @@ CPairFile::CPairFile (const string &fname, bool from_data)
     }
  
 
-
   file_name = fname;
   
   ifstream infile (file_name.c_str());
@@ -220,9 +216,13 @@ CPairFile::CPairFile (int argc, char *argv[])
          size_t pos = line.find ("=");
 
          if (pos == string::npos)
+            {
+             line.erase (0,2);
+             values[line] = "true";
              continue;
+            }
 
-         if (pos > line.size())
+         if (pos > line.size()) //????
              continue;
 
          string a = line.substr (0, pos);
@@ -299,5 +299,4 @@ size_t CPairFile::get_file_size (const string &key, const string &def_value)
 
   return string_to_file_size (s);
 }
-
 

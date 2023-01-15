@@ -32,6 +32,13 @@ using namespace std::chrono;
 
 
 
+void show_help()
+{
+  cout << "HELP!" << endl;
+
+
+}
+
 
 int main (int argc, char *argv[])
 {
@@ -95,6 +102,11 @@ int main (int argc, char *argv[])
   params.max_log_file_size = opts_cmdline.get_string ("logsize", params.max_log_file_size);
 
 
+  if (opts_cmdline.get_bool ("help", false))
+    {
+     show_help();
+     return 0;
+    }
 
 
  if (params.debug)
