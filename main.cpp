@@ -47,7 +47,7 @@ int main (int argc, char *argv[])
 
   vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE",
                             "LFG_TEMPLATEFILE", "LFG_DEBUG", "LFG_PURE",
-                            "LFG_LOGSIZE", "LFG_LOGCOUNT"};
+                            "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP"};
 
   CParameters params;
 
@@ -76,6 +76,8 @@ int main (int argc, char *argv[])
    params.mode = opts_config.get_string ("mode", "nginx");
    params.pure = opts_config.get_bool ("pure", false);
    params.debug = opts_config.get_bool ("debug", false);
+   params.use_gzip = opts_config.get_bool ("gzip", false);
+
    params.max_log_files = opts_config.get_int ("logcount", 5);
    params.max_log_file_size = opts_config.get_string ("logsize", "16m");
 
@@ -97,6 +99,9 @@ int main (int argc, char *argv[])
   params.templatefile = opts_cmdline.get_string ("templatefile", params.templatefile);
   params.mode = opts_cmdline.get_string ("mode", params.mode);
   params.pure = opts_cmdline.get_bool ("pure", params.pure);
+  params.use_gzip = opts_cmdline.get_bool ("gzip", params.use_gzip);
+
+  params.debug = opts_cmdline.get_bool ("debug", params.debug);
 
   params.max_log_files = opts_cmdline.get_int ("logcount", params.max_log_files);
   params.max_log_file_size = opts_cmdline.get_string ("logsize", params.max_log_file_size);
@@ -126,6 +131,9 @@ int main (int argc, char *argv[])
   params.templatefile = opts_envars.get_string ("templatefile", params.templatefile);
   params.mode = opts_envars.get_string ("mode", params.mode);
   params.pure = opts_envars.get_bool ("pure", params.pure);
+
+  params.debug = opts_envars.get_bool ("debug", params.debug);
+  params.use_gzip = opts_envars.get_bool ("gzip", params.use_gzip);
 
 
   params.max_log_files = opts_envars.get_int ("logcount", params.max_log_files);

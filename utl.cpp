@@ -246,5 +246,13 @@ size_t string_to_file_size (const string &val)
 }
 
 
+bool is_program_exists (const string &appname)
+{
+  string cm = "which " + appname + " > /dev/null 2>&1";
+  if (system (cm.c_str()))
+     return false;
+  else
+      return true;
+}
 
 #endif

@@ -78,6 +78,9 @@ You can use following configuration variables:
 
 **debug=boolean** - if true, show debug messages. Be verbose, dude! False by default.
 
+**gzip=boolean** - if true, use external gzip to compress "rotated" log files
+
+
 ### logfilegen.conf
 
 The configuration file is called ```logfilegen.conf``` and must be placed to ```/etc/logfilegen/``` or ```$HOME/.config/logfilegen/``` or to current the directory (where logfilegen binary has been runned).
@@ -124,6 +127,9 @@ All variables above can be also set via enviromnent variables using ```export KE
 **LFG_LOGSIZE** - set **logsize**
 
 **LFG_LOGCOUNT** - set **logcount**
+
+**LFG_GZIP** - set **gzip**
+
 
 Example:
 

@@ -7,7 +7,6 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <thread>
 #include <chrono>
 #include <unistd.h>
 #include <csignal>
@@ -34,6 +33,8 @@ public:
 
   int duration; //duration of log generation, in seconds
   int rate;  //during the log generation, how many lines per second will be written
+
+  bool use_gzip;
 
   size_t max_log_files;
   string max_log_file_size;

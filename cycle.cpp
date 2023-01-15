@@ -1,3 +1,6 @@
+#include <thread>
+
+
 #include "cycle.h"
 
 
@@ -49,6 +52,9 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname)
   no_free_space = false;
 
   logrotator = new CLogRotator (params->logfile, params->max_log_files, string_to_file_size (params->max_log_file_size));
+  logrotator->use_gzip = params->use_gzip;
+
+
   tpl = new CTpl (fname_template, params->mode);
 
   std::signal (SIGINT, f_signal_handler);

@@ -15,6 +15,9 @@ class CLogRotator
 {
 public:
 
+  bool has_gzip;
+  bool use_gzip;
+
   size_t max_log_files;
   size_t max_log_file_size;
 
