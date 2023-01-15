@@ -121,6 +121,9 @@ All variables above can be also set via enviromnent variables using ```export KE
 
 **LFG_LOGFILE** - set **logfile**
 
+**LFG_LOGSIZE** - set **logsize**
+
+**LFG_LOGCOUNT** - set **logcount**
 
 Example:
 
@@ -198,11 +201,11 @@ $logstring=$time_iso8601 $testvar $remote_addr - $remote_user [$time_local] "$re
 
 All variables that name starts from ``$time_`` logfilegen handles as date time variables and their values must contain date/time format string. For nginx, use [strftime format](https://en.cppreference.com/w/c/chrono/strftime)
 
-logfilegen can deal with seconds-based fixed point variables with msecs resolution such as ```$request_time```, ```$connection_time``` (and special ```$msec_random```). They can be redefined or used in a following way:
+logfilegen can deal with seconds-based fixed point variables with msecs resolution such as ```$request_time```, ```$connection_time``` (and special ```$seconds_random```). They can be redefined or used in a following way:
 
 ```
 $test=1.0..60.0
-$logstring=world $request_time $status $test hello $msec_random
+$logstring=world $request_time $status $test hello $seconds_random
 ```
 
 Fixed point values must contain the dot symbol (.) as the fixed point. The precision is controlled by the number of digits after the fixed point, i.e. 1.0000 has the precision 4.

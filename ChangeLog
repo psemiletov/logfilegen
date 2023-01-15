@@ -1,3 +1,4 @@
+* $msec_random -> $seconds_random (renamed)
 * free space evaluation fixes
 * C++17 minimum dependency
 + Windows source compatibility

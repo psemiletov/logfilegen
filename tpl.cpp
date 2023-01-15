@@ -292,7 +292,7 @@ CTpl::CTpl (const string &fname, const string &amode)
       vars.insert (std::make_pair ("$document_uri", new CVar ("$document_uri", "/|/favico.ico|/doc")));
       vars.insert (std::make_pair ("$http_referer", new CVar ("$http_referer", "-")));
       vars.insert (std::make_pair ("$http_user_agent", new CVar ("$http_user_agent", "Mozilla|Chrome|Vivaldi|Opera")));
-      vars.insert (std::make_pair ("$msec_random", new CVar ("$msec_random", "0.001..60.000")));
+      vars.insert (std::make_pair ("$seconds_random", new CVar ("$seconds_random", "0.001..60.000")));
       vars.insert (std::make_pair ("$protocol", new CVar ("$protocol", "HTTP/1.1")));
       vars.insert (std::make_pair ("$remote_addr", new CVar ("$remote_addr", "IP_RANDOM")));
       vars.insert (std::make_pair ("$remote_user", new CVar ("$remote_user", "USER_WORD|USER_NUMBER")));
