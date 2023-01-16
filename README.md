@@ -9,6 +9,8 @@ The server log file generator
 
 [Dockerhub repo](https://hub.docker.com/r/psemiletov/logfilegen/general)
 
+[AUR](https://aur.archlinux.org/packages/logfilegen)
+
 
 THIS SOFTWARE IS IN ALPHA STATE!!!!
 
