@@ -141,6 +141,8 @@ void CGenCycleRated::loop()
 {
    auto start = high_resolution_clock::now();
 
+   unsigned long long lines_counter = 0;
+
    int seconds_counter = 0;
    int frame_counter = 0;
 
@@ -157,6 +159,7 @@ void CGenCycleRated::loop()
 //          std::cout << "seconds_counter: " << seconds_counter << endl;
   //        std::cout << "frame_counter: " << frame_counter << endl;
 
+          if (params->lines == 0)
           if (frame_counter == params->rate)
              {
               frame_counter = 0;
@@ -165,9 +168,15 @@ void CGenCycleRated::loop()
 
 
           frame_counter++;
+          lines_counter++;
 
-          if (seconds_counter == params->duration)
+
+          if (params->lines == 0 && seconds_counter == params->duration)
               break;
+
+          if (params->lines != 0 && lines_counter > params->lines)
+             break;
+
 
           if (g_signal == SIGINT)
              {
@@ -241,7 +250,7 @@ void CGenCycleUnrated::loop()
 
   // using clock = std::chrono::steady_clock;
 
-   while (lines_counter < params->lines)
+   while (lines_counter < params->lines_unrated)
          {
           if (g_signal == SIGINT)
               break;

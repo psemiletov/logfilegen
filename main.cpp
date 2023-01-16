@@ -51,7 +51,7 @@ int main (int argc, char *argv[])
 
   vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE",
                             "LFG_TEMPLATEFILE", "LFG_DEBUG", "LFG_PURE",
-                            "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP", "LFG_LINES"};
+                            "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP", "LFG_LINES", "LFG_LINESUNRATED"};
 
   CParameters params;
 
@@ -74,6 +74,8 @@ int main (int argc, char *argv[])
    CPairFile opts_config (fname_config);
 
    params.lines = opts_config.get_uint ("lines", 0);
+   params.lines_unrated = opts_config.get_uint ("linesunrated", 0);
+
    params.duration = opts_config.get_int ("duration", 2);
    params.rate = opts_config.get_int ("rate", 3);
    params.logfile = opts_config.get_string ("logfile", "stdout");
@@ -97,6 +99,8 @@ int main (int argc, char *argv[])
 
 
   CPairFile opts_cmdline (argc, argv);
+
+  params.lines_unrated = opts_cmdline.get_uint ("linesunrated", params.lines_unrated);
 
   params.lines = opts_cmdline.get_uint ("lines", params.lines);
   params.duration = opts_cmdline.get_int ("duration", params.duration);
@@ -136,6 +140,8 @@ int main (int argc, char *argv[])
 
 
   CPairFile opts_envars (envars);
+
+  params.lines_unrated = opts_envars.get_uint ("linesunrated", params.lines_unrated);
 
   params.lines = opts_envars.get_uint ("lines", params.lines);
   params.duration = opts_envars.get_int ("duration", params.duration);
@@ -208,7 +214,7 @@ int main (int argc, char *argv[])
   */
 
 
- if (params.lines == 0)
+ if (params.lines_unrated == 0)
     {
      CGenCycleRated cycle (&params, fname_template);
      if (cycle.open_logfile())

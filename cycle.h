@@ -34,6 +34,7 @@ public:
   int duration; //duration of log generation, in seconds
   int rate;  //during the log generation, how many lines per second will be written
   unsigned long long lines;
+  unsigned long long lines_unrated;
 
   bool use_gzip;
 

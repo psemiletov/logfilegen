@@ -1,3 +1,4 @@
++ linesunrated config variable (max value = 18446744073709551615) //ULL MAX
 + lines config variable (max value = 18446744073709551615) //ULL MAX
 + gzip config variable (true, false, false by default)
 * $msec_random -> $seconds_random (renamed)
