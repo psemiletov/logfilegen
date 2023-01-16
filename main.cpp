@@ -23,7 +23,7 @@
 
 
 #ifndef VERSION_NUMBER
-#define VERSION_NUMBER "0.3.0"
+#define VERSION_NUMBER "0.4.0"
 #endif
 
 
