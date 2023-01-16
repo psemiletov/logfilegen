@@ -31,12 +31,16 @@ using namespace std;
 using namespace std::chrono;
 
 
+void show_version()
+{
+  cout << "logfilegen v." << VERSION_NUMBER << endl;
+}
+
+
 
 void show_help()
 {
   cout << "HELP!" << endl;
-
-
 }
 
 
@@ -110,6 +114,12 @@ int main (int argc, char *argv[])
   if (opts_cmdline.get_bool ("help", false))
     {
      show_help();
+     return 0;
+    }
+
+  if (opts_cmdline.get_bool ("version", false))
+    {
+     show_version();
      return 0;
     }
 
