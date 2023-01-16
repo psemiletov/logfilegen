@@ -44,7 +44,7 @@ void CParameters::print()
 
 
 
-CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname)
+CGenCycle::CGenCycle (CParameters *prms, const string &fname)
 {
   params = prms;
   fname_template = fname;
@@ -89,14 +89,19 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname)
 }
 
 
-CGenCycleUnrated::~CGenCycleUnrated()
+CGenCycle::~CGenCycle()
 {
   delete tpl;
   delete logrotator;
 }
 
 
-bool CGenCycleUnrated::open_logfile()
+CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname): CGenCycle (prms, fname)
+{
+}
+
+
+bool CGenCycle::open_logfile()
 {
 
   file_out_error = false;

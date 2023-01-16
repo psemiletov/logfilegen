@@ -47,35 +47,39 @@ public:
 };
 
 
-
-
-class CGenCycleUnrated
+class CGenCycle
 {
 public:
 
   CParameters *params;
   CTpl *tpl;
-
   CLogRotator *logrotator;
 
   size_t log_current_size; //in bytes
-
   ofstream file_out;
   bool file_out_error;
   bool no_free_space;
   size_t test_string_size;
-
   string fname_template;
 
+  CGenCycle (CParameters *prms, const string &fname);
+  bool open_logfile();
+
+  ~CGenCycle();
+  virtual void loop() = 0;
+
+
+};
+
+
+
+class CGenCycleUnrated: public CGenCycle
+{
+public:
 
   CGenCycleUnrated (CParameters *prms, const string &fname);
-  ~CGenCycleUnrated();
 
-//  bool init();
-  bool open_logfile();
   void loop();
-
-
 
 };
 
