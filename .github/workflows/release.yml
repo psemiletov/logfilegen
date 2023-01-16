@@ -33,7 +33,7 @@ jobs:
           sudo apt install git make g++
 
       - name: Build
-        run: make
+        run: make --makefile=Makefile.static
 
       - name: SHA summ
         run: sha256sum logfilegen > logfilegen.sha256.txt
