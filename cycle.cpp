@@ -231,9 +231,6 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname): CGe
 }
 
 
-
-
-
 void CGenCycleUnrated::loop()
 {
    auto start = high_resolution_clock::now();
