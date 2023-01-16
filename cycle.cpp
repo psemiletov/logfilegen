@@ -251,7 +251,7 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname): CGe
 
 void CGenCycleUnrated::loop()
 {
-   cout << "void CGenCycleUnrated::loop()" << endl;
+   //cout << "void CGenCycleUnrated::loop()" << endl;
 
 
    auto start = high_resolution_clock::now();
