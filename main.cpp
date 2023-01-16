@@ -51,7 +51,7 @@ int main (int argc, char *argv[])
 
   vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE",
                             "LFG_TEMPLATEFILE", "LFG_DEBUG", "LFG_PURE",
-                            "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP"};
+                            "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP", "LFG_LINES"};
 
   CParameters params;
 
@@ -73,6 +73,7 @@ int main (int argc, char *argv[])
    //load params from config:
    CPairFile opts_config (fname_config);
 
+   params.lines = opts_config.get_uint ("lines", 0);
    params.duration = opts_config.get_int ("duration", 2);
    params.rate = opts_config.get_int ("rate", 3);
    params.logfile = opts_config.get_string ("logfile", "stdout");
@@ -97,6 +98,7 @@ int main (int argc, char *argv[])
 
   CPairFile opts_cmdline (argc, argv);
 
+  params.lines = opts_cmdline.get_uint ("lines", params.lines);
   params.duration = opts_cmdline.get_int ("duration", params.duration);
   params.rate = opts_cmdline.get_int ("rate", params.rate);
   params.logfile = opts_cmdline.get_string ("logfile", params.logfile);
@@ -135,6 +137,7 @@ int main (int argc, char *argv[])
 
   CPairFile opts_envars (envars);
 
+  params.lines = opts_envars.get_uint ("lines", params.lines);
   params.duration = opts_envars.get_int ("duration", params.duration);
   params.rate = opts_envars.get_int ("rate", params.rate);
   params.logfile = opts_envars.get_string ("logfile", params.logfile);
@@ -198,10 +201,26 @@ int main (int argc, char *argv[])
 
 
 //  cout << "fname_template: " << fname_template << endl;
+/*
+     CGenCycleRated cycle (&params, fname_template);
+     if (cycle.open_logfile())
+        cycle.loop();
+  */
 
-  CGenCycleUnrated cycle (&params, fname_template);
-  if (cycle.open_logfile())
-     cycle.loop();
+
+ if (params.lines == 0)
+    {
+     CGenCycleRated cycle (&params, fname_template);
+     if (cycle.open_logfile())
+        cycle.loop();
+    }
+ else
+    {
+     CGenCycleUnrated cycle (&params, fname_template);
+     if (cycle.open_logfile())
+        cycle.loop();
+    }
+
 
   return 0;
 }

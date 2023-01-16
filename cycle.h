@@ -33,6 +33,7 @@ public:
 
   int duration; //duration of log generation, in seconds
   int rate;  //during the log generation, how many lines per second will be written
+  unsigned long long lines;
 
   bool use_gzip;
 
@@ -68,9 +69,17 @@ public:
   ~CGenCycle();
   virtual void loop() = 0;
 
-
 };
 
+
+class CGenCycleRated: public CGenCycle
+{
+public:
+
+  CGenCycleRated (CParameters *prms, const string &fname);
+  void loop();
+
+};
 
 
 class CGenCycleUnrated: public CGenCycle
@@ -78,10 +87,10 @@ class CGenCycleUnrated: public CGenCycle
 public:
 
   CGenCycleUnrated (CParameters *prms, const string &fname);
-
   void loop();
 
 };
+
 
 
 #endif

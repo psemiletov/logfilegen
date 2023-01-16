@@ -70,6 +70,8 @@ You can use following configuration variables:
 
 **rate=integer** - how many lines we generate at the each cycle iteration.
 
+**lines=integer** - override rate/duration with the ```lines``` count to generate without time based cycle. Maximum lines count is 18446744073709551615.
+
 **templatefile=string** - file name of the template that is used for logfile lines generation. (See Templates section)
 
 **logfile=string** - file name for the resulting logfile. If no absolute file provided, the program will search in the current directory. You can also use "stdout" (without the quotes) as the file name to output lines to the console.

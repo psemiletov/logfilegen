@@ -23,6 +23,7 @@ void CParameters::print()
 
   cout << "------------ Print parameters -------------" << endl;
 
+  cout << "lines: " << lines << endl;
 
   cout << "duration: " << duration << endl;
   cout << "rate: " << rate << endl;
@@ -96,7 +97,7 @@ CGenCycle::~CGenCycle()
 }
 
 
-CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname): CGenCycle (prms, fname)
+CGenCycleRated::CGenCycleRated (CParameters *prms, const string &fname): CGenCycle (prms, fname)
 {
 }
 
@@ -136,7 +137,7 @@ bool CGenCycle::open_logfile()
 }
 
 
-void CGenCycleUnrated::loop()
+void CGenCycleRated::loop()
 {
    auto start = high_resolution_clock::now();
 
@@ -190,23 +191,16 @@ void CGenCycleUnrated::loop()
 
                  if (log_current_size >= logrotator->max_log_file_size)
                     {
-                   // if (params->debug)
-                     //   cout << "ROTATE" << endl;
+                     file_out.close();
+                     log_current_size = 0;
 
-                     //begin rotate:
-                     //close file
-                      file_out.close();
-                      log_current_size = 0;
+                     logrotator->rotate();
 
-                     //rotate
-                      logrotator->rotate();
-
-                     //open new file to write
-                      if (! open_logfile())
-                         {
-                          cout << "cannot re-open: " << params->logfile << endl;
-                          break;
-                         }
+                     if (! open_logfile())
+                        {
+                         cout << "cannot re-open: " << params->logfile << endl;
+                         break;
+                        }
                     }
                 }
              }
@@ -228,5 +222,79 @@ void CGenCycleUnrated::loop()
 
 
   file_out.close();
+}
 
+
+CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname): CGenCycle (prms, fname)
+{
+
+}
+
+
+
+
+
+void CGenCycleUnrated::loop()
+{
+   auto start = high_resolution_clock::now();
+
+//   int seconds_counter = 0;
+
+   unsigned long long lines_counter = 0;
+
+  // using clock = std::chrono::steady_clock;
+
+   while (lines_counter < params->lines)
+         {
+          if (g_signal == SIGINT)
+              break;
+
+//          std::cout << "seconds_counter: " << seconds_counter << endl;
+  //        std::cout << "frame_counter: " << frame_counter << endl;
+
+          lines_counter++;
+
+          string log_string = tpl->prepare_log_string();
+
+          if (! params->pure)
+             {
+              if (params->bstdout)
+                 cout << log_string << "\n";
+
+              if (! file_out_error && ! no_free_space)
+                {
+                 file_out << log_string << "\n";
+                 log_current_size += log_string.size();
+
+                 if (log_current_size >= logrotator->max_log_file_size)
+                    {
+                     file_out.close();
+                     log_current_size = 0;
+
+                     logrotator->rotate();
+
+                     if (! open_logfile())
+                        {
+                         cout << "cannot re-open: " << params->logfile << endl;
+                         break;
+                        }
+                    }
+                }
+             }
+         // std::cout << std::time(0) << endl;
+         }
+
+
+  auto stop = high_resolution_clock::now();
+  auto duration = duration_cast<microseconds>(stop - start);
+  auto duration_s = duration_cast<seconds>(stop - start);
+
+  if (params->debug)
+     {
+      cout << "duration.count (microseconds): " << duration.count() << endl;
+      cout << "duration_s.count (seconds): " << duration_s.count() << endl;
+     }
+
+
+  file_out.close();
 }
