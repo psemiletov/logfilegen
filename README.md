@@ -66,7 +66,7 @@ You can use following configuration variables:
 
 **pure=boolean** - "true" or "false" (default). It "true" we just generate log strings in the memory without the actual file output.
 
-**duration=integer** - how many seconds runs the lines gerenation cycle.
+**duration=integer** - how many seconds runs the lines gerenation cycle. If 0 (zero), cycle will run until break by Ctrl-C
 
 **rate=integer** - how many lines we generate at the each cycle iteration.
 

@@ -51,6 +51,13 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
   fname_template = fname;
   log_current_size = 0;
   no_free_space = false;
+  no_duration = false;
+
+  //cout << "params->duration: " << params->duration << endl;
+
+  if (params->duration == 0)
+     no_duration = true;
+
 
   logrotator = new CLogRotator (params->logfile, params->max_log_files, string_to_file_size (params->max_log_file_size));
   logrotator->use_gzip = params->use_gzip;
@@ -170,7 +177,7 @@ void CGenCycleRated::loop()
           frame_counter++;
           lines_counter++;
 
-
+          if (! no_duration)
           if (params->lines == 0 && seconds_counter == params->duration)
               break;
 
