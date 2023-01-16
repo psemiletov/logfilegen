@@ -213,7 +213,7 @@ int main (int argc, char *argv[])
         cycle.loop();
   */
 
-
+/*
  if (params.lines_unrated == 0)
     {
      CGenCycleRated cycle (&params, fname_template);
@@ -223,6 +223,23 @@ int main (int argc, char *argv[])
  else
     {
      CGenCycleUnrated cycle (&params, fname_template);
+     if (cycle.open_logfile())
+        cycle.loop();
+    }
+*/
+
+
+
+
+ if (params.rate == 0)
+    {
+     CGenCycleUnrated cycle (&params, fname_template);
+     if (cycle.open_logfile())
+        cycle.loop();
+    }
+ else
+    {
+     CGenCycleRated cycle (&params, fname_template);
      if (cycle.open_logfile())
         cycle.loop();
     }

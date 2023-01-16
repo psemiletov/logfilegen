@@ -146,6 +146,8 @@ bool CGenCycle::open_logfile()
 
 void CGenCycleRated::loop()
 {
+  cout << "void CGenCycleRated::loop()" << endl;
+
    auto start = high_resolution_clock::now();
 
    unsigned long long lines_counter = 0;
@@ -166,7 +168,7 @@ void CGenCycleRated::loop()
 //          std::cout << "seconds_counter: " << seconds_counter << endl;
   //        std::cout << "frame_counter: " << frame_counter << endl;
 
-          if (params->lines == 0)
+//          if (params->lines == 0)
           if (frame_counter == params->rate)
              {
               frame_counter = 0;
@@ -177,7 +179,7 @@ void CGenCycleRated::loop()
           frame_counter++;
           lines_counter++;
 
-          if (! no_duration)
+          if (params->duration != 0) //not endless
           if (params->lines == 0 && seconds_counter == params->duration)
               break;
 
@@ -249,6 +251,9 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname): CGe
 
 void CGenCycleUnrated::loop()
 {
+   cout << "void CGenCycleUnrated::loop()" << endl;
+
+
    auto start = high_resolution_clock::now();
 
 //   int seconds_counter = 0;
@@ -257,7 +262,7 @@ void CGenCycleUnrated::loop()
 
   // using clock = std::chrono::steady_clock;
 
-   while (lines_counter < params->lines_unrated)
+   while (lines_counter < params->lines)
          {
           if (g_signal == SIGINT)
               break;
