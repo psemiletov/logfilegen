@@ -220,6 +220,8 @@ size_t string_to_file_size (const string &val)
 {
 
   size_t result = 0;
+
+
   const char *st = val.c_str();
   if (st)
      result = atoi (st);
@@ -244,6 +246,42 @@ size_t string_to_file_size (const string &val)
 
   return result;
 }
+
+unsigned long long string_to_file_size_ull (const string &val)
+{
+
+  char* end;
+     // finding the unsigned long
+    // integer with base 36
+
+  unsigned long long result = 0;
+  const char *st = val.c_str();
+  if (st)
+     result = strtoull (st, &end, 10);
+
+
+  string s = val;
+
+  std::for_each (
+                 s.begin(),
+                 s.end(),
+                 [](char & c) {
+                               c = ::tolower(c);
+                              });
+
+  if (s.find ("k") != string::npos)
+     result = result * 1024;
+
+  if (s.find ("m") != string::npos)
+     result = result * 1048576;
+
+  if (s.find ("g") != string::npos)
+     result = result * 1073741824;
+
+  return result;
+}
+
+
 
 
 bool is_program_exists (const string &appname)

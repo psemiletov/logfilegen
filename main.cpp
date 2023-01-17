@@ -51,7 +51,7 @@ int main (int argc, char *argv[])
 
   vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE",
                             "LFG_TEMPLATEFILE", "LFG_DEBUG", "LFG_PURE",
-                            "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP", "LFG_LINES"};
+                            "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP", "LFG_LINES", "LFG_SIZE"};
 
   CParameters params;
 
@@ -75,6 +75,8 @@ int main (int argc, char *argv[])
 
    params.lines = opts_config.get_uint ("lines", 0);
    //params.lines_unrated = opts_config.get_uint ("linesunrated", 0);
+   params.s_size = opts_config.get_string ("size", "0");
+
 
    params.duration = opts_config.get_int ("duration", 2);
    params.rate = opts_config.get_int ("rate", 3);
@@ -101,6 +103,7 @@ int main (int argc, char *argv[])
   CPairFile opts_cmdline (argc, argv);
 
 //  params.lines_unrated = opts_cmdline.get_uint ("linesunrated", params.lines_unrated);
+  params.s_size = opts_cmdline.get_string ("size", params.s_size);
 
   params.lines = opts_cmdline.get_uint ("lines", params.lines);
   params.duration = opts_cmdline.get_int ("duration", params.duration);
@@ -142,6 +145,7 @@ int main (int argc, char *argv[])
   CPairFile opts_envars (envars);
 
   //params.lines_unrated = opts_envars.get_uint ("linesunrated", params.lines_unrated);
+  params.s_size = opts_envars.get_string ("size", params.s_size);
 
   params.lines = opts_envars.get_uint ("lines", params.lines);
   params.duration = opts_envars.get_int ("duration", params.duration);
@@ -157,6 +161,10 @@ int main (int argc, char *argv[])
 
   params.max_log_files = opts_envars.get_int ("logcount", params.max_log_files);
   params.max_log_file_size = opts_envars.get_string ("logsize", params.max_log_file_size);
+
+
+  params.size = string_to_file_size_ull (params.s_size);
+
 
   if (params.debug)
       params.print();

@@ -32,6 +32,7 @@ void CParameters::print()
 
   cout << "max_log_files: " << max_log_files << endl;
   cout << "logsize: " << max_log_file_size << endl;
+  cout << "size: " << size << endl;
 
 
   cout << "pure: " << pure << endl;
@@ -52,6 +53,7 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
   log_current_size = 0;
   no_free_space = false;
   no_duration = false;
+  file_size_total = 0;
 
   //cout << "params->duration: " << params->duration << endl;
 
@@ -106,6 +108,7 @@ CGenCycle::~CGenCycle()
 
 CGenCycleRated::CGenCycleRated (CParameters *prms, const string &fname): CGenCycle (prms, fname)
 {
+
 }
 
 
@@ -120,6 +123,9 @@ bool CGenCycle::open_logfile()
          {
           //get current file size
           log_current_size = get_file_size (params->logfile);
+
+          //file_size_total += log_current_size;
+
 
           if (params->debug)
              cout << "log_current_size, bytes: " << log_current_size << endl;
@@ -146,7 +152,13 @@ bool CGenCycle::open_logfile()
 
 void CGenCycleRated::loop()
 {
-  cout << "void CGenCycleRated::loop()" << endl;
+//  cout << "void CGenCycleRated::loop()" << endl;
+
+   //if (params->lines == 0 && params->size == 0 && params->duration == 0)
+     // {
+     //  cout << "all limiters are zero, exiting"
+      //}
+
 
    auto start = high_resolution_clock::now();
 
@@ -184,7 +196,10 @@ void CGenCycleRated::loop()
               break;
 
           if (params->lines != 0 && lines_counter > params->lines)
-             break;
+              break;
+
+          if (params->size != 0 && file_size_total > params->size)
+              break;
 
 
           if (g_signal == SIGINT)
@@ -193,8 +208,10 @@ void CGenCycleRated::loop()
               break;
              }
 
-
           string log_string = tpl->prepare_log_string();
+
+          //cout << "file_size_total: " << file_size_total << endl;
+
 
           if (! params->pure)
              {
@@ -202,26 +219,27 @@ void CGenCycleRated::loop()
                  cout << log_string << "\n";
 
               if (! file_out_error && ! no_free_space)
-                {
-                 file_out << log_string << "\n";
-                 log_current_size += log_string.size();
-                 //log_current_size += test_string_size;
+                 {
+                  file_out << log_string << "\n";
+                  log_current_size += log_string.size();
+                  file_size_total += log_string.size();
 
-                 if (log_current_size >= logrotator->max_log_file_size)
-                    {
-                     file_out.close();
-                     log_current_size = 0;
 
-                     logrotator->rotate();
+                  if (log_current_size >= logrotator->max_log_file_size && logrotator->max_log_files > 0)
+                     {
+                      file_out.close();
+                      log_current_size = 0;
 
-                     if (! open_logfile())
-                        {
-                         cout << "cannot re-open: " << params->logfile << endl;
-                         break;
-                        }
-                    }
-                }
-             }
+                      logrotator->rotate();
+
+                      if (! open_logfile())
+                         {
+                          cout << "cannot re-open: " << params->logfile << endl;
+                          break;
+                         }
+                     }
+                 }
+              }
          // std::cout << std::time(0) << endl;
 
           std::this_thread::sleep_until (next_frame);

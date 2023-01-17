@@ -34,9 +34,11 @@ public:
   int duration; //duration of log generation, in seconds
   int rate;  //during the log generation, how many lines per second will be written
   unsigned long long lines;
-  //unsigned long long lines_unrated;
 
   bool use_gzip;
+
+  unsigned long long size;
+  string s_size;
 
   size_t max_log_files;
   string max_log_file_size;
@@ -59,6 +61,8 @@ public:
 
   size_t log_current_size; //in bytes
   ofstream file_out;
+  unsigned long long file_size_total;
+
   bool file_out_error;
   bool no_free_space;
   bool no_duration;
