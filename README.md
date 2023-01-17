@@ -68,11 +68,11 @@ You can use following configuration variables:
 
 **duration=integer** - how many seconds runs the lines gerenation cycle. If 0 (zero), cycle will run until break by Ctrl-C
 
-**rate=integer** - how many lines we generate at the each cycle iteration.
+**rate=integer** - how many lines we generate at the each cycle iteration. If ```rate``` = 0, logfilegen performs non-timed loop with the full processor power.
 
-If ```rate``` = 0, logfilegen performs non-timed loop with the full processor power. In this "unrated" mode, ```duration``` also does not matter, and just ```lines``` count will be produced.
+**lines=integer** - overrides ```duration``` with the ```lines``` count to generate exact number of the lines. Maximum lines count is 18446744073709551615.
 
-**lines=integer** - override ```duration``` with the ```lines``` count to generate exact number of the lines. Maximum lines count is 18446744073709551615.
+**size=integer** - overrided ```duration``` and ```lines``` to produce the log file with ```size``` content.
 
 **templatefile=string** - file name of the template that is used for logfile lines generation. (See Templates section)
 
