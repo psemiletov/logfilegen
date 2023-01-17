@@ -181,7 +181,7 @@ The special variable is ```$logstring```, it hold the free from text template of
 
 The following variables have built-in (but redefinable) values: ```$body_bytes_sent```, ```$logstring```, ```$remote_addr```, ```$remote_user```, ```$request```, ```$status```, ```$time_local```, ```$http_referer```, ```$http_user_agent```. The ```$remote_user``` variable can hold any string or macros ```USER_WORD``` or ```USER_NUMBER``` (the last two will be substituted with random-generated string or number).
 
-In macros, we can use ranges (i.e. ```1..1111111```) and sequences (```1|3|6|888|HELLO|WORLD```). The ranged value means that macro will be replaced with the randomly taken value within the range. The sequences is the set of values, where one of them will be choosen randomly.
+In macros, we can use **ranges** (i.e. ```1..1111111```) and **sequences** (```1|3|6|888|HELLO|WORLD```). The ranged value means that macro will be replaced with the randomly taken value within the range. The sequences is the set of values, where one of them will be choosen randomly.
 
 Each variable can be uses **one time** per line, i.e. there is no ```$status foobar $status``` support.
 
@@ -221,3 +221,34 @@ $logstring=world $request_time $status $test hello $seconds_random
 ```
 
 Fixed point values must contain the dot symbol (.) as the fixed point. The precision is controlled by the number of digits after the fixed point, i.e. 1.0000 has the precision 4.
+
+
+### Template special variables
+
+```$file_source:full path to file``` - acts as the text file loader for **sequence** variable values. Consider we have the template like this:
+
+```
+$groups=Beatles|Nirvana|Radiohead
+$logstring=hello $groups world
+```
+
+Here we defined the sequence of values, separated by "|". But what if we want to have large list of such values, dozens or hundreds? In this case, use ```$file_source``` variable (with the **full path to the file**). Edit our example to something like that:
+
+```
+$groups=$file_source:/home/test/testsource.txt
+$logstring=hello $groups world
+```
+
+And create the ```/home/test/testsource.txt``` just with the paint text content, line by line, for example:
+
+```
+Beatles
+Radiohead
+Nirvana
+Alfred Schnittke
+Pixies
+Frank Black
+Skinny Puppy
+```
+
+When processed, the ```$file_source:/home/test/testsource.txt``` directive will load ```/home/test/testsource.txt```, transform to "|"-separated values and choose one of them randomly.

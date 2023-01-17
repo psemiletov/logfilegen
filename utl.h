@@ -30,6 +30,8 @@ string str_replace (string &source, const string &text_to_find, const string &re
 vector <string> split_string_to_vector (const string& s, const string& delimeter, const bool keep_empty = true);
 size_t string_to_file_size (const string &val);
 unsigned long long string_to_file_size_ull (const string &val);
+string string_file_load (const string &fname);
+string string_replace_all (const string &s, const string &from, const string &to);
 
 
 

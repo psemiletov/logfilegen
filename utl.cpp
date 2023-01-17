@@ -300,4 +300,30 @@ bool is_program_exists (const string &appname)
       return true;
 }
 
+
+string string_file_load (const string &fname)
+{
+ std::ifstream t (fname.c_str());
+ std::string s ((std::istreambuf_iterator<char>(t)),
+                 std::istreambuf_iterator<char>());
+
+ return s;
+}
+
+
+string string_replace_all (const string &s, const string &from, const string &to)
+{
+  string result = s;
+  size_t i = 0;
+  do
+    {
+     i = result.find (from);
+     if (i != string::npos)
+         result = result.replace (i, from.length(), to);
+    }
+  while (i != string::npos);
+
+  return result;
+}
+
 #endif

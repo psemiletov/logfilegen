@@ -1,3 +1,4 @@
++ $file_source template variable
 + size config variable
 + lines config variable (max value = 18446744073709551615) //ULL MAX
 + gzip config variable (true, false, false by default)
