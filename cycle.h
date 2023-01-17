@@ -61,7 +61,7 @@ public:
 
   size_t log_current_size; //in bytes
   ofstream file_out;
-  unsigned long long file_size_total;
+  /*unsigned long long*/ size_t file_size_total;
 
   bool file_out_error;
   bool no_free_space;
@@ -96,7 +96,6 @@ public:
   void loop();
 
 };
-
 
 
 #endif

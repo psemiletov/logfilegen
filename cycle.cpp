@@ -162,7 +162,7 @@ void CGenCycleRated::loop()
 
    auto start = high_resolution_clock::now();
 
-   unsigned long long lines_counter = 0;
+   /*unsigned long long*/ size_t lines_counter = 0;
 
    int seconds_counter = 0;
    int frame_counter = 0;
@@ -275,7 +275,7 @@ void CGenCycleUnrated::loop()
 
 //   int seconds_counter = 0;
 
-   unsigned long long lines_counter = 0;
+   /*unsigned long long*/size_t lines_counter = 0;
 
   // using clock = std::chrono::steady_clock;
 

@@ -163,7 +163,7 @@ int main (int argc, char *argv[])
   params.max_log_file_size = opts_envars.get_string ("logsize", params.max_log_file_size);
 
 
-  params.size = string_to_file_size_ull (params.s_size);
+  params.size = string_to_file_size (params.s_size);
 
 
   if (params.debug)

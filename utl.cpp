@@ -220,11 +220,18 @@ size_t string_to_file_size (const string &val)
 {
 
   size_t result = 0;
-
+/*
 
   const char *st = val.c_str();
   if (st)
      result = atoi (st);
+*/
+  char* end;
+
+   const char *st = val.c_str();
+   if (st)
+     result = strtoull (st, &end, 10);
+
 
   string s = val;
 
