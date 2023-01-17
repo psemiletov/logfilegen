@@ -271,7 +271,6 @@ void CGenCycleUnrated::loop()
 {
    //cout << "void CGenCycleUnrated::loop()" << endl;
 
-
    auto start = high_resolution_clock::now();
 
 //   int seconds_counter = 0;
@@ -280,15 +279,32 @@ void CGenCycleUnrated::loop()
 
   // using clock = std::chrono::steady_clock;
 
-   while (lines_counter < params->lines)
+   while (true)
          {
           if (g_signal == SIGINT)
               break;
 
+          lines_counter++;
+
+
+          if (params->lines != 0 && lines_counter > params->lines)
+             break;
+
+          if (params->size != 0 && file_size_total > params->size)
+              break;
+
+          if (params->duration != 0)
+             {
+              auto stop = high_resolution_clock::now();
+             // auto duration = duration_cast<microseconds>(stop - start);
+              auto duration_s = duration_cast<seconds>(stop - start);
+              if (duration_s >= chrono::seconds(params->duration))
+                 break;
+             }
+
 //          std::cout << "seconds_counter: " << seconds_counter << endl;
   //        std::cout << "frame_counter: " << frame_counter << endl;
 
-          lines_counter++;
 
           string log_string = tpl->prepare_log_string();
 
@@ -301,6 +317,7 @@ void CGenCycleUnrated::loop()
                 {
                  file_out << log_string << "\n";
                  log_current_size += log_string.size();
+                 file_size_total += log_string.size();
 
                  if (log_current_size >= logrotator->max_log_file_size)
                     {
