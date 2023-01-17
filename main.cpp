@@ -77,9 +77,8 @@ int main (int argc, char *argv[])
    //params.lines_unrated = opts_config.get_uint ("linesunrated", 0);
    params.s_size = opts_config.get_string ("size", "0");
 
-
-   params.duration = opts_config.get_int ("duration", 2);
-   params.rate = opts_config.get_int ("rate", 3);
+   params.duration = opts_config.get_int ("duration", 0);
+   params.rate = opts_config.get_int ("rate", 0);
    params.logfile = opts_config.get_string ("logfile", "stdout");
    params.templatefile = opts_config.get_string ("templatefile", "NOTEMPLATEFILE");
    params.mode = opts_config.get_string ("mode", "nginx");
@@ -168,6 +167,12 @@ int main (int argc, char *argv[])
 
   if (params.debug)
       params.print();
+
+  if (params.rate == 0 && params.size == 0 && params.duration == 0 && params.lines == 0)
+     {
+      cout << "Wrong parameters, please read the manual" << endl;
+      return 0;
+     }
 
 
   if (params.logfile == "stdout")
