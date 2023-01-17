@@ -239,7 +239,7 @@ $groups=$file_source:/home/test/testsource.txt
 $logstring=hello $groups world
 ```
 
-And create the ```/home/test/testsource.txt``` just with the paint text content, line by line, for example:
+And create the ```/home/test/testsource.txt``` just with the plan text content, line by line (with new line at the end), for example:
 
 ```
 Beatles
