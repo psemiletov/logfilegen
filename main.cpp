@@ -77,6 +77,9 @@ int main (int argc, char *argv[])
    //params.lines_unrated = opts_config.get_uint ("linesunrated", 0);
    params.s_size = opts_config.get_string ("size", "0");
 
+   params.timestamp = opts_config.get_string ("timestamp", "%d/%b/%Y:%H:%M:%S %z");
+
+
    params.duration = opts_config.get_int ("duration", 0);
    params.rate = opts_config.get_int ("rate", 0);
    params.logfile = opts_config.get_string ("logfile", "stdout");
@@ -102,6 +105,9 @@ int main (int argc, char *argv[])
   CPairFile opts_cmdline (argc, argv);
 
 //  params.lines_unrated = opts_cmdline.get_uint ("linesunrated", params.lines_unrated);
+
+  params.timestamp = opts_cmdline.get_string ("timestamp", params.timestamp);
+
   params.s_size = opts_cmdline.get_string ("size", params.s_size);
 
   params.lines = opts_cmdline.get_uint ("lines", params.lines);
@@ -143,8 +149,9 @@ int main (int argc, char *argv[])
 
   CPairFile opts_envars (envars);
 
-  //params.lines_unrated = opts_envars.get_uint ("linesunrated", params.lines_unrated);
   params.s_size = opts_envars.get_string ("size", params.s_size);
+  params.timestamp = opts_envars.get_string ("timestamp", params.timestamp);
+
 
   params.lines = opts_envars.get_uint ("lines", params.lines);
   params.duration = opts_envars.get_int ("duration", params.duration);

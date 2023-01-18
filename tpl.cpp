@@ -47,12 +47,12 @@ CVar::CVar (const string &key, const string &val)
 
   vartype = get_value_nature (val);
 
-    if (val.find ("$file_source") != string::npos)
-       {
-//        cout << "33333333333"   << endl;
-        vartype = VT_SEQ;
-        vector <string> vt = split_string_to_vector (value, ":");
-        if (vt.size() == 2)
+ /*
+  if (val.find ("$file_source") != string::npos)
+     {
+      vartype = VT_SEQ;
+      vector <string> vt = split_string_to_vector (value, ":");
+      if (vt.size() == 2)
          {
           string t1 = string_file_load (vt[1]);
           if (! t1.empty())
@@ -60,10 +60,31 @@ CVar::CVar (const string &key, const string &val)
               string t2 = string_replace_all (t1, "\n", "|");
               value = t2;
              }
-          //rnd_length = atoi (vt[1].c_str());
-          //value = "INTRNDMZ";
          }
-     }
+      }
+*/
+
+  if (val.find ("$file_source") != string::npos)
+     {
+      vartype = VT_SEQ;
+
+      size_t pos = val.find (":");
+      if (pos == string::npos)
+         {
+          //NOT VALUE
+          return;
+         }
+
+      string path = val.substr (pos + 1);
+      string t1 = string_file_load (path);
+      if (! t1.empty())
+         {
+          string t2 = string_replace_all (t1, "\n", "|");
+          value = t2;
+         }
+
+      }
+
 
 
   if (val.find ("$int_random") != string::npos)
