@@ -32,6 +32,11 @@ public:
   int vartype;
   int precision;
   int rnd_length;
+
+  int rnd_path_deep;
+  int rnd_path_min;
+  int rnd_path_max;
+
   int a;
   int b;
 
@@ -49,8 +54,14 @@ public:
   string gen_random_ip();
   string gen_number (size_t len);
   string gen_word (size_t len);
+  //string gen_word_range (size_t min, size_t max);
+
   string gen_msecs();
+  string gen_rnd_path (size_t min, size_t max, size_t deep);
+
+
   string get_datetime (const string &format);
+
 
   string get_val();
 /*

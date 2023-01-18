@@ -82,7 +82,6 @@ CVar::CVar (const string &key, const string &val)
           string t2 = string_replace_all (t1, "\n", "|");
           value = t2;
          }
-
       }
 
 
@@ -106,6 +105,27 @@ CVar::CVar (const string &key, const string &val)
           value = "STRRNDMZ";
          }
      }
+
+  if (val.find ("$str_path") != string::npos)
+     {
+      vector <string> vt = split_string_to_vector (value, ":");
+      if (vt.size() == 4)
+         {
+            /*
+          int min_r = atoi (vt[1].c_str());
+          int max_r = atoi (vt[2].c_str());
+          int deep = atoi (vt[3].c_str());
+*/
+          rnd_path_min = atoi (vt[1].c_str());
+          rnd_path_max = atoi (vt[2].c_str());
+          rnd_path_deep = atoi (vt[3].c_str());
+
+          vartype = VT_SINGLE;
+          value = "STRRNDPATH";
+          //value = gen_rnd_path (min_r, max_r, deep);
+         }
+     }
+
 
 
   if (vartype == VT_SINGLE)
@@ -149,6 +169,27 @@ int CVar::get_rnd (int ta, int tb)
 {
    std::uniform_int_distribution <> distrib (ta, tb);
    return distrib (*rnd_generator);
+}
+
+
+string CVar::gen_rnd_path (size_t min, size_t max, size_t deep)
+{
+  string result;
+
+  //cout << "min: " << min << " max: " << max << " deep: " << deep << endl;
+
+//  result += "/";
+
+  size_t deep_max = get_rnd (1, deep);
+
+  for (size_t d = 0; d < deep_max; d++)
+      {
+       int len = get_rnd (min, max);
+       result += "/";
+       result += gen_word (len);
+      }
+
+  return result;
 }
 
 
@@ -196,6 +237,9 @@ string CVar::get_val()
 
   if (result == "STRRNDMZ")
       return gen_word (rnd_length);
+
+  if (result == "STRRNDPATH")
+      return gen_rnd_path (rnd_path_min, rnd_path_max, rnd_path_deep);
 
 
   if (k.find ("$int_random") != string::npos)
@@ -281,6 +325,23 @@ string CVar::gen_word (size_t len)
   return st.str();
 }
 
+/*
+string CVar::gen_word_range (size_t min, size_t max)
+{
+  ostringstream st;
+
+  std::uniform_int_distribution<> distrib (0, 25);
+
+  for (size_t i = 0; i < len; i++)
+      {
+       int g = distrib (*rnd_generator);
+       char d = static_cast<char> (g + 'a');
+       st << d;
+      }
+
+  return st.str();
+}
+*/
 
 string CVar::get_datetime (const string &format)
 {

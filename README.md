@@ -223,7 +223,10 @@ $logstring=world $request_time $status $test hello $seconds_random
 Fixed point values must contain the dot symbol (.) as the fixed point. The precision is controlled by the number of digits after the fixed point, i.e. 1.0000 has the precision 4.
 
 
-### Template special variables
+### Template special variables and macros
+
+
+**$file_source**
 
 ```$file_source:full path to file``` - acts as the text file loader for **sequence** variable values. Consider we have the template like this:
 
@@ -245,10 +248,23 @@ And create the ```/home/test/testsource.txt``` just with the plan text content, 
 Beatles
 Radiohead
 Nirvana
-Alfred Schnittke
 Pixies
 Frank Black
 Skinny Puppy
 ```
 
 When processed, the ```$file_source:/home/test/testsource.txt``` directive will load ```/home/test/testsource.txt```, transform to "|"-separated values and choose one of them randomly.
+
+
+**$str_path**
+
+```$str_path:min:max:deep```, let'e show the example of the template:
+
+```
+%testpath=$str_path:1:10:3
+$logstring=hello %testpath world
+```
+
+Macro ```$str_path``` expands to the random-generated path with the path parts length randomly varied from ```min``` to ```max```, using ```deep``` subdirectories.
+
+
