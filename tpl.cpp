@@ -356,6 +356,19 @@ string CVar::get_datetime (const string &format)
 }
 
 
+void CTpl::replace_value_by_key (const string &key, const string &value)
+{
+  auto f = vars.find (key);
+  if (f != vars.end()) //delete if variable pre-defined
+     {
+      delete f->second;
+      vars.erase (f);
+      vars.insert (std::make_pair (key, new CVar (key, value)));
+     }
+}
+
+
+
 CTpl::~CTpl()
 {
   delete pf;
@@ -373,7 +386,6 @@ CTpl::CTpl (const string &fname, const string &amode)
   pf = new CPairFile (fname, false);
 
   mode = amode;
-
 
   logstrings["nginx"] = "$remote_addr - $remote_user [$time_local] \"$request $uri $protocol\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\"";
 

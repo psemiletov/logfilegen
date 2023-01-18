@@ -41,6 +41,7 @@ public:
   string max_log_file_size;
 
   string timestamp;
+  bool random;
 
 
   bool use_gzip;

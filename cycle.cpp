@@ -52,7 +52,6 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
   fname_template = fname;
   log_current_size = 0;
   no_free_space = false;
- // no_duration = false;
   file_size_total = 0;
 
   if (params->lines != 0)
@@ -65,17 +64,16 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
      }
 
 
-  //cout << "params->duration: " << params->duration << endl;
-
- // if (params->duration == 0)
-   //  no_duration = true;
-
 
   logrotator = new CLogRotator (params->logfile, params->max_log_files, string_to_file_size (params->max_log_file_size));
   logrotator->use_gzip = params->use_gzip;
 
 
   tpl = new CTpl (fname_template, params->mode);
+
+  if (params->random)
+     tpl->replace_value_by_key ("$logstring", "$datetime - $str_random$int_random");
+
 
   std::signal (SIGINT, f_signal_handler);
 
@@ -134,8 +132,6 @@ bool CGenCycle::open_logfile()
           //get current file size
           log_current_size = get_file_size (params->logfile);
 
-          //file_size_total += log_current_size;
-
 
           if (params->debug)
              cout << "log_current_size, bytes: " << log_current_size << endl;
@@ -143,7 +139,6 @@ bool CGenCycle::open_logfile()
 
       file_out.open (params->logfile, std::ios::app);
 
-  //   file_out.open (params->logfile, std::ios::out | std::ios::ate);
 
       if (file_out.fail())
          {

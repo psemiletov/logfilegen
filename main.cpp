@@ -74,7 +74,7 @@ int main (int argc, char *argv[])
 
   vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE",
                             "LFG_TEMPLATEFILE", "LFG_DEBUG", "LFG_PURE",
-                            "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP", "LFG_LINES", "LFG_SIZE"};
+                            "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP", "LFG_LINES", "LFG_SIZE", "LFG_RANDOM"};
 
   CParameters params;
   string fname_config;
@@ -121,6 +121,7 @@ int main (int argc, char *argv[])
    params.s_size = opts_config.get_string ("size", "0");
 
    params.timestamp = opts_config.get_string ("timestamp", "%d/%b/%Y:%H:%M:%S %z");
+   params.random = opts_config.get_bool ("random", false);
 
 
    params.duration = opts_config.get_int ("duration", 0);
@@ -160,6 +161,9 @@ int main (int argc, char *argv[])
   params.templatefile = opts_cmdline.get_string ("templatefile", params.templatefile);
   params.mode = opts_cmdline.get_string ("mode", params.mode);
   params.pure = opts_cmdline.get_bool ("pure", params.pure);
+  params.random = opts_cmdline.get_bool ("random", params.random);
+
+
   params.use_gzip = opts_cmdline.get_bool ("gzip", params.use_gzip);
 
   params.debug = opts_cmdline.get_bool ("debug", params.debug);
@@ -206,11 +210,11 @@ int main (int argc, char *argv[])
 
   params.debug = opts_envars.get_bool ("debug", params.debug);
   params.use_gzip = opts_envars.get_bool ("gzip", params.use_gzip);
+  params.random = opts_envars.get_bool ("random", params.random);
 
 
   params.max_log_files = opts_envars.get_int ("logcount", params.max_log_files);
   params.max_log_file_size = opts_envars.get_string ("logsize", params.max_log_file_size);
-
 
   params.size = string_to_file_size (params.s_size);
 

@@ -88,6 +88,8 @@ public:
   ~CTpl();
 
   string prepare_log_string();
+  void replace_value_by_key (const string &key, const string &value);
+
 };
 
 
