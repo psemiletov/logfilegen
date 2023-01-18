@@ -35,14 +35,13 @@ public:
   int rate;  //during the log generation, how many lines per second will be written
   size_t lines;
 
-  bool use_gzip;
-
   size_t size;
   string s_size;
 
   size_t max_log_files;
   string max_log_file_size;
 
+  bool use_gzip;
   bool pure;
   bool bstdout;
   bool debug;
@@ -65,7 +64,7 @@ public:
 
   bool file_out_error;
   bool no_free_space;
-  bool no_duration;
+  //bool no_duration;
   size_t test_string_size;
   string fname_template;
 

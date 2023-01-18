@@ -52,13 +52,23 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
   fname_template = fname;
   log_current_size = 0;
   no_free_space = false;
-  no_duration = false;
+ // no_duration = false;
   file_size_total = 0;
+
+  if (params->lines != 0)
+     params->duration = 0;
+
+  if (params->size != 0)
+     {
+      params->duration = 0;
+      params->lines = 0;
+     }
+
 
   //cout << "params->duration: " << params->duration << endl;
 
-  if (params->duration == 0)
-     no_duration = true;
+ // if (params->duration == 0)
+   //  no_duration = true;
 
 
   logrotator = new CLogRotator (params->logfile, params->max_log_files, string_to_file_size (params->max_log_file_size));
