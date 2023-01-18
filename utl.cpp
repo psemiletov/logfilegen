@@ -48,6 +48,13 @@ using namespace std;
 #endif
 
 
+bool is_path_abs (const string &path)
+{
+  if (path[0] == '/')
+     return true;
+
+  return false;
+}
 
 size_t get_file_size (const string &fname)
 {

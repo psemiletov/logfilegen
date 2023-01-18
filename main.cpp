@@ -31,6 +31,29 @@ using namespace std;
 using namespace std::chrono;
 
 
+string find_config_in_paths (const string &fname)
+{
+  if (is_path_abs (fname))
+     if (file_exists (fname))
+        return fname;
+
+  string fname_config = "/etc/logfilegen/"+ fname;
+
+  if (! file_exists (fname_config))
+      fname_config = get_home_dir() + "/.config/logfilegen/" + fname;
+
+  if (! file_exists (fname_config))
+      fname_config = current_path() + "/" + fname;
+
+  if (! file_exists (fname_config))
+     return string();
+
+  return fname_config;
+
+}
+
+
+
 void show_version()
 {
   cout << "logfilegen v." << VERSION_NUMBER << endl;
@@ -54,10 +77,27 @@ int main (int argc, char *argv[])
                             "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP", "LFG_LINES", "LFG_SIZE"};
 
   CParameters params;
+  string fname_config;
+
+
+  for (int i = 0; i < argc; i++)
+     {
+      string ts = argv[i];
+      size_t pos =  ts.find ("--config");
+      if (pos != string::npos)
+        {
+         size_t eql = ts.find ("=");
+         if (eql != string::npos)
+            {
+             string fname = ts.substr (eql + 1);
+             fname_config = find_config_in_paths (fname);
+            }
+        }
+     }
 
 
 //Try to load params from config
-
+/*
 
   string fname_config = "/etc/logfilegen/logfilegen.conf";
 
@@ -66,7 +106,10 @@ int main (int argc, char *argv[])
 
   if (! file_exists (fname_config))
       fname_config = current_path() + "/logfilegen.conf";
+*/
 
+    if (fname_config.empty())
+       fname_config = find_config_in_paths ("logfilegen.conf");
 
 //   cout << "Load parameters from config file: " << fname_config << endl;
 

@@ -22,6 +22,7 @@ string current_path();
 bool file_exists (const string &name);
 size_t get_free_space (const string &path);
 bool is_program_exists (const string &appname);
+bool is_path_abs (const string &path);
 
 
 //String utis
