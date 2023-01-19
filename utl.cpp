@@ -48,17 +48,6 @@ using namespace std;
 #endif
 
 
-bool is_path_abs (const string &path)
-{
-  if (path[0] == '/')
-     return true;
-
- if (path[1] == ':') //windows
-     return true;
-
-
-  return false;
-}
 
 size_t get_file_size (const string &fname)
 {
@@ -86,16 +75,6 @@ string replace_file_ext (const string &fname, const string &ext)
       result.replace (i+1, ext.length(), ext);
 
   return result;
-}
-
-
-string increase_file_ext (const string &fname)
-{
-  string ext = get_file_ext (fname);
-  int i = atoi (ext.c_str());
-  i++;
-  ext = std::to_string(i);
-  return replace_file_ext (fname, ext);
 }
 
 
@@ -157,8 +136,6 @@ size_t get_free_space (const string &path)
   if (path.empty())
      return 0;
 
-//  cout << "get_free_space:" <<  path << endl;
-
   std::filesystem::path p (path);
   const std::filesystem::space_info i = std::filesystem::space (p);
   return i.available;
@@ -170,6 +147,32 @@ bool file_exists (const string &name)
   struct stat buffer;
   return (stat (name.c_str(), &buffer) == 0);
 }
+
+
+bool is_program_exists (const string &appname)
+{
+  string cm = "which " + appname + " > /dev/null 2>&1";
+  if (system (cm.c_str()))
+     return false;
+  else
+      return true;
+}
+
+
+bool is_path_abs (const string &path)
+{
+  if (path[0] == '/')
+     return true;
+
+ if (path[1] == ':') //windows
+     return true;
+
+
+  return false;
+}
+
+
+
 
 
 
@@ -192,6 +195,23 @@ string str_replace (string &source, const string &text_to_find, const string &re
   source.replace (pos, text_to_find.size(), replace_with);
 
   return source;
+}
+
+
+
+string string_replace_all (const string &s, const string &from, const string &to)
+{
+  string result = s;
+  size_t i = 0;
+  do
+    {
+     i = result.find (from);
+     if (i != string::npos)
+         result = result.replace (i, from.length(), to);
+    }
+  while (i != string::npos);
+
+  return result;
 }
 
 
@@ -265,52 +285,6 @@ size_t string_to_file_size (const string &val)
   return result;
 }
 
-unsigned long long string_to_file_size_ull (const string &val)
-{
-
-  char* end;
-     // finding the unsigned long
-    // integer with base 36
-
-  unsigned long long result = 0;
-  const char *st = val.c_str();
-  if (st)
-     result = strtoull (st, &end, 10);
-
-
-  string s = val;
-
-  std::for_each (
-                 s.begin(),
-                 s.end(),
-                 [](char & c) {
-                               c = ::tolower(c);
-                              });
-
-  if (s.find ("k") != string::npos)
-     result = result * 1024;
-
-  if (s.find ("m") != string::npos)
-     result = result * 1048576;
-
-  if (s.find ("g") != string::npos)
-     result = result * 1073741824;
-
-  return result;
-}
-
-
-
-
-bool is_program_exists (const string &appname)
-{
-  string cm = "which " + appname + " > /dev/null 2>&1";
-  if (system (cm.c_str()))
-     return false;
-  else
-      return true;
-}
-
 
 string string_file_load (const string &fname)
 {
@@ -321,20 +295,5 @@ string string_file_load (const string &fname)
  return s;
 }
 
-
-string string_replace_all (const string &s, const string &from, const string &to)
-{
-  string result = s;
-  size_t i = 0;
-  do
-    {
-     i = result.find (from);
-     if (i != string::npos)
-         result = result.replace (i, from.length(), to);
-    }
-  while (i != string::npos);
-
-  return result;
-}
 
 #endif

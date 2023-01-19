@@ -8,6 +8,7 @@ add_definitions(-DVERSION_NUMBER="\\"${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_
 
 set(SOURCES
     utl.cpp
+    params.cpp
     pairfile.cpp
     tpl.cpp
     logrot.cpp

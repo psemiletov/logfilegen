@@ -50,26 +50,13 @@ public:
   ~CVar();
 
   int get_rnd (int ta, int tb);
-
   string gen_random_ip();
   string gen_number (size_t len);
   string gen_word (size_t len);
-  //string gen_word_range (size_t min, size_t max);
-
   string gen_msecs();
   string gen_rnd_path (size_t min, size_t max, size_t deep);
-
-
   string get_datetime (const string &format);
-
-
   string get_val();
-/*
-  bool operator > (const CVar &v) const
-      {
-        return (k > k.k);
-      }
-*/
 };
 
 

@@ -7,7 +7,7 @@ CXXFLAGS = -Wall -g -O3 -static -static-libstdc++ -static-libgcc
 
 
 all: main.cpp
-	$(CXX) $(CXXFLAGS) -std=c++17 -o logfilegen utl.cpp tpl.cpp pairfile.cpp cycle.cpp logrot.cpp main.cpp
+	$(CXX) $(CXXFLAGS) -std=c++17 -o logfilegen utl.cpp params.cpp tpl.cpp pairfile.cpp cycle.cpp logrot.cpp main.cpp
 
 clean:
 	$(RM) logfilegen

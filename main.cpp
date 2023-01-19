@@ -20,6 +20,7 @@
 #include "utl.h"
 #include "tpl.h"
 #include "cycle.h"
+#include "params.h"
 
 
 #ifndef VERSION_NUMBER
