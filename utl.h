@@ -29,6 +29,7 @@ bool is_path_abs (const string &path);
 string str_replace (string &source, const string &text_to_find, const string &replace_with);
 string string_replace_all (const string &s, const string &from, const string &to);
 vector <string> split_string_to_vector (const string& s, const string& delimeter, const bool keep_empty = true);
+string string_to_lower (const string &s);
 size_t string_to_file_size (const string &val);
 string string_file_load (const string &fname);
 

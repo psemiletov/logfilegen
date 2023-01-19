@@ -5,19 +5,13 @@
 #ifndef UTL_H
 #define UTL_H
 
-//#include <string>
-//#include <vector>
-//#include <map>
 
 using namespace std;
 
 //#include <sys/statvfs.h>
 #include <sys/stat.h>
-
 #include <algorithm>
 #include <filesystem>
-
-
 #include <cstdint>
 #include <cstdlib>
 #include <vector>
@@ -25,7 +19,6 @@ using namespace std;
 #include <fstream>
 #include <unistd.h>
 #include <stdio.h>  // for FILENAME_MAX
-
 
 
 #include "utl.h"
@@ -38,7 +31,6 @@ using namespace std;
 #include <unistd.h>
 #define get_cur_dir getcwd
 #endif
-
 
 
 #ifdef WINDOWS
@@ -80,16 +72,16 @@ string replace_file_ext (const string &fname, const string &ext)
 
 string get_file_path (const string &path)
 {
-  char sep = '/';
+  /*char sep = '/';
 
 #ifdef _WIN32
    sep = '\\';
 #endif
-
-  size_t i = path.rfind (sep, path.length());
+*/
+  size_t i = path.rfind (DIR_SEPARATOR, path.length());
 
   if (i != string::npos)
-     return path.substr(0, i);
+     return path.substr (0, i);
 
   return("");
 }
@@ -144,6 +136,9 @@ size_t get_free_space (const string &path)
 
 bool file_exists (const string &name)
 {
+  if (name.empty())
+     return false;
+
   struct stat buffer;
   return (stat (name.c_str(), &buffer) == 0);
 }
@@ -151,6 +146,9 @@ bool file_exists (const string &name)
 
 bool is_program_exists (const string &appname)
 {
+  if (appname.empty())
+     return false;
+
   string cm = "which " + appname + " > /dev/null 2>&1";
   if (system (cm.c_str()))
      return false;
@@ -161,18 +159,17 @@ bool is_program_exists (const string &appname)
 
 bool is_path_abs (const string &path)
 {
+  if (path.empty())
+     return false;
+
   if (path[0] == '/')
      return true;
 
  if (path[1] == ':') //windows
      return true;
 
-
   return false;
 }
-
-
-
 
 
 
@@ -221,49 +218,60 @@ vector <string> split_string_to_vector (const string& s, const string& delimeter
 
   if (delimeter.empty())
      {
-      result.push_back(s);
+      result.push_back (s);
       return result;
      }
 
   string::const_iterator substart = s.begin(), subend;
 
   while (true)
-       {
-        subend = search (substart, s.end(), delimeter.begin(), delimeter.end());
+        {
+         subend = search (substart, s.end(), delimeter.begin(), delimeter.end());
 
-        string temp (substart, subend);
+         string temp (substart, subend);
 
-        if (keep_empty || ! temp.empty())
-            result.push_back (temp);
+         if (keep_empty || ! temp.empty())
+             result.push_back (temp);
 
-        if (subend == s.end())
-            break;
+         if (subend == s.end())
+             break;
 
-        substart = subend + delimeter.size();
-       }
+         substart = subend + delimeter.size();
+        }
 
   return result;
 }
 
 
+string string_to_lower (const string &s)
+{
+  string result = s;
+
+   std::for_each (
+                 result.begin(),
+                 result.end(),
+                 [](char & c) {
+                               c = ::tolower(c);
+                              });
+
+  return result;
+}
+
 
 size_t string_to_file_size (const string &val)
 {
-
   size_t result = 0;
-/*
 
-  const char *st = val.c_str();
-  if (st)
-     result = atoi (st);
-*/
   char* end;
 
-   const char *st = val.c_str();
-   if (st)
+  const char *st = val.c_str();
+
+  if (st)
      result = strtoull (st, &end, 10);
 
 
+  string s = string_to_lower (val);
+  /*
   string s = val;
 
   std::for_each (
@@ -272,7 +280,7 @@ size_t string_to_file_size (const string &val)
                  [](char & c) {
                                c = ::tolower(c);
                               });
-
+*/
   if (s.find ("k") != string::npos)
      result = result * 1024;
 
