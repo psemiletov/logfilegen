@@ -20,6 +20,7 @@ using namespace std;
 #define VT_SEQ 2
 #define VT_RANGE 3
 #define VT_FLOATRANGE 4
+#define VT_DATETIME 5
 
 
 class CVar

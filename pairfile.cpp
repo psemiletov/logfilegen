@@ -185,7 +185,7 @@ CPairFile::CPairFile (const string &fname, bool from_data)
            {
             if (line.empty())
                continue;
-           
+
             size_t pos = line.find ("=");
                  
             if (pos == string::npos)
@@ -225,6 +225,9 @@ CPairFile::CPairFile (const string &fname, bool from_data)
          if (pos == string::npos)
             continue;
         
+         //if (line[0] == '#')
+           // continue;
+
          string a = line.substr (0, pos);
          string b = line.substr (pos + 1, line.size() - pos);
 

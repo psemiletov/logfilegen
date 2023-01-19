@@ -44,6 +44,22 @@ CVar::CVar (const string &key, const string &val)
   rnd_generator = new std::mt19937 (rnd_dev());
   vartype = get_value_nature (val);
 
+  if (val.find ("$datetime") != string::npos)
+     {
+      vartype = VT_DATETIME;
+
+      size_t pos = val.find (":");
+      if (pos == string::npos)
+         {
+          //NOT VALUE
+          return;
+         }
+
+       value = val.substr (pos + 1);
+       cout << "value: " << value << endl;
+      }
+
+
 
   if (val.find ("$file_source") != string::npos)
      {
@@ -92,6 +108,7 @@ CVar::CVar (const string &key, const string &val)
 
   if (val.find ("$str_path") != string::npos)
      {
+      cout << "$str_path: " << endl;
       vector <string> vt = split_string_to_vector (value, ":");
       if (vt.size() == 4)
          {
@@ -99,13 +116,17 @@ CVar::CVar (const string &key, const string &val)
           rnd_path_max = atoi (vt[2].c_str());
           rnd_path_deep = atoi (vt[3].c_str());
 
+          cout << "rnd_path_min: " << rnd_path_min << endl;
+          cout << "rnd_path_max: " << rnd_path_max << endl;
+          cout << "rnd_path_deep: " << rnd_path_deep << endl;
+
           vartype = VT_SINGLE;
           value = "STRRNDPATH";
          }
      }
 
 
-  if (vartype == VT_SINGLE)
+  if (vartype == VT_SINGLE || vartype == VT_DATETIME)
      v.push_back (value);
   else
   if (vartype == VT_SEQ)
@@ -152,18 +173,19 @@ string CVar::gen_rnd_path (size_t min, size_t max, size_t deep)
 {
   string result;
 
-  //cout << "min: " << min << " max: " << max << " deep: " << deep << endl;
-
 //  result += "/";
 
   size_t deep_max = get_rnd (1, deep);
 
   for (size_t d = 0; d < deep_max; d++)
       {
-       int len = get_rnd (min, max);
        result += "/";
+       int len = get_rnd (min, max);
        result += gen_word (len);
+
       }
+
+ // cout << "RES " << result << endl;
 
   return result;
 }
@@ -198,6 +220,9 @@ string CVar::get_val()
   else
   if (vartype == VT_FLOATRANGE)
      result = gen_msecs();
+  else
+  if (vartype == VT_DATETIME)
+     result = get_datetime (v[0]);
 
 
    //handle macros
@@ -215,32 +240,16 @@ string CVar::get_val()
       return gen_word (rnd_length);
 
   if (result == "STRRNDPATH")
-      return gen_rnd_path (rnd_path_min, rnd_path_max, rnd_path_deep);
+    {
+  //   cout << "result == STRRNDPATH" << endl;
+     return gen_rnd_path (rnd_path_min, rnd_path_max, rnd_path_deep);
 
-/*
-  if (k.find ("$int_random") != string::npos)
-     {
-      int i = atoi (v[0].c_str());
-      if (i > 0)
-         result = gen_number (i);
-
-      return result;
-     }
-
-  if (k.find ("$str_random") != string::npos)
-     {
-      int i = atoi (v[0].c_str());
-      if (i > 0)
-         result = gen_word (i);
-
-      return result;
-     }
-*/
+    }
 
   //assuming date time
 
-  if (k.find ("$time_") != string::npos)
-     result = get_datetime (result);
+ // if (k.find ("$time_") != string::npos)
+  //   result = get_datetime (result);
 
   if (result == "IP_RANDOM")
      result = gen_random_ip();

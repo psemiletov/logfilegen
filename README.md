@@ -211,7 +211,12 @@ $logstring=hello $test world
 So, specify the length of the generated word after the ":". I.e. ```$int_random:5``` or ```$str_random:11```
 
 
-All variables that name starts from ``$time_`` logfilegen handles as date time variables and their values must contain date/time format string. For nginx, use [strftime format](https://en.cppreference.com/w/c/chrono/strftime)
+To define timestamp variable with [strftime-based](https://en.cppreference.com/w/c/chrono/strftime) format, use ```$datetime``` macro with syntax: ```$datetime:format```. Example of the template that uses ```$datetime```:
+
+```
+$test=$datetime:%d-%b-%Y %H:%M:%S %z
+$logstring=hello $test world
+```
 
 logfilegen can deal with seconds-based fixed point variables with msecs resolution such as ```$request_time```, ```$connection_time``` (and special ```$seconds_random```). They can be redefined or used in a following way:
 

@@ -1,3 +1,5 @@
++ $datetime:format macro
+- "$time_" prefixes
 - $int_random and $str_random PREFIXES, use $int_random and str_random macros instead, i.e:
 $test=$str_random:10
 $logstring=hello $test world
