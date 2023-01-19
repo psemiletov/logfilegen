@@ -53,6 +53,10 @@ bool is_path_abs (const string &path)
   if (path[0] == '/')
      return true;
 
+ if (path[1] == ':') //windows
+     return true;
+
+
   return false;
 }
 

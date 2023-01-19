@@ -85,7 +85,6 @@ CVar::CVar (const string &key, const string &val)
       }
 
 
-
   if (val.find ("$int_random") != string::npos)
      {
       vector <string> vt = split_string_to_vector (value, ":");
@@ -325,23 +324,7 @@ string CVar::gen_word (size_t len)
   return st.str();
 }
 
-/*
-string CVar::gen_word_range (size_t min, size_t max)
-{
-  ostringstream st;
 
-  std::uniform_int_distribution<> distrib (0, 25);
-
-  for (size_t i = 0; i < len; i++)
-      {
-       int g = distrib (*rnd_generator);
-       char d = static_cast<char> (g + 'a');
-       st << d;
-      }
-
-  return st.str();
-}
-*/
 
 string CVar::get_datetime (const string &format)
 {
