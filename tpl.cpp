@@ -41,28 +41,9 @@ CVar::CVar (const string &key, const string &val)
   rnd_length = 8;
   precision = 3;
 
-//  cout << "CVar::CVar === key: " << key << " value:" << val << endl;
-
   rnd_generator = new std::mt19937 (rnd_dev());
-
   vartype = get_value_nature (val);
 
- /*
-  if (val.find ("$file_source") != string::npos)
-     {
-      vartype = VT_SEQ;
-      vector <string> vt = split_string_to_vector (value, ":");
-      if (vt.size() == 2)
-         {
-          string t1 = string_file_load (vt[1]);
-          if (! t1.empty())
-             {
-              string t2 = string_replace_all (t1, "\n", "|");
-              value = t2;
-             }
-         }
-      }
-*/
 
   if (val.find ("$file_source") != string::npos)
      {
@@ -80,6 +61,8 @@ CVar::CVar (const string &key, const string &val)
       if (! t1.empty())
          {
           string t2 = string_replace_all (t1, "\n", "|");
+          t2 = string_replace_all (t2, "\r\n", "|"); //for windows
+
           value = t2;
          }
       }
@@ -95,6 +78,7 @@ CVar::CVar (const string &key, const string &val)
          }
      }
 
+
   if (val.find ("$str_random") != string::npos)
      {
       vector <string> vt = split_string_to_vector (value, ":");
@@ -105,26 +89,20 @@ CVar::CVar (const string &key, const string &val)
          }
      }
 
+
   if (val.find ("$str_path") != string::npos)
      {
       vector <string> vt = split_string_to_vector (value, ":");
       if (vt.size() == 4)
          {
-            /*
-          int min_r = atoi (vt[1].c_str());
-          int max_r = atoi (vt[2].c_str());
-          int deep = atoi (vt[3].c_str());
-*/
           rnd_path_min = atoi (vt[1].c_str());
           rnd_path_max = atoi (vt[2].c_str());
           rnd_path_deep = atoi (vt[3].c_str());
 
           vartype = VT_SINGLE;
           value = "STRRNDPATH";
-          //value = gen_rnd_path (min_r, max_r, deep);
          }
      }
-
 
 
   if (vartype == VT_SINGLE)
@@ -161,7 +139,6 @@ CVar::~CVar()
 {
   delete rnd_generator;
 }
-
 
 
 int CVar::get_rnd (int ta, int tb)
@@ -240,7 +217,7 @@ string CVar::get_val()
   if (result == "STRRNDPATH")
       return gen_rnd_path (rnd_path_min, rnd_path_max, rnd_path_deep);
 
-
+/*
   if (k.find ("$int_random") != string::npos)
      {
       int i = atoi (v[0].c_str());
@@ -258,7 +235,7 @@ string CVar::get_val()
 
       return result;
      }
-
+*/
 
   //assuming date time
 

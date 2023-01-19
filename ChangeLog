@@ -1,3 +1,8 @@
+- $int_random and $str_random PREFIXES, use $int_random and str_random macros instead, i.e:
+$test=$str_random:10
+$logstring=hello $test world
+
+
 + $str_path template variable
 + $file_source template variable
 + size config variable

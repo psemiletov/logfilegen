@@ -201,15 +201,15 @@ $logstring=$time_iso8601 $testvar $remote_addr - $remote_user [$time_local] "$re
 
 Here we define two custom variables - ``$testvar`` that can be "HELLO" or "WORLD" on each log generation iteration, and ```$time_iso8601``` with ```%Y-%m-%dT%H:%M:%SZ``` date time format.
 
-In the template you can define "randomization" variable for the numbers and strings with a given length. Such variable names must begin with ```$int_random``` or ```$str_random```, and the value is the length of the sequence to generate. Example:
+In the template you can define "randomization" variable for the numbers and strings with a given length. Such variable values can use ```$int_random``` and ```$str_random``` macros, with the length of the sequence to generate. Example:
 
 ```
-$testvar=HELLO|WORLD
-$time_iso8601=%Y-%m-%dT%H:%M:%SZ
-$str_random01=6
-$int_random01=12
-$logstring=$time_iso8601 $testvar $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" $str_random01 test test $int_random01
+$test=$str_random:10
+$logstring=hello $test world
 ```
+
+So, specify the length of the generated word after the ":". I.e. ```$int_random:5``` or ```$str_random:11```
+
 
 All variables that name starts from ``$time_`` logfilegen handles as date time variables and their values must contain date/time format string. For nginx, use [strftime format](https://en.cppreference.com/w/c/chrono/strftime)
 
