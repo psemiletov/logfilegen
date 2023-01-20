@@ -122,23 +122,17 @@ CVar::CVar (const string &key, const string &val)
             value = "STRRNDMZ";
           }
 
-
      }
 
 
   if (vartype != VT_SEQ && val.find ("@str_path") != string::npos)
      {
-//      cout << "$str_path: " << endl;
       vector <string> vt = split_string_to_vector (value, ":");
       if (vt.size() == 4)
          {
           rnd_path_min = atoi (vt[1].c_str());
           rnd_path_max = atoi (vt[2].c_str());
           rnd_path_deep = atoi (vt[3].c_str());
-
-//          cout << "rnd_path_min: " << rnd_path_min << endl;
-  //        cout << "rnd_path_max: " << rnd_path_max << endl;
-    //      cout << "rnd_path_deep: " << rnd_path_deep << endl;
 
           vartype = VT_SINGLE;
           value = "STRRNDPATH";
@@ -525,7 +519,7 @@ CTpl::CTpl (const string &fname, const string &amode)
 
 }
 
-
+/*
 string CTpl::prepare_log_string()
 {
 
@@ -544,6 +538,46 @@ string CTpl::prepare_log_string()
        string variable = it->first;
        string replacement = it->second->get_val();
        str_replace (logstring, variable, replacement);
+      }
+
+  return logstring;
+}
+*/
+
+
+
+string CTpl::prepare_log_string()
+{
+
+  string logstring = vars["$logstring"]->get_val();
+
+  if (logstring.empty())
+     {
+      cout << "$logstring mandatory variable is not defined!" << endl;
+      return "";
+     }
+
+//change to     for (auto it = mymap.rbegin(); it != mymap.rend(); it++)
+  map <string, CVar*>::reverse_iterator it;
+  for (it = vars.rbegin(); it != vars.rend(); it++)
+      {
+       string variable = it->first;
+       //string replacement = it->second->get_val();
+
+       //str_replace (logstring, variable, replacement);
+
+
+       //string result = s;
+       size_t i = 0;
+       do
+         {
+          i = logstring.find (variable);
+          if (i != string::npos)
+             logstring = logstring.replace (i, variable.length(), it->second->get_val());
+         }
+       while (i != string::npos);
+
+
       }
 
   return logstring;

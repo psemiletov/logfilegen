@@ -25,7 +25,6 @@ Currently logfilegen "knows" the following [standard nginx variables](http://ngi
 
 There are also special logfilegen variables ```$seconds_random``` (WRITE ABOUT IT!!!!) and ```$logstring```.
 
-
 To redefine the "built-in" variable use just need to set new value to it. To define a new variable you need do the same. Example of the small template file:
 
 ```
@@ -53,7 +52,8 @@ range of integer numbers (```$var=1..1111111```)
 
 sequence of strings (```$var=APPLE|2000|FRUITS|HELLO|POTATO```)
 
-macros (```@macros:value1:value2```)
+macros (```@macros:value1:value2```). Note! Using of macros directly in ```$logstring``` is possible but not desirable.
+
 
 
 
@@ -121,7 +121,16 @@ $logstring=world $request_time $status $test hello $seconds_random
 Fixed point values must contain the dot symbol (.) as the fixed point. The precision is controlled by the number of digits after the fixed point, i.e. 1.0000 has the precision 4.
 
 
-### Template special variables and macros
+### Template macros
+
+
+- **@ip_random** - generate a random ip.
+
+Example:
+
+```
+$logstring=@datetime:%d%b%Y:%H:%M:%S %z @ip_random
+```
 
 
 **$file_source**
