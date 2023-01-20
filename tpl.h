@@ -38,6 +38,10 @@ public:
   int rnd_path_min;
   int rnd_path_max;
 
+  int len_min;
+  int len_max;
+
+
   int a;
   int b;
 
@@ -53,7 +57,11 @@ public:
   int get_rnd (int ta, int tb);
   string gen_random_ip();
   string gen_number (size_t len);
+  string gen_number (size_t min, size_t max);
+
   string gen_word (size_t len);
+  string gen_string (size_t min, size_t max);
+
   string gen_msecs();
   string gen_rnd_path (size_t min, size_t max, size_t deep);
   string get_datetime (const string &format);

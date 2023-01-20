@@ -40,11 +40,13 @@ CVar::CVar (const string &key, const string &val)
   string value = val;
   rnd_length = 8;
   precision = 3;
+  len_min = 0;
+  len_max = 0;
 
   rnd_generator = new std::mt19937 (rnd_dev());
   vartype = get_value_nature (val);
 
-  if (val.find ("$datetime") != string::npos)
+  if (val.find ("@datetime") != string::npos && vartype != VT_SEQ)
      {
       vartype = VT_DATETIME;
 
@@ -56,11 +58,13 @@ CVar::CVar (const string &key, const string &val)
          }
 
        value = val.substr (pos + 1);
+
+//      cout << "value: " << value << endl;
       }
 
 
 
-  if (val.find ("$file_source") != string::npos)
+  if (val.find ("@file_source") != string::npos)
      {
       vartype = VT_SEQ;
 
@@ -83,7 +87,7 @@ CVar::CVar (const string &key, const string &val)
       }
 
 
-  if (vartype != VT_SEQ && val.find ("$int_random") != string::npos)
+  if (vartype != VT_SEQ && val.find ("@int_random") != string::npos)
      {
       vector <string> vt = split_string_to_vector (value, ":");
       if (vt.size() == 2)
@@ -91,10 +95,18 @@ CVar::CVar (const string &key, const string &val)
           rnd_length = atoi (vt[1].c_str());
           value = "INTRNDMZ";
          }
+
+       if (vt.size() == 3)
+            {
+             len_min = atoi (vt[1].c_str());
+             len_max = atoi (vt[2].c_str());
+             value = "INTRNDMZ";
+            }
+
      }
 
 
-  if (vartype != VT_SEQ && val.find ("$str_random") != string::npos)
+  if (vartype != VT_SEQ && val.find ("@str_random") != string::npos)
      {
       vector <string> vt = split_string_to_vector (value, ":");
       if (vt.size() == 2)
@@ -102,10 +114,19 @@ CVar::CVar (const string &key, const string &val)
           rnd_length = atoi (vt[1].c_str());
           value = "STRRNDMZ";
          }
+
+      if (vt.size() == 3)
+         {
+           len_min = atoi (vt[1].c_str());
+           len_max = atoi (vt[2].c_str());
+            value = "STRRNDMZ";
+          }
+
+
      }
 
 
-  if (vartype != VT_SEQ && val.find ("$str_path") != string::npos)
+  if (vartype != VT_SEQ && val.find ("@str_path") != string::npos)
      {
 //      cout << "$str_path: " << endl;
       vector <string> vt = split_string_to_vector (value, ":");
@@ -152,7 +173,6 @@ CVar::CVar (const string &key, const string &val)
            }
      }
 }
-
 
 
 CVar::~CVar()
@@ -225,66 +245,97 @@ string CVar::get_val()
 
 
 
-
    //pre process macros
    if (vartype == VT_SEQ)
-      {
-       if (result.find ("$str_random") != string::npos))
+     {
+       if (result.find ("@datetime") != string::npos)
           {
+           size_t pos = result.find (":");
+          if (pos == string::npos)
+            {
+            //NOT VALUE
+             return string();
+            }
+
+           result = result.substr (pos + 1);
+           return get_datetime (result);
+          }
+
+
+      if (result.find ("@str_random") != string::npos)
+         {
+          // cout << "result: " << result << endl;
+
            vector <string> vt = split_string_to_vector (result, ":");
-          if (vt.size() == 2)
+
+           if (vt.size() == 2)
             {
              rnd_length = atoi (vt[1].c_str());
              result = "STRRNDMZ";
-           }
+            }
+
+          if (vt.size() == 3)
+            {
+             len_min = atoi (vt[1].c_str());
+             len_max = atoi (vt[2].c_str());
+             result = "STRRNDMZ";
+            }
+
+
          }
 
-       if (result.find ("$int_random") != string::npos))
+       if (result.find ("@int_random") != string::npos)
           {
            vector <string> vt = split_string_to_vector (result, ":");
            if (vt.size() == 2)
               {
                rnd_length = atoi (vt[1].c_str());
-               value = "INTRNDMZ";
+               result = "INTRNDMZ";
              }
+
+          if (vt.size() == 3)
+            {
+             len_min = atoi (vt[1].c_str());
+             len_max = atoi (vt[2].c_str());
+             result = "INTRNDMZ";
+            }
+
+
            }
-
-
-
-
       }
 
 
    //handle macros
 
 
-  if (result == "USER_WORD")
-      return gen_word (rnd_length);
+//  if (result == "USER_WORD")
+  //    return gen_word (rnd_length);
 
-  if (result == "USER_NUMBER")
+//  if (result == "USER_NUMBER")
+  //    return gen_number (rnd_length);
+
+  if (result == "INTRNDMZ" && len_max == 0)
       return gen_number (rnd_length);
 
-  if (result == "INTRNDMZ")
-      return gen_number (rnd_length);
+  if (result == "INTRNDMZ" && len_max != 0)
+      return gen_number (len_min, len_max);
 
-  if (result == "STRRNDMZ")
+  if (result == "STRRNDMZ" && len_max == 0)
       return gen_word (rnd_length);
+
+  if (result == "STRRNDMZ" && len_max != 0)
+      return gen_string (len_min, len_max);
+
 
   if (result == "STRRNDPATH")
     {
   //   cout << "result == STRRNDPATH" << endl;
      return gen_rnd_path (rnd_path_min, rnd_path_max, rnd_path_deep);
-
     }
 
 
 
-  //assuming date time
-
- // if (k.find ("$time_") != string::npos)
-  //   result = get_datetime (result);
-
-  if (result == "IP_RANDOM")
+  if (result == "@ip_random")
      result = gen_random_ip();
 
   return result;
@@ -327,11 +378,52 @@ string CVar::gen_number (size_t len)
 }
 
 
+string CVar::gen_number (size_t min, size_t max)
+{
+  std::uniform_int_distribution<> distrib (0, 9);
+
+  std::uniform_int_distribution<> dminmax (min, max);
+
+  size_t len = dminmax (*rnd_generator);
+
+
+  ostringstream st;
+
+  for (size_t i = 0; i < len; i++)
+      {
+       st << distrib (*rnd_generator);
+      }
+
+  return st.str();
+}
+
+
 string CVar::gen_word (size_t len)
 {
   ostringstream st;
 
   std::uniform_int_distribution<> distrib (0, 25);
+
+  for (size_t i = 0; i < len; i++)
+      {
+       int g = distrib (*rnd_generator);
+       char d = static_cast<char> (g + 'a');
+       st << d;
+      }
+
+  return st.str();
+}
+
+
+string CVar::gen_string (size_t min, size_t max)
+{
+  ostringstream st;
+
+  std::uniform_int_distribution<> distrib (0, 25);
+
+  std::uniform_int_distribution<> dminmax (min, max);
+
+  size_t len = dminmax (*rnd_generator);
 
   for (size_t i = 0; i < len; i++)
       {

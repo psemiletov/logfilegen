@@ -7,11 +7,22 @@ Template is a plain text file with key=value lines. Each key corresonds to varia
 Example of such file:
 
 ```
-$remote_addr=IP_RANDOM
-$remote_user=USER_WORD|USER_NUMBER
-$time_local=%x:%X
+$remote_addr=@ip_random
+$remote_user=@str_random:4:12|@int_random:22
+$time_local=@datetime:%x:%X
 $request=GET|POST|PUT|PATCH|DELETE
 $status=200|404
 $body_bytes_sent=100..10000
 $logstring=$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
 ```
+
+
+```
+$test=@str_random:2
+$test2=@str_random:2|@int_random:4
+$test3=@str_random:4:12
+$logstring=hello $test $test2 $test3 world
+```
+
+$test2=@str_random:2|@int_random:4:6
+$logstring=hello $test2 world
