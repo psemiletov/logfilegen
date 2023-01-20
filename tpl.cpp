@@ -56,7 +56,6 @@ CVar::CVar (const string &key, const string &val)
          }
 
        value = val.substr (pos + 1);
-       cout << "value: " << value << endl;
       }
 
 
@@ -84,7 +83,7 @@ CVar::CVar (const string &key, const string &val)
       }
 
 
-  if (val.find ("$int_random") != string::npos)
+  if (vartype != VT_SEQ && val.find ("$int_random") != string::npos)
      {
       vector <string> vt = split_string_to_vector (value, ":");
       if (vt.size() == 2)
@@ -95,7 +94,7 @@ CVar::CVar (const string &key, const string &val)
      }
 
 
-  if (val.find ("$str_random") != string::npos)
+  if (vartype != VT_SEQ && val.find ("$str_random") != string::npos)
      {
       vector <string> vt = split_string_to_vector (value, ":");
       if (vt.size() == 2)
@@ -106,9 +105,9 @@ CVar::CVar (const string &key, const string &val)
      }
 
 
-  if (val.find ("$str_path") != string::npos)
+  if (vartype != VT_SEQ && val.find ("$str_path") != string::npos)
      {
-      cout << "$str_path: " << endl;
+//      cout << "$str_path: " << endl;
       vector <string> vt = split_string_to_vector (value, ":");
       if (vt.size() == 4)
          {
@@ -116,9 +115,9 @@ CVar::CVar (const string &key, const string &val)
           rnd_path_max = atoi (vt[2].c_str());
           rnd_path_deep = atoi (vt[3].c_str());
 
-          cout << "rnd_path_min: " << rnd_path_min << endl;
-          cout << "rnd_path_max: " << rnd_path_max << endl;
-          cout << "rnd_path_deep: " << rnd_path_deep << endl;
+//          cout << "rnd_path_min: " << rnd_path_min << endl;
+  //        cout << "rnd_path_max: " << rnd_path_max << endl;
+    //      cout << "rnd_path_deep: " << rnd_path_deep << endl;
 
           vartype = VT_SINGLE;
           value = "STRRNDPATH";
@@ -225,7 +224,39 @@ string CVar::get_val()
      result = get_datetime (v[0]);
 
 
+
+
+   //pre process macros
+   if (vartype == VT_SEQ)
+      {
+       if (result.find ("$str_random") != string::npos))
+          {
+           vector <string> vt = split_string_to_vector (result, ":");
+          if (vt.size() == 2)
+            {
+             rnd_length = atoi (vt[1].c_str());
+             result = "STRRNDMZ";
+           }
+         }
+
+       if (result.find ("$int_random") != string::npos))
+          {
+           vector <string> vt = split_string_to_vector (result, ":");
+           if (vt.size() == 2)
+              {
+               rnd_length = atoi (vt[1].c_str());
+               value = "INTRNDMZ";
+             }
+           }
+
+
+
+
+      }
+
+
    //handle macros
+
 
   if (result == "USER_WORD")
       return gen_word (rnd_length);
@@ -245,6 +276,8 @@ string CVar::get_val()
      return gen_rnd_path (rnd_path_min, rnd_path_max, rnd_path_deep);
 
     }
+
+
 
   //assuming date time
 

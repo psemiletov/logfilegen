@@ -38,19 +38,18 @@ string find_config_in_paths (const string &fname)
      if (file_exists (fname))
         return fname;
 
-  string fname_config = "/etc/logfilegen/"+ fname;
+  string fname_config = current_path() + "/" + fname;
 
   if (! file_exists (fname_config))
       fname_config = get_home_dir() + "/.config/logfilegen/" + fname;
 
   if (! file_exists (fname_config))
-      fname_config = current_path() + "/" + fname;
+      fname_config =  "/etc/logfilegen/"+ fname;
 
   if (! file_exists (fname_config))
      return string();
 
   return fname_config;
-
 }
 
 
@@ -235,7 +234,8 @@ int main (int argc, char *argv[])
   else
       params.bstdout = false;
 
-  if (params.logfile[0] != '/')          //path is local
+  //if (params.logfile[0] != '/')          //path is local
+   if (! is_path_abs (params.logfile))
       params.logfile = current_path() + "/" + params.logfile;
 
 
@@ -244,18 +244,20 @@ int main (int argc, char *argv[])
   string fname_template = params.templatefile;
 
   if (params.templatefile != "NOTEMPLATEFILE" && ! params.templatefile.empty())
-     if (params.templatefile[0] != '/') //path is not absolute
-        {
-         fname_template = "/etc/logfilegen/templates/" + params.templatefile;
+     if (! is_path_abs (params.templatefile))
 
-         if (! file_exists (fname_template))
-            fname_template = get_home_dir() + "/.config/logfilegen/templates/" + params.templatefile;
+//     if (params.templatefile[0] != '/') //path is not absolute
+        {
+         fname_template = current_path() + "/" + params.templatefile;
 
          if (! file_exists (fname_template))
             fname_template = current_path() + "/templates/" + params.templatefile;
 
          if (! file_exists (fname_template))
-            fname_template = current_path() + "/" + params.templatefile;
+            fname_template = get_home_dir() + "/.config/logfilegen/templates/" + params.templatefile;
+
+         if (! file_exists (fname_template))
+            fname_template = "/etc/logfilegen/templates/" + params.templatefile;
 
          if (! file_exists (fname_template))
             {
