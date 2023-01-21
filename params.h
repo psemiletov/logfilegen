@@ -30,6 +30,7 @@ public:
   bool pure;
   bool bstdout;
   bool debug;
+  bool benchmark;
 
   void print();
 };

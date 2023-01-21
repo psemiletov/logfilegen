@@ -247,13 +247,9 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname): CGe
 
 void CGenCycleUnrated::loop()
 {
-   //cout << "void CGenCycleUnrated::loop()" << endl;
-
    auto start = high_resolution_clock::now();
 
-//   int seconds_counter = 0;
-
-   /*unsigned long long*/size_t lines_counter = 0;
+   size_t lines_counter = 0;
 
   // using clock = std::chrono::steady_clock;
 
@@ -319,6 +315,13 @@ void CGenCycleUnrated::loop()
   auto stop = high_resolution_clock::now();
   auto duration = duration_cast<microseconds>(stop - start);
   auto duration_s = duration_cast<seconds>(stop - start);
+
+  if (params->benchmark)
+     {
+      double lines_per_second = (double) lines_counter / duration_s.count();
+      cout << "Benchmark, lines per second: " << lines_per_second << endl;
+     }
+
 
   if (params->debug)
      {

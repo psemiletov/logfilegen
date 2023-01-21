@@ -21,6 +21,8 @@ You can use following configuration variables:
 
 **pure=boolean** - "true" or "false" (default). It "true", logfilegen just generate log lines at the memory without the actual file output.
 
+**benchmark=boolean** - "true" or "false" (default). It "true", logfilegen run the generation at full speed, with the current template (or the default one if not provided), to the current log file. Results, in lines per second, may vary depended on the template complexity, randomize engine work, use of gzip, log rotation settings.
+
 **duration=integer** - how many seconds runs the lines gerenation cycle. If 0 (zero), cycle will run until break by Ctrl-C.
 
 **rate=integer** - how many lines we generate at the each cycle iteration. If ```rate``` = 0, logfilegen performs non-timed loop with the full processor power.
@@ -67,7 +69,7 @@ In this example, we run logfilgen for a 2 seconds, generating 5 lines per second
 
 ### Command line parameters
 
-All configuration variables from the configuration file can be **overriden** using command line options in the format ```---key=value```. For example:
+All configuration variables from the configuration file can be **overriden** using command line options in the format ```--key=value```. For example:
 
 ```console
 logfilegen --duration=3
@@ -103,6 +105,8 @@ In thos case, the usual variable name must be prefoxed with ```LFG``` (shortened
 **LFG_LINES** - set **lines**
 
 **LFG_SIZE* - set **size**
+
+**LFG_BENCHMARK* - set **size**
 
 
 Example:

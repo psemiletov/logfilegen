@@ -20,6 +20,7 @@ void CParameters::print()
   cout << "max_log_files: " << max_log_files << endl;
   cout << "logsize: " << max_log_file_size << endl;
   cout << "size: " << size << endl;
+  cout << "benchmark: " << benchmark << endl;
 
 
   cout << "pure: " << pure << endl;

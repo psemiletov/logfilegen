@@ -74,7 +74,8 @@ int main (int argc, char *argv[])
 
   vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE",
                             "LFG_TEMPLATE", "LFG_DEBUG", "LFG_PURE",
-                            "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP", "LFG_LINES", "LFG_SIZE", "LFG_RANDOM"};
+                            "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP",
+                            "LFG_LINES", "LFG_SIZE", "LFG_RANDOM", "LFG_BENCHMARK"};
 
   CParameters params;
   string fname_config;
@@ -97,16 +98,6 @@ int main (int argc, char *argv[])
 
 
 //Try to load params from config
-/*
-
-  string fname_config = "/etc/logfilegen/logfilegen.conf";
-
-  if (! file_exists (fname_config))
-      fname_config = get_home_dir() + "/.config/logfilegen/logfilegen.conf";
-
-  if (! file_exists (fname_config))
-      fname_config = current_path() + "/logfilegen.conf";
-*/
 
     if (fname_config.empty())
        fname_config = find_config_in_paths ("logfilegen.conf");
@@ -117,11 +108,11 @@ int main (int argc, char *argv[])
    CPairFile opts_config (fname_config);
 
    params.lines = opts_config.get_uint ("lines", 0);
-   //params.lines_unrated = opts_config.get_uint ("linesunrated", 0);
    params.s_size = opts_config.get_string ("size", "0");
 
    params.timestamp = opts_config.get_string ("timestamp", "%d/%b/%Y:%H:%M:%S %z");
    params.random = opts_config.get_bool ("random", false);
+   params.benchmark = opts_config.get_bool ("benchmark", false);
 
 
    params.duration = opts_config.get_int ("duration", 0);
@@ -162,6 +153,7 @@ int main (int argc, char *argv[])
   params.mode = opts_cmdline.get_string ("mode", params.mode);
   params.pure = opts_cmdline.get_bool ("pure", params.pure);
   params.random = opts_cmdline.get_bool ("random", params.random);
+  params.benchmark = opts_cmdline.get_bool ("benchmark", params.benchmark);
 
 
   params.use_gzip = opts_cmdline.get_bool ("gzip", params.use_gzip);
@@ -210,6 +202,7 @@ int main (int argc, char *argv[])
   params.debug = opts_envars.get_bool ("debug", params.debug);
   params.use_gzip = opts_envars.get_bool ("gzip", params.use_gzip);
   params.random = opts_envars.get_bool ("random", params.random);
+  params.benchmark = opts_envars.get_bool ("benchmark", params.benchmark);
 
 
   params.max_log_files = opts_envars.get_int ("logcount", params.max_log_files);
@@ -266,7 +259,7 @@ int main (int argc, char *argv[])
 
        }
 
-  if (params.templatefile[0] == '/') //path is absolute
+  if (is_path_abs (params.templatefile))
      if (! file_exists (fname_template))
         {
          cout << "No template file " << fname_template << " found, exiting" << endl;
@@ -274,44 +267,31 @@ int main (int argc, char *argv[])
         }
 
 
+  if (params.benchmark)
+     {
+      params.rate = 0;
+      params.duration = 5;
+      params.size = 0;
+      params.lines = 0;
+      params.pure = false;
 
-//  cout << "fname_template: " << fname_template << endl;
-/*
-     CGenCycleRated cycle (&params, fname_template);
-     if (cycle.open_logfile())
-        cycle.loop();
-  */
+      //params.use_gzip
 
-/*
- if (params.lines_unrated == 0)
-    {
-     CGenCycleRated cycle (&params, fname_template);
-     if (cycle.open_logfile())
-        cycle.loop();
-    }
- else
+     }
+
+
+  if (params.rate == 0)
     {
      CGenCycleUnrated cycle (&params, fname_template);
      if (cycle.open_logfile())
         cycle.loop();
     }
-*/
-
-
-
-
- if (params.rate == 0)
-    {
-     CGenCycleUnrated cycle (&params, fname_template);
-     if (cycle.open_logfile())
-        cycle.loop();
-    }
- else
-    {
-     CGenCycleRated cycle (&params, fname_template);
-     if (cycle.open_logfile())
-        cycle.loop();
-    }
+  else
+      {
+      CGenCycleRated cycle (&params, fname_template);
+      if (cycle.open_logfile())
+         cycle.loop();
+     }
 
 
   return 0;
