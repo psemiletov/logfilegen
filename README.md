@@ -8,33 +8,28 @@ The server log file generator
 [![Docker](../../actions/workflows/docker.yml/badge.svg)](../../actions/workflows/docker.yml)
 [![Docker downloads](https://img.shields.io/docker/pulls/psemiletov/logfilegen.svg)](https://hub.docker.com/r/psemiletov/logfilegen)
 
+[Official site](https://psemiletov.github.io/logfilegen/)
+
 [Dockerhub repo](https://hub.docker.com/r/psemiletov/logfilegen/general)
 
 [AUR](https://aur.archlinux.org/packages/logfilegen)
 
 
-THIS SOFTWARE IS IN ALPHA STATE!!!!
+## USE
 
-## PREFACE
-
-All that is documented is work.
-
-
-## INSTALLATION
-
-To compile logfilegen from the source you need GCC/g++ or Clang with C++11 version support. If you did not compiled programs before, install g++ or Clang, and **make** utility to your system. Then, in the simplest case, run as root or with sudo, at the logfilegen source directory:
+The server log file generator. logfilegen is controlled by the configuration variables and templates. The usual way to run logfilegen from the command line is, for example:
 
 
 ```console
-make
-make install
+logfilegen --template=mytemplate.tp --duration=20 --rate=100 --logfile=out.log
 ```
 
-And to uninstall:
+The **configuration variables** affects how logfilegen works, and **templates** affects the  generation of log file.
 
+Please read the Manual:
 
-```console
-make uninstall
-```
+[Installation](/docs/inst.md)
+[Configuration](/docs/config.md)
+[Using templates](/docs/templates.md)
 
 

@@ -14,4 +14,5 @@ The **configuration variables** affects how logfilegen works, and **templates** 
 There are many customization ways for logfilegen. To master them, you can read the following chapters:
 
 [Using configuration](config.md)
+
 [Using templates](templates.md)
