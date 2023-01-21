@@ -237,7 +237,7 @@ Frank Black
 Skinny Puppy
 ```
 
-When processed, the ```@file_source:/home/test/testsource.txt``` directive will load ```/home/test/testsource.txt```, transform it to "|"-separated values and choose one of them randomly.
+When processed, the ```@file_source:/home/test/testsource.txt``` directive will load ```/home/test/testsource.txt```, transform it to ```|```-separated values and choose one of them randomly.
 
 
 
