@@ -104,7 +104,7 @@ In thos case, the usual variable name must be prefoxed with ```LFG``` (shortened
 
 **LFG_LINES** - set **lines**
 
-**LFG_SIZE* - set **size**
+**LFG_SIZE** - set **size**
 
 **LFG_BENCHMARK* - set **size**
 
