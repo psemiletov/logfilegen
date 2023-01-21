@@ -1,6 +1,5 @@
 #include <thread>
 
-
 #include "cycle.h"
 
 
@@ -15,8 +14,6 @@ void f_signal_handler (int signal)
   g_signal = signal;
   cout << "SIGNAL!!!" << endl;
 }
-
-
 
 
 CGenCycle::CGenCycle (CParameters *prms, const string &fname)
@@ -35,7 +32,6 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
       params->duration = 0;
       params->lines = 0;
      }
-
 
 
   logrotator = new CLogRotator (params->logfile, params->max_log_files, string_to_file_size (params->max_log_file_size));
@@ -140,7 +136,7 @@ void CGenCycleRated::loop()
 
    auto start = high_resolution_clock::now();
 
-   /*unsigned long long*/ size_t lines_counter = 0;
+   size_t lines_counter = 0;
 
    int seconds_counter = 0;
    int frame_counter = 0;

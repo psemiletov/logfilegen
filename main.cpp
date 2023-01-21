@@ -213,13 +213,13 @@ int main (int argc, char *argv[])
 
   if (params.debug)
       params.print();
-
-  if (params.rate == 0 && params.size == 0 && params.duration == 0 && params.lines == 0)
+/*
+  if (params.size == 0 && params.duration == 0 && params.lines == 0)
      {
       cout << "Wrong parameters, please read the manual" << endl;
       return 0;
      }
-
+*/
 
   if (params.logfile == "stdout")
      params.bstdout = true;
