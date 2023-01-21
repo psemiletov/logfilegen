@@ -199,7 +199,6 @@ int main (int argc, char *argv[])
   params.s_size = opts_envars.get_string ("size", params.s_size);
   params.timestamp = opts_envars.get_string ("timestamp", params.timestamp);
 
-
   params.lines = opts_envars.get_uint ("lines", params.lines);
   params.duration = opts_envars.get_int ("duration", params.duration);
   params.rate = opts_envars.get_int ("rate", params.rate);

@@ -493,15 +493,35 @@ CTpl::CTpl (const string &fname, const string &amode)
       vars.insert (std::make_pair ("$http_user_agent", new CVar ("$http_user_agent", "Mozilla|Chrome|Vivaldi|Opera")));
       vars.insert (std::make_pair ("$seconds_random", new CVar ("$seconds_random", "pri")));
       vars.insert (std::make_pair ("$protocol", new CVar ("$protocol", "HTTP/1.1")));
-      vars.insert (std::make_pair ("$remote_addr", new CVar ("$remote_addr", "IP_RANDOM")));
-      vars.insert (std::make_pair ("$remote_user", new CVar ("$remote_user", "USER_WORD|USER_NUMBER")));
+      vars.insert (std::make_pair ("$remote_addr", new CVar ("$remote_addr", "@ip_random")));
+      vars.insert (std::make_pair ("$remote_user", new CVar ("$remote_user", "@str_random:8|@int_random:8")));
       vars.insert (std::make_pair ("$request", new CVar ("$request", "GET|POST|PUT|PATCH|DELETE")));
       vars.insert (std::make_pair ("$request_time", new CVar ("$request_time", "0.001..60.000")));
       vars.insert (std::make_pair ("$status", new CVar ("$status", "200|400")));
-      vars.insert (std::make_pair ("$time_iso8601", new CVar ("$time_iso8601", "%Y-%m-%dT%H:%M:%SZ"))); //don't redefine
-      vars.insert (std::make_pair ("$time_local", new CVar ("$time_local", "%d/%b/%Y:%H:%M:%S %z")));
+      vars.insert (std::make_pair ("$time_iso8601", new CVar ("$time_iso8601", "@datetime:%Y-%m-%dT%H:%M:%SZ"))); //don't redefine
+      vars.insert (std::make_pair ("$time_local", new CVar ("$time_local", "@datetime:%d/%b/%Y:%H:%M:%S %z")));
       vars.insert (std::make_pair ("$uri", new CVar ("$uri", "/|/favico.ico|/doc")));
      }
+
+
+     //logstrings["apache"] = "\"%h %l %u %t \"%r\" %>s %b\"";
+
+    if (mode == "apache")
+     {
+      vars.insert (std::make_pair ("$logstring", new CVar ("$logstring", logstrings["apache"])));
+
+      vars.insert (std::make_pair ("%h", new CVar ("%h", "@ip_random")));
+      vars.insert (std::make_pair ("%l", new CVar ("%l", "@str_random:8|-")));
+      vars.insert (std::make_pair ("%u", new CVar ("%u", "@str_random:8|-")));
+      vars.insert (std::make_pair ("%t", new CVar ("%t", "@datetime:%d/%b/%Y:%H:%M:%S %z")));
+      vars.insert (std::make_pair ("%r", new CVar ("%r", "//GET /hello.html HTTP/1.1.")));
+      //GET /hello.html HTTP/1.1.
+      vars.insert (std::make_pair ("%>s", new CVar ("%>s", "200|400")));
+      vars.insert (std::make_pair ("%b", new CVar ("%b", "1..9999")));
+
+
+     }
+
 
 
   for (map <string, string>::const_iterator it = pf->values.begin(); it != pf->values.end(); it++)
