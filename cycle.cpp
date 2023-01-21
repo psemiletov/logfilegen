@@ -319,7 +319,7 @@ void CGenCycleUnrated::loop()
   if (params->benchmark)
      {
       double lines_per_second = (double) lines_counter / duration_s.count();
-      cout << "Benchmark, lines per second: " << lines_per_second << endl;
+      cout << "Benchmark, lines per ndsecond: " << lines_per_second << endl;
      }
 
 
