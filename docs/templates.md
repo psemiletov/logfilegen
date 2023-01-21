@@ -1,6 +1,6 @@
 ## Templates
 
-The generating log file content is defined by the templates file.
+The generating log file content is defined by the template file. You can have several template files of different purposes.
 
 Template is a plain text file with key=value lines. Each key corresonds to variable of some web server (nginx support is currently implemented and used by default). To use the template file, use ```--template=filename``` option. If no absolute path given, the file must be placed to one of the following locations: the current directory, ```./templates```, ```$HOME/.config/logfilegen/templates```, or ```/etc/logfilegen/templates```. logfilegen will use the first founded template with a given filename, so the template ```test.tp``` in the current directory overrides ```./templates/test.tp```, etc.
 
@@ -40,19 +40,78 @@ We define the variable ```$test``` with the value ```hello```, the variable ```t
 
 The value of the variable can be:
 
-- string (```hello```)
+- text (```hello```)
 
-- integer number (```777```)
+- fractional number with a fixed point (```1.0001```)
 
-- real number with a fixed point (```1.0001```)
+- range of integer numbers (```$var=1..1111111```)
 
-date and time (```%d%b%Y:%H:%M:%S %z```)
+- sequence (```$var=APPLE|2000|FRUITS|HELLO|POTATO```)
 
-range of integer numbers (```$var=1..1111111```)
+- macros (```@macros:value1:value2```). Note! Using of macros directly in ```$logstring``` is possible but not desirable.
 
-sequence of strings (```$var=APPLE|2000|FRUITS|HELLO|POTATO```)
 
-macros (```@macros:value1:value2```). Note! Using of macros directly in ```$logstring``` is possible but not desirable.
+#### text value
+
+The **text** value can be any text - characters, spaces, numbers, etc.
+
+Format: ```$variable=value```
+
+Example:
+
+
+```
+$test=world
+$logstring=hello, $test!
+```
+
+The output string will be ```hello, world!```.
+
+
+#### fractional number with a fixed point
+
+Used in a rare cases, to generate random seconds-like value with some digits after the fixed point.
+
+Format: ```$variable=min_seconds.mantissa..max_seconds.mantissa```
+
+We set the minimum and maximum generating values. The digits in mantissa defines the precision after the fixed point. For example, how we define the value that can vary from 0 to 60 seconds with msecs precision:
+
+```
+$seconds_random=0.001..59.000
+$logstring=$seconds_random
+```
+
+#### range of integer numbers
+
+The value can vary randomly from the minimum to the maximum range limits.
+
+Format: ```$variable=min..max```
+
+Example:
+
+```
+$status=400..451
+$logstring=status is $status
+```
+
+At the each log string generating iteration, ```$status``` will be random number within 400 to 451 range.
+
+
+#### sequence
+
+The sequence is a set of values, delimeted by "|". Each value can be choosed randomly at each variable use during the logstring generation.
+
+Format: ```$variable=value 1|value 2|etc|```
+
+Example:
+
+```
+$status=403|404|502|200
+$logstring=status is $status
+```
+
+#### macros
+
 
 
 
