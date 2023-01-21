@@ -28,9 +28,9 @@ The **configuration variables** affects how logfilegen works, and **templates** 
 
 Please read the Manual:
 
-[Installation](/docs/inst.md)
+[Installation](https://psemiletov.github.io/logfilegen/inst.html)
 
-[Configuration](/docs/config.md)
+[Configuration](https://psemiletov.github.io/logfilegen/config.html)
 
-[Using templates](/docs/templates.md)
+[Using templates](https://psemiletov.github.io/logfilegen/templates.html)
 
