@@ -29,7 +29,8 @@ The **configuration variables** affects how logfilegen works, and **templates** 
 Please read the Manual:
 
 [Installation](/docs/inst.md)
-[Configuration](/docs/config.md)
-[Using templates](/docs/templates.md)
 
+[Configuration](/docs/config.md)
+
+[Using templates](/docs/templates.md)
 
