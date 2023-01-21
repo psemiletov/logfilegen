@@ -112,5 +112,5 @@ Example:
 
 ## READ NEXT - TEMPLATES
 
-[Templates manual](/docs/templates.md)
+[Templates manual](templates.md)
 
