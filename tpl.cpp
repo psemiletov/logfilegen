@@ -68,6 +68,8 @@ CVar::CVar (const string &key, const string &val)
      {
       vartype = VT_SEQ;
 
+      cout << "!!!! " <<  val << endl;
+
       size_t pos = val.find (":");
       if (pos == string::npos)
          {
@@ -81,8 +83,9 @@ CVar::CVar (const string &key, const string &val)
          {
           string t2 = string_replace_all (t1, "\n", "|");
           t2 = string_replace_all (t2, "\r\n", "|"); //for windows
-
+          t2.pop_back(); //remove last |
           value = t2;
+
          }
       }
 
@@ -133,6 +136,9 @@ CVar::CVar (const string &key, const string &val)
           rnd_path_min = atoi (vt[1].c_str());
           rnd_path_max = atoi (vt[2].c_str());
           rnd_path_deep = atoi (vt[3].c_str());
+
+          if (rnd_path_deep == 0)
+             rnd_path_deep = 1;
 
           vartype = VT_SINGLE;
           value = "STRRNDPATH";
@@ -300,13 +306,6 @@ string CVar::get_val()
 
 
    //handle macros
-
-
-//  if (result == "USER_WORD")
-  //    return gen_word (rnd_length);
-
-//  if (result == "USER_NUMBER")
-  //    return gen_number (rnd_length);
 
   if (result == "INTRNDMZ" && len_max == 0)
       return gen_number (rnd_length);
@@ -492,7 +491,7 @@ CTpl::CTpl (const string &fname, const string &amode)
       vars.insert (std::make_pair ("$document_uri", new CVar ("$document_uri", "/|/favico.ico|/doc")));
       vars.insert (std::make_pair ("$http_referer", new CVar ("$http_referer", "-")));
       vars.insert (std::make_pair ("$http_user_agent", new CVar ("$http_user_agent", "Mozilla|Chrome|Vivaldi|Opera")));
-      vars.insert (std::make_pair ("$seconds_random", new CVar ("$seconds_random", "0.001..60.000")));
+      vars.insert (std::make_pair ("$seconds_random", new CVar ("$seconds_random", "pri")));
       vars.insert (std::make_pair ("$protocol", new CVar ("$protocol", "HTTP/1.1")));
       vars.insert (std::make_pair ("$remote_addr", new CVar ("$remote_addr", "IP_RANDOM")));
       vars.insert (std::make_pair ("$remote_user", new CVar ("$remote_user", "USER_WORD|USER_NUMBER")));

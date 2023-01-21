@@ -34,9 +34,9 @@ public:
   int precision;
   int rnd_length;
 
-  int rnd_path_deep;
-  int rnd_path_min;
-  int rnd_path_max;
+  size_t rnd_path_deep;
+  size_t rnd_path_min;
+  size_t rnd_path_max;
 
   int len_min;
   int len_max;

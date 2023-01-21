@@ -55,7 +55,7 @@ The value of the variable can be:
 
 The **text** value can be any text - characters, spaces, numbers, etc.
 
-Format: ```$variable=value```
+Syntax: ```$variable=value```
 
 Example:
 
@@ -72,7 +72,7 @@ The output string will be ```hello, world!```.
 
 Used in a rare cases, to generate random seconds-like value with some digits after the fixed point.
 
-Format: ```$variable=min_seconds.mantissa..max_seconds.mantissa```
+Syntax: ```$variable=min_seconds.mantissa..max_seconds.mantissa```
 
 We set the minimum and maximum generating values. The digits in mantissa defines the precision after the fixed point. For example, how we define the value that can vary from 0 to 60 seconds with msecs precision:
 
@@ -85,7 +85,7 @@ $logstring=$seconds_random
 
 The value can vary randomly from the minimum to the maximum range limits.
 
-Format: ```$variable=min..max```
+Syntax: ```$variable=min..max```
 
 Example:
 
@@ -110,102 +110,120 @@ $status=403|404|502|200
 $logstring=status is $status
 ```
 
+When processed, $status value will be 403 or 404 or 502 or 200 randomly.
+
+
 #### macros
 
+Macros are programmatically-generated values with a special names and parameters (optional or mandatory). Parameters are delimited by the colons (":"). Macros must be used as **variable values**, not as the elements of the ```$logstring``` directly.
 
+Here are a list of logfilegen macros:
 
+##### @datetime
 
+Current date and time stamp with a given [strftime-based format](https://en.cppreference.com/w/c/chrono/strftime).
 
-
-## Examples
-
-
-```
-$test=@str_random:2
-$test2=@str_random:2|@int_random:4
-$test3=@str_random:4:12
-$logstring=hello $test $test2 $test3 world
-```
-
-```
-$test2=@str_random:2|@int_random:4:6
-$logstring=hello $test2 world
-```
-
-## OLD TEXT - TO REWRITE!!!
-
-
-In macros, we can use **ranges** (i.e. ```1..1111111```) and **sequences** (```1|3|6|888|HELLO|WORLD```). The ranged value means that macro will be replaced with the randomly taken value within the range. The sequences is the set of values, where one of them will be choosen randomly.
-
-Each variable can be uses **one time** per line, i.e. there is no ```$status foobar $status``` support.
-
-Among standard nginx variables, you can define your own, for example:
-
-```
-$time_local=%x:%X
-$request=POST
-$status=200|404
-$body_bytes_sent=100..10000
-$testvar=HELLO|WORLD
-$time_iso8601=%Y-%m-%dT%H:%M:%SZ
-$logstring=$time_iso8601 $testvar $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
-```
-
-Here we define two custom variables - ``$testvar`` that can be "HELLO" or "WORLD" on each log generation iteration, and ```$time_iso8601``` with ```%Y-%m-%dT%H:%M:%SZ``` date time format.
-
-In the template you can define "randomization" variable for the numbers and strings with a given length. Such variable values can use ```$int_random``` and ```$str_random``` macros, with the length of the sequence to generate. Example:
-
-```
-$test=@str_random:10
-$logstring=hello $test world
-```
-
-So, specify the length of the generated word after the ":". I.e. ```@int_random:5``` or ```@str_random:11```
-
-
-To define timestamp variable with [strftime-based](https://en.cppreference.com/w/c/chrono/strftime) format, use ```@datetime``` macro with syntax: ```@datetime:format```. Example of the template that uses ```@datetime```:
-
-```
-$test=$datetime:%d-%b-%Y %H:%M:%S %z
-$logstring=hello $test world
-```
-
-logfilegen can deal with seconds-based fixed point variables with msecs resolution such as ```$request_time```, ```$connection_time``` (and special ```$seconds_random```). They can be redefined or used in a following way:
-
-```
-$test=1.0..60.0
-$logstring=world $request_time $status $test hello $seconds_random
-```
-
-Fixed point values must contain the dot symbol (.) as the fixed point. The precision is controlled by the number of digits after the fixed point, i.e. 1.0000 has the precision 4.
-
-
-### Template macros
-
-
-- **@ip_random** - generate a random ip.
+Syntax: ```$variable=@datetime:format```
 
 Example:
 
 ```
-$logstring=@datetime:%d%b%Y:%H:%M:%S %z @ip_random
+$timestamp=@datetime:%d/%b/%Y:%H:%M:%S %z
+$logstring=how is $timestamp
+```
+
+Here we set the standard date-time format of **nginx** log.
+
+##### @str_random
+
+Generates a random string with a given length.
+
+Syntax: ```$variable=@str_random:length``` or ```$variable=@str_random:min:max```
+
+Example. Here we generate a random string of 8 characters:
+
+```
+$test=@str_random:8
+$logstring=hello, $test
+```
+
+Example. Here we generate a random string with the length from 8 to 16 characters:
+
+```
+$test=@str_random:8:16
+$logstring=hello, $test
+```
+
+##### @int_random
+
+Generates a random integer number with a given length.
+
+Syntax: ```$variable=@int_random:length``` or ```$variable=@int_random:min:max```
+
+Example. Here we generate a random humber of 8 digits:
+
+```
+$test=@int_random:8
+$logstring=hello, $test
+```
+
+Example. Here we generate a random digits with the length from 8 to 16 digits:
+
+```
+$test=@int_random:8:16
+$logstring=hello, $test
 ```
 
 
-**$file_source**
+##### @ip_random
 
-```@file_source:full path to file``` - acts as the text file loader for **sequence** variable values. Consider we have the template like this:
+Generates the random IP address.
+
+Syntax: ```$variable=@ip_random```
+
+Example:
+
+```
+$test=@ip_random
+$logstring=hello, $test
+```
+
+
+##### @str_path
+
+Generates the random path with a given minimum and maximum length of each path **element**, and the maximum subdirectories depths.
+
+Syntax: ```@str_path:min:max:depth```
+
+Example:
+
+```
+$testpath=@str_path:1:10:3
+$logstring=The paths is $testpath
+```
+
+Were, macro ```@str_path``` expands to the random-generated path with the path parts length randomly varied from 1 to 10, and depth from 1 to 3
+
+
+
+##### $file_source
+
+Acts as the text file loader for **sequence** variable values.
+
+Syntax: ```@file_source:full path to file```
+
+Consider we have the template like this:
 
 ```
 $groups=Beatles|Nirvana|Radiohead
-$logstring=hello $groups world
+$logstring=hello, $groups!
 ```
 
-Here we defined the sequence of values, separated by "|". But what if we want to have large list of such values, dozens or hundreds? In this case, use ```$file_source``` variable (with the **full path to the file**). Edit our example to something like that:
+Here we defined the sequence of values, separated by "|". But what if we want to have large list of such values, dozens or hundreds? In this case, use ```$file_source``` variable (with the **full file path**). Edit our example to something like that:
 
 ```
 $groups=@file_source:/home/test/testsource.txt
-$logstring=hello $groups world
+$logstring=hello, $groups!
 ```
 
 And create the ```/home/test/testsource.txt``` just with the plan text content, line by line (with new line at the end), for example:
@@ -219,18 +237,24 @@ Frank Black
 Skinny Puppy
 ```
 
-When processed, the ```@file_source:/home/test/testsource.txt``` directive will load ```/home/test/testsource.txt```, transform to "|"-separated values and choose one of them randomly.
+When processed, the ```@file_source:/home/test/testsource.txt``` directive will load ```/home/test/testsource.txt```, transform it to "|"-separated values and choose one of them randomly.
 
 
-**$str_path**
 
-```@str_path:min:max:deep```, let'e show the example of the template:
+
+
+### Complex examples
+
+#### Example 01
 
 ```
-$testpath=@str_path:1:10:3
-$logstring=hello 4testpath world
+$remote_addr=@ip_random
+$remote_user=@str_random:4:12|@int_random:16
+$time_local=%x:%X
+$request=POST|GET
+$status=200|404
+$body_bytes_sent=100..10000
+$time_iso8601=%Y-%m-%dT%H:%M:%SZ
+$logstring=$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
 ```
-
-Macro ```@str_path``` expands to the random-generated path with the path parts length randomly varied from ```min``` to ```max```, using ```deep``` subdirectories.
-
 
