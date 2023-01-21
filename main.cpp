@@ -196,7 +196,7 @@ int main (int argc, char *argv[])
 
   CPairFile opts_envars (envars);
 
-  params.s_size = opts_envars.get_string ("size", params.s_size);
+  params.s_size = opts_envars.get_string ("size", params.saffectsaffectsaffe_size);
   params.timestamp = opts_envars.get_string ("timestamp", params.timestamp);
 
 
