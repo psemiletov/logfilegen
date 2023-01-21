@@ -99,7 +99,7 @@ At the each log string generating iteration, ```$status``` will be random number
 
 #### sequence
 
-The sequence is a set of values, delimeted by "|". Each value can be choosed randomly at each variable use during the logstring generation.
+The sequence is a set of values, delimeted by ```|```. Each value can be choosed randomly at each variable use during the logstring generation.
 
 Format: ```$variable=value 1|value 2|etc|```
 
@@ -219,7 +219,7 @@ $groups=Beatles|Nirvana|Radiohead
 $logstring=hello, $groups!
 ```
 
-Here we defined the sequence of values, separated by "|". But what if we want to have large list of such values, dozens or hundreds? In this case, use ```$file_source``` variable (with the **full file path**). Edit our example to something like that:
+Here we defined the sequence of values, separated by ``|``. But what if we want to have large list of such values, dozens or hundreds? In this case, use ```$file_source``` variable (with the **full file path**). Edit our example to something like that:
 
 ```
 $groups=@file_source:/home/test/testsource.txt

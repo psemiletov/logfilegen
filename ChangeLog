@@ -1,3 +1,5 @@
+* --templatefile renamed to --template
+
 + multilply use of variables in $logstring
 + $datetime:format macro
 - "$time_" prefixes

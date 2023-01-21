@@ -73,7 +73,7 @@ int main (int argc, char *argv[])
 
 
   vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE",
-                            "LFG_TEMPLATEFILE", "LFG_DEBUG", "LFG_PURE",
+                            "LFG_TEMPLATE", "LFG_DEBUG", "LFG_PURE",
                             "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP", "LFG_LINES", "LFG_SIZE", "LFG_RANDOM"};
 
   CParameters params;
@@ -127,7 +127,7 @@ int main (int argc, char *argv[])
    params.duration = opts_config.get_int ("duration", 0);
    params.rate = opts_config.get_int ("rate", 0);
    params.logfile = opts_config.get_string ("logfile", "stdout");
-   params.templatefile = opts_config.get_string ("templatefile", "NOTEMPLATEFILE");
+   params.templatefile = opts_config.get_string ("template", "NOTEMPLATEFILE");
    params.mode = opts_config.get_string ("mode", "nginx");
    params.pure = opts_config.get_bool ("pure", false);
    params.debug = opts_config.get_bool ("debug", false);
@@ -158,7 +158,7 @@ int main (int argc, char *argv[])
   params.duration = opts_cmdline.get_int ("duration", params.duration);
   params.rate = opts_cmdline.get_int ("rate", params.rate);
   params.logfile = opts_cmdline.get_string ("logfile", params.logfile);
-  params.templatefile = opts_cmdline.get_string ("templatefile", params.templatefile);
+  params.templatefile = opts_cmdline.get_string ("template", params.templatefile);
   params.mode = opts_cmdline.get_string ("mode", params.mode);
   params.pure = opts_cmdline.get_bool ("pure", params.pure);
   params.random = opts_cmdline.get_bool ("random", params.random);
@@ -204,7 +204,7 @@ int main (int argc, char *argv[])
   params.duration = opts_envars.get_int ("duration", params.duration);
   params.rate = opts_envars.get_int ("rate", params.rate);
   params.logfile = opts_envars.get_string ("logfile", params.logfile);
-  params.templatefile = opts_envars.get_string ("templatefile", params.templatefile);
+  params.templatefile = opts_envars.get_string ("template", params.templatefile);
   params.mode = opts_envars.get_string ("mode", params.mode);
   params.pure = opts_envars.get_bool ("pure", params.pure);
 
