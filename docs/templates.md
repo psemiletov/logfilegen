@@ -36,7 +36,7 @@ $logstring=Hi! $test $test2 $remote_addr
 
 As a result, logfilegen will generate to the log file the following line: ```Hi! hello world 1111.1111.1111.1111```.
 
-We define the variable ```$test``` with the value ```hello```, the variable ```test2``` with ```world``` value, set ```$remote_addr``` to ```1111.1111.1111.1111``` and use that macros at the value of ```$logstring```.
+We define the variable ```$test``` with the value ```hello```, the variable ```test2``` with ```world``` value, set ```$remote_addr``` to ```1111.1111.1111.1111``` and use these variables at the value of ```$logstring```.
 
 The value of the variable can be:
 
