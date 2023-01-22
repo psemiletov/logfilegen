@@ -18,6 +18,7 @@
 #include "utl.h"
 #include "vars.h"
 
+
 int get_value_nature (const string &s)
 {
   if (s.empty())
@@ -180,6 +181,8 @@ CVar::~CVar()
 }
 
 
+
+
 int CVar::get_rnd (int ta, int tb)
 {
    std::uniform_int_distribution <> distrib (ta, tb);
@@ -326,6 +329,8 @@ string CVar::get_datetime (const string &format)
   auto result = oss.str();
   return result;
 }
+
+
 
 
 string CVar::get_val()
