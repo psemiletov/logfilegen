@@ -31,6 +31,8 @@ public:
   bool bstdout;
   bool debug;
   bool benchmark;
+  bool stats;
+
 
   void print();
 };

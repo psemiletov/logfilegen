@@ -75,7 +75,8 @@ int main (int argc, char *argv[])
   vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE",
                             "LFG_TEMPLATE", "LFG_DEBUG", "LFG_PURE",
                             "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP",
-                            "LFG_LINES", "LFG_SIZE", "LFG_RANDOM", "LFG_BENCHMARK"};
+                            "LFG_LINES", "LFG_SIZE", "LFG_RANDOM",
+                            "LFG_BENCHMARK", "LFG_STATS"};
 
   CParameters params;
   string fname_config;
@@ -107,26 +108,22 @@ int main (int argc, char *argv[])
    //load params from config:
    CPairFile opts_config (fname_config);
 
-   params.lines = opts_config.get_uint ("lines", 0);
-   params.s_size = opts_config.get_string ("size", "0");
-
-   params.timestamp = opts_config.get_string ("timestamp", "%d/%b/%Y:%H:%M:%S %z");
-   params.random = opts_config.get_bool ("random", false);
    params.benchmark = opts_config.get_bool ("benchmark", false);
-
-
+   params.debug = opts_config.get_bool ("debug", false);
    params.duration = opts_config.get_int ("duration", 0);
-   params.rate = opts_config.get_int ("rate", 0);
+   params.lines = opts_config.get_uint ("lines", 0);
    params.logfile = opts_config.get_string ("logfile", "stdout");
-   params.templatefile = opts_config.get_string ("template", "NOTEMPLATEFILE");
+   params.max_log_file_size = opts_config.get_string ("logsize", "16m");
+   params.max_log_files = opts_config.get_int ("logcount", 5);
    params.mode = opts_config.get_string ("mode", "nginx");
    params.pure = opts_config.get_bool ("pure", false);
-   params.debug = opts_config.get_bool ("debug", false);
+   params.random = opts_config.get_bool ("random", false);
+   params.rate = opts_config.get_int ("rate", 0);
+   params.s_size = opts_config.get_string ("size", "0");
+   params.stats = opts_config.get_bool ("stats", false);
+   params.templatefile = opts_config.get_string ("template", "NOTEMPLATEFILE");
+   params.timestamp = opts_config.get_string ("timestamp", "%d/%b/%Y:%H:%M:%S %z");
    params.use_gzip = opts_config.get_bool ("gzip", false);
-
-   params.max_log_files = opts_config.get_int ("logcount", 5);
-   params.max_log_file_size = opts_config.get_string ("logsize", "16m");
-
 
    if (params.debug)
       params.print();
@@ -139,30 +136,22 @@ int main (int argc, char *argv[])
 
   CPairFile opts_cmdline (argc, argv);
 
-//  params.lines_unrated = opts_cmdline.get_uint ("linesunrated", params.lines_unrated);
-
-  params.timestamp = opts_cmdline.get_string ("timestamp", params.timestamp);
-
-  params.s_size = opts_cmdline.get_string ("size", params.s_size);
-
-  params.lines = opts_cmdline.get_uint ("lines", params.lines);
+  params.benchmark = opts_cmdline.get_bool ("benchmark", params.benchmark);
+  params.debug = opts_cmdline.get_bool ("debug", params.debug);
   params.duration = opts_cmdline.get_int ("duration", params.duration);
-  params.rate = opts_cmdline.get_int ("rate", params.rate);
+  params.lines = opts_cmdline.get_uint ("lines", params.lines);
   params.logfile = opts_cmdline.get_string ("logfile", params.logfile);
-  params.templatefile = opts_cmdline.get_string ("template", params.templatefile);
+  params.max_log_file_size = opts_cmdline.get_string ("logsize", params.max_log_file_size);
+  params.max_log_files = opts_cmdline.get_int ("logcount", params.max_log_files);
   params.mode = opts_cmdline.get_string ("mode", params.mode);
   params.pure = opts_cmdline.get_bool ("pure", params.pure);
   params.random = opts_cmdline.get_bool ("random", params.random);
-  params.benchmark = opts_cmdline.get_bool ("benchmark", params.benchmark);
-
-
+  params.rate = opts_cmdline.get_int ("rate", params.rate);
+  params.s_size = opts_cmdline.get_string ("size", params.s_size);
+  params.stats = opts_cmdline.get_bool ("stats", params.stats);
+  params.templatefile = opts_cmdline.get_string ("template", params.templatefile);
+  params.timestamp = opts_cmdline.get_string ("timestamp", params.timestamp);
   params.use_gzip = opts_cmdline.get_bool ("gzip", params.use_gzip);
-
-  params.debug = opts_cmdline.get_bool ("debug", params.debug);
-
-  params.max_log_files = opts_cmdline.get_int ("logcount", params.max_log_files);
-  params.max_log_file_size = opts_cmdline.get_string ("logsize", params.max_log_file_size);
-
 
   if (opts_cmdline.get_bool ("help", false))
     {
@@ -188,45 +177,33 @@ int main (int argc, char *argv[])
 
   CPairFile opts_envars (envars);
 
-  params.s_size = opts_envars.get_string ("size", params.s_size);
-  params.timestamp = opts_envars.get_string ("timestamp", params.timestamp);
-
-  params.lines = opts_envars.get_uint ("lines", params.lines);
+  params.benchmark = opts_envars.get_bool ("benchmark", params.benchmark);
+  params.debug = opts_envars.get_bool ("debug", params.debug);
   params.duration = opts_envars.get_int ("duration", params.duration);
-  params.rate = opts_envars.get_int ("rate", params.rate);
+  params.lines = opts_envars.get_uint ("lines", params.lines);
   params.logfile = opts_envars.get_string ("logfile", params.logfile);
-  params.templatefile = opts_envars.get_string ("template", params.templatefile);
+  params.max_log_file_size = opts_envars.get_string ("logsize", params.max_log_file_size);
+  params.max_log_files = opts_envars.get_int ("logcount", params.max_log_files);
   params.mode = opts_envars.get_string ("mode", params.mode);
   params.pure = opts_envars.get_bool ("pure", params.pure);
-
-  params.debug = opts_envars.get_bool ("debug", params.debug);
-  params.use_gzip = opts_envars.get_bool ("gzip", params.use_gzip);
   params.random = opts_envars.get_bool ("random", params.random);
-  params.benchmark = opts_envars.get_bool ("benchmark", params.benchmark);
-
-
-  params.max_log_files = opts_envars.get_int ("logcount", params.max_log_files);
-  params.max_log_file_size = opts_envars.get_string ("logsize", params.max_log_file_size);
-
+  params.rate = opts_envars.get_int ("rate", params.rate);
+  params.s_size = opts_envars.get_string ("size", params.s_size);
   params.size = string_to_file_size (params.s_size);
-
+  params.stats = opts_envars.get_bool ("stats", params.stats);
+  params.templatefile = opts_envars.get_string ("template", params.templatefile);
+  params.timestamp = opts_envars.get_string ("timestamp", params.timestamp);
+  params.use_gzip = opts_envars.get_bool ("gzip", params.use_gzip);
 
   if (params.debug)
       params.print();
-/*
-  if (params.size == 0 && params.duration == 0 && params.lines == 0)
-     {
-      cout << "Wrong parameters, please read the manual" << endl;
-      return 0;
-     }
-*/
+
 
   if (params.logfile == "stdout")
      params.bstdout = true;
   else
       params.bstdout = false;
 
-  //if (params.logfile[0] != '/')          //path is local
    if (! is_path_abs (params.logfile))
       params.logfile = current_path() + "/" + params.logfile;
 
@@ -237,8 +214,6 @@ int main (int argc, char *argv[])
 
   if (params.templatefile != "NOTEMPLATEFILE" && ! params.templatefile.empty())
      if (! is_path_abs (params.templatefile))
-
-//     if (params.templatefile[0] != '/') //path is not absolute
         {
          fname_template = current_path() + "/" + params.templatefile;
 
@@ -256,8 +231,7 @@ int main (int argc, char *argv[])
              cout << "No template file " << fname_template << " found, exiting" << endl;
              return 0;
             }
-
-       }
+        }
 
   if (is_path_abs (params.templatefile))
      if (! file_exists (fname_template))
@@ -274,9 +248,6 @@ int main (int argc, char *argv[])
       params.size = 0;
       params.lines = 0;
       params.pure = false;
-
-      //params.use_gzip
-
      }
 
 
@@ -296,4 +267,3 @@ int main (int argc, char *argv[])
 
   return 0;
 }
-

@@ -51,7 +51,7 @@ The value of the variable can be:
 - macros (```@macros:value1:value2```). Note! Using of macros directly in ```$logstring``` is possible but not desirable.
 
 
-#### text value
+### text value
 
 The **text** value can be any text - characters, spaces, numbers, etc.
 
@@ -68,7 +68,7 @@ $logstring=hello, $test!
 The output string will be ```hello, world!```.
 
 
-#### fractional number with a fixed point
+### fractional number with a fixed point
 
 Used in a rare cases, to generate random seconds-like value with some digits after the fixed point.
 
@@ -81,7 +81,7 @@ $seconds_random=0.001..59.000
 $logstring=$seconds_random
 ```
 
-#### range of integer numbers
+### range of integer numbers
 
 The value can vary randomly from the minimum to the maximum range limits.
 
@@ -97,7 +97,7 @@ $logstring=status is $status
 At the each log string generating iteration, ```$status``` will be random number within 400 to 451 range.
 
 
-#### sequence
+### sequence
 
 The sequence is a set of values, delimeted by ```|```. Each value can be choosed randomly at each variable use during the logstring generation.
 
@@ -113,13 +113,13 @@ $logstring=status is $status
 When processed, $status value will be 403 or 404 or 502 or 200 randomly.
 
 
-#### macros
+### macros
 
 Macros are programmatically-generated values with a special names and parameters (optional or mandatory). Parameters are delimited by the colons (":"). Macros must be used as **variable values**, not as the elements of the ```$logstring``` directly.
 
 Here are a list of logfilegen macros:
 
-##### @datetime
+#### @datetime
 
 Current date and time stamp with a given [strftime-based format](https://en.cppreference.com/w/c/chrono/strftime).
 
@@ -134,7 +134,7 @@ $logstring=how is $timestamp
 
 Here we set the standard date-time format of **nginx** log.
 
-##### @str_random
+#### @str_random
 
 Generates a random string with a given length.
 
@@ -154,7 +154,7 @@ $test=@str_random:8:16
 $logstring=hello, $test
 ```
 
-##### @int_random
+#### @int_random
 
 Generates a random integer number with a given length.
 
@@ -174,8 +174,7 @@ $test=@int_random:8:16
 $logstring=hello, $test
 ```
 
-
-##### @ip_random
+#### @ip_random
 
 Generates the random IP address.
 
@@ -188,8 +187,7 @@ $test=@ip_random
 $logstring=hello, $test
 ```
 
-
-##### @str_path
+#### @str_path
 
 Generates the random path with a given minimum and maximum length of each path **element**, and the maximum subdirectories depths.
 
@@ -205,8 +203,7 @@ $logstring=The paths is $testpath
 Were, macro ```@str_path``` expands to the random-generated path with the path parts length randomly varied from 1 to 10, and depth from 1 to 3
 
 
-
-##### $file_source
+#### $file_source
 
 Acts as the text file loader for **sequence** variable values.
 
@@ -241,8 +238,6 @@ When processed, the ```@file_source:/home/test/testsource.txt``` directive will 
 
 
 
-
-
 ### Complex examples
 
 #### Example 01
@@ -250,11 +245,11 @@ When processed, the ```@file_source:/home/test/testsource.txt``` directive will 
 ```
 $remote_addr=@ip_random
 $remote_user=@str_random:4:12|@int_random:16
-$time_local=%x:%X
+$time_local=@datetime:%x:%X
 $request=POST|GET
 $status=200|404
 $body_bytes_sent=100..10000
-$time_iso8601=%Y-%m-%dT%H:%M:%SZ
+$time_iso8601=@datetime:%Y-%m-%dT%H:%M:%SZ
 $logstring=$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
 ```
 

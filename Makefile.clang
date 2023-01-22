@@ -6,7 +6,7 @@ CXX = clang++
 CXXFLAGS = -Wall -g -O3 -std=c++17
 
 all: main.cpp
-	$(CXX) $(CXXFLAGS) -o logfilegen utl.cpp params.cpp tpl.cpp pairfile.cpp logrot.cpp cycle.cpp main.cpp
+	$(CXX) $(CXXFLAGS) -o logfilegen utl.cpp params.cpp vars.cpp  tpl.cpp pairfile.cpp logrot.cpp cycle.cpp main.cpp
 
 clean:
 	$(RM) logfilegen

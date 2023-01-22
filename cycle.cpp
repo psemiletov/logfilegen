@@ -12,7 +12,7 @@ namespace
 void f_signal_handler (int signal)
 {
   g_signal = signal;
-  cout << "SIGNAL!!!" << endl;
+  cout << "Exiting by the signal" << endl;
 }
 
 
@@ -33,23 +33,19 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
       params->lines = 0;
      }
 
-
   logrotator = new CLogRotator (params->logfile, params->max_log_files, string_to_file_size (params->max_log_file_size));
   logrotator->use_gzip = params->use_gzip;
 
-
   tpl = new CTpl (fname_template, params->mode);
 
-  if (params->random)
-     tpl->replace_value_by_key ("$logstring", "$datetime - $str_random$int_random");
-
+//  if (params->random)
+  //   tpl->replace_value_by_key ("$logstring", "$datetime - $str_random$int_random");
 
   std::signal (SIGINT, f_signal_handler);
 
 
   if (! params->bstdout)
      {
-
      //  how many space we occupy with all logfiles?
 
       size_t free_space = get_free_space (get_file_path (params->logfile));
@@ -58,19 +54,14 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
       string test_string = tpl->prepare_log_string();
       test_string_size = test_string.size();
 
-     //  cout << "test_string_size, bytes: " << test_string_size  << endl;
-
       if (params->debug)
          cout << "size_needed, bytes: " << size_needed << endl;
 
       if (size_needed >= free_space)
-        {
-         //exit from program
-
-         cout << "Output files will not fit to the available disk space with current parameters, exiting!" << endl;
-         no_free_space = true;
-         //return;
-        }
+         {
+          cout << "Output files will not fit to the available disk space with current parameters!" << endl;
+          no_free_space = true;
+         }
      }
 
 }
@@ -91,7 +82,6 @@ CGenCycleRated::CGenCycleRated (CParameters *prms, const string &fname): CGenCyc
 
 bool CGenCycle::open_logfile()
 {
-
   file_out_error = false;
 
   if (! params->bstdout && ! no_free_space)
@@ -101,13 +91,11 @@ bool CGenCycle::open_logfile()
           //get current file size
           log_current_size = get_file_size (params->logfile);
 
-
           if (params->debug)
              cout << "log_current_size, bytes: " << log_current_size << endl;
          }
 
       file_out.open (params->logfile, std::ios::app);
-
 
       if (file_out.fail())
          {
@@ -118,7 +106,10 @@ bool CGenCycle::open_logfile()
          }
       else
           file_out.exceptions (file_out.exceptions() | std::ios::failbit | std::ifstream::badbit);
-    }
+     }
+
+   if (no_free_space)
+      return false;
 
    return true;
 }
@@ -126,14 +117,6 @@ bool CGenCycle::open_logfile()
 
 void CGenCycleRated::loop()
 {
-//  cout << "void CGenCycleRated::loop()" << endl;
-
-   //if (params->lines == 0 && params->size == 0 && params->duration == 0)
-     // {
-     //  cout << "all limiters are zero, exiting"
-      //}
-
-
    auto start = high_resolution_clock::now();
 
    size_t lines_counter = 0;
@@ -150,7 +133,6 @@ void CGenCycleRated::loop()
           next_frame += std::chrono::nanoseconds (1000000000 / params->rate);
           //next_frame += std::chrono::microseconds (1000000 / params->rate);
 
-
 //          std::cout << "seconds_counter: " << seconds_counter << endl;
   //        std::cout << "frame_counter: " << frame_counter << endl;
 
@@ -161,9 +143,9 @@ void CGenCycleRated::loop()
               seconds_counter++;
              }
 
-
           frame_counter++;
           lines_counter++;
+
 
           if (params->duration != 0) //not endless
           if (params->lines == 0 && seconds_counter == params->duration)
@@ -175,17 +157,11 @@ void CGenCycleRated::loop()
           if (params->size != 0 && file_size_total > params->size)
               break;
 
-
           if (g_signal == SIGINT)
-             {
-          //    cout << "break the main loop" << endl;
               break;
-             }
+
 
           string log_string = tpl->prepare_log_string();
-
-          //cout << "file_size_total: " << file_size_total << endl;
-
 
           if (! params->pure)
              {
@@ -197,7 +173,6 @@ void CGenCycleRated::loop()
                   file_out << log_string << "\n";
                   log_current_size += log_string.size();
                   file_size_total += log_string.size();
-
 
                   if (log_current_size >= logrotator->max_log_file_size && logrotator->max_log_files > 0)
                      {
@@ -218,7 +193,6 @@ void CGenCycleRated::loop()
 
           std::this_thread::sleep_until (next_frame);
          }
-
 
   auto stop = high_resolution_clock::now();
   auto duration = duration_cast<microseconds>(stop - start);
@@ -256,7 +230,6 @@ void CGenCycleUnrated::loop()
 
           lines_counter++;
 
-
           if (params->lines != 0 && lines_counter > params->lines)
              break;
 
@@ -284,28 +257,28 @@ void CGenCycleUnrated::loop()
                  cout << log_string << "\n";
 
               if (! file_out_error && ! no_free_space)
-                {
-                 file_out << log_string << "\n";
-                 log_current_size += log_string.size();
-                 file_size_total += log_string.size();
+                 {
+                  file_out << log_string << "\n";
+                  log_current_size += log_string.size();
+                  file_size_total += log_string.size();
 
-                 if (log_current_size >= logrotator->max_log_file_size)
-                    {
-                     file_out.close();
-                     log_current_size = 0;
+                  if (log_current_size >= logrotator->max_log_file_size)
+                     {
+                      file_out.close();
+                      log_current_size = 0;
 
-                     logrotator->rotate();
+                      logrotator->rotate();
 
-                     if (! open_logfile())
-                        {
-                         cout << "cannot re-open: " << params->logfile << endl;
-                         break;
-                        }
-                    }
-                }
-             }
+                      if (! open_logfile())
+                         {
+                          cout << "cannot re-open: " << params->logfile << endl;
+                          break;
+                         }
+                     }
+                 }
+              }
          // std::cout << std::time(0) << endl;
-         }
+          }
 
 
   auto stop = high_resolution_clock::now();
@@ -316,6 +289,15 @@ void CGenCycleUnrated::loop()
      {
       double lines_per_second = (double) lines_counter / duration_s.count();
       cout << "Benchmark, lines per seconds: " << lines_per_second << endl;
+     }
+
+  if (params->stats)
+     {
+      cout << "lines_counter : " << lines_counter << endl;
+      cout << "duration_s.count : " << duration_s.count() << endl;
+
+      double lines_per_second = (double) lines_counter / duration_s.count();
+      cout << "Statistics, lines per seconds: " << lines_per_second << endl;
      }
 
 
