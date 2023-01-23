@@ -30,6 +30,10 @@ int get_value_nature (const string &s)
   if (s.find ("..") != string::npos)
      return VT_RANGE;
 
+  if (s.find ("@") != string::npos)
+     return VT_MACRO;
+
+
   return VT_SINGLE;
 }
 
@@ -38,6 +42,36 @@ CVar::CVar (const string &key, const string &val)
 {
   k = key;
   string value = val;
+
+////
+
+  if (value[0] == '@')
+     {
+      //get macro name
+
+      size_t pos = value.find_first_of (':');
+      if (pos == string::npos)
+          pos = value.size();
+
+      macroname = value.substr (0, pos);
+
+      auto f = pool.macros.find (macroname);
+      if (f != pool.macros.end())
+         {
+           CMacro *m = pool.macros[macroname]->create_self (value);
+
+           if (m)
+            { macros.insert (std::make_pair (macroname, m));
+           //macros.insert (std::make_pair (macroname, pool.macros[macroname]->create_self (value)));
+
+             cout << "macroname : " << macroname << " value: " << value << endl;
+            }
+         }
+     }
+
+///
+
+
   rnd_length = 8;
   precision = 3;
   len_min = 0;
@@ -178,6 +212,12 @@ CVar::CVar (const string &key, const string &val)
 CVar::~CVar()
 {
   delete rnd_generator;
+
+    for (auto itr = macros.begin(); itr != macros.end(); ++itr)
+      {
+       delete (itr->second);
+      }
+
 }
 
 
@@ -200,7 +240,7 @@ string CVar::gen_rnd_path (size_t min, size_t max, size_t deep)
       {
        result += "/";
        int len = get_rnd (min, max);
-       result += gen_word (len);
+       result += gen_string (len);
 
       }
 
@@ -279,7 +319,7 @@ string CVar::gen_number (size_t min, size_t max)
 }
 
 
-string CVar::gen_word (size_t len)
+string CVar::gen_string (size_t len)
 {
   ostringstream st;
 
@@ -353,7 +393,6 @@ string CVar::get_val()
      result = get_datetime (v[0]);
 
 
-
    //pre process macros
    if (vartype == VT_SEQ)
      {
@@ -422,12 +461,12 @@ string CVar::get_val()
   if (result == "INTRNDMZ" && len_max != 0)
       return gen_number (len_min, len_max);
 
-  if (result == "STRRNDMZ" && len_max == 0)
-      return gen_word (rnd_length);
+/*  if (result == "STRRNDMZ" && len_max == 0)
+      return gen_string (rnd_length);
 
   if (result == "STRRNDMZ" && len_max != 0)
       return gen_string (len_min, len_max);
-
+*/
 
   if (result == "STRRNDPATH")
     {
@@ -437,8 +476,20 @@ string CVar::get_val()
 
 
 
-  if (result == "@ip_random")
-     result = gen_random_ip();
+//  if (result == "@ip_random")
+  //   result = gen_random_ip();
+
+  if (! macroname.empty())
+  {
+   auto f = macros.find (macroname);
+   if (f != macros.end())
+      {
+       //cout << "f->second->len_min:" << f->second->len_min  << endl;
+       result = f->second->process();
+//      result = f->first;
+
+     }
+  }
 
   return result;
 }

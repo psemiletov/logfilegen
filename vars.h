@@ -9,6 +9,7 @@
 #include <vector>
 #include <random>
 
+#include "macro.h"
 
 
 using namespace std;
@@ -19,6 +20,7 @@ using namespace std;
 #define VT_RANGE 3
 #define VT_FLOATRANGE 4
 #define VT_DATETIME 5
+#define VT_MACRO 6
 
 
 class CVar
@@ -27,6 +29,10 @@ public:
 
   std::mt19937 *rnd_generator;
   std::random_device rnd_dev;
+
+  CMacrosPool pool;
+  map <string, CMacro*> macros;
+
 
   int vartype;
   int precision;
@@ -48,6 +54,8 @@ public:
   string k; //key
   vector <string> v; //values
 
+  string macroname;
+
   CVar (const string &key, const string &val);
   ~CVar();
 
@@ -57,7 +65,7 @@ public:
   string gen_random_ip();
   string gen_number (size_t len);
   string gen_number (size_t min, size_t max);
-  string gen_word (size_t len);
+  string gen_string (size_t len);
   string gen_string (size_t min, size_t max);
   string get_datetime (const string &format);
   string get_val();
