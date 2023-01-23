@@ -39,7 +39,6 @@ public:
 };
 
 
-
 class CMacroStrRandom: public CMacro
 {
 public:
@@ -48,9 +47,21 @@ public:
   string process();
   ~CMacroStrRandom(){};
 
-  string gen_string (size_t len);
-  string gen_string (size_t min, size_t max);
+ // string gen_string (size_t len);
+ // string gen_string (size_t min, size_t max);
+};
 
+
+class CMacroIntRandom: public CMacro
+{
+public:
+
+  CMacroIntRandom* create_self (const string &s);
+  string process();
+  ~CMacroIntRandom(){};
+
+ // string gen_number (size_t len);
+ // string gen_number (size_t min, size_t max);
 };
 
 

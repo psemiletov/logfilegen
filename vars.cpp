@@ -38,6 +38,16 @@ int get_value_nature (const string &s)
 }
 
 
+string get_macro_name (const string &value)
+{
+  size_t pos = value.find_first_of (':');
+ if (pos == string::npos)
+      pos = value.size();
+
+  return = value.substr (0, pos);
+}
+
+
 CVar::CVar (const string &key, const string &val)
 {
   k = key;
@@ -70,8 +80,6 @@ CVar::CVar (const string &key, const string &val)
      }
 
 ///
-
-
   rnd_length = 8;
   precision = 3;
   len_min = 0;
@@ -307,7 +315,6 @@ string CVar::gen_number (size_t min, size_t max)
 
   size_t len = dminmax (*rnd_generator);
 
-
   ostringstream st;
 
   for (size_t i = 0; i < len; i++)
@@ -394,6 +401,17 @@ string CVar::get_val()
 
 
    //pre process macros
+
+   if (vartype == VT_SEQ)
+     {
+      if (result[0] == '@')
+       { cout << "macro!"  << result << endl;
+        macroname = get_macro_name (result);
+      }
+
+     }
+
+   /*
    if (vartype == VT_SEQ)
      {
        if (result.find ("@datetime") != string::npos)
@@ -451,22 +469,9 @@ string CVar::get_val()
 
            }
       }
-
-
+*/
    //handle macros
 
-  if (result == "INTRNDMZ" && len_max == 0)
-      return gen_number (rnd_length);
-
-  if (result == "INTRNDMZ" && len_max != 0)
-      return gen_number (len_min, len_max);
-
-/*  if (result == "STRRNDMZ" && len_max == 0)
-      return gen_string (rnd_length);
-
-  if (result == "STRRNDMZ" && len_max != 0)
-      return gen_string (len_min, len_max);
-*/
 
   if (result == "STRRNDPATH")
     {
@@ -475,9 +480,6 @@ string CVar::get_val()
     }
 
 
-
-//  if (result == "@ip_random")
-  //   result = gen_random_ip();
 
   if (! macroname.empty())
   {
