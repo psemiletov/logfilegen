@@ -78,14 +78,26 @@ public:
 };
 
 
-class CPathRandom: public CMacro
+class CMacroPathRandom: public CMacro
 {
 public:
 
-  CPathRandom* create_self (const string &s);
+  CMacroPathRandom* create_self (const string &s);
   string process();
   void parse (const string &s);
-  ~CPathRandom(){};
+  ~CMacroPathRandom(){};
+};
+
+
+
+class CMacroFileSource: public CMacro
+{
+public:
+
+  CMacroFileSource* create_self (const string &s);
+  string process();
+  void parse (const string &s);
+  ~CMacroFileSource(){};
 };
 
 

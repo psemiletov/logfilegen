@@ -77,51 +77,6 @@ CVar::CVar (const string &key, const string &val)
      }
 
 
-
-  if (val.find ("@file_source") != string::npos)
-     {
-      vartype = VT_SEQ;
-
-      //cout << "!!!! " <<  val << endl;
-
-      size_t pos = val.find (":");
-      if (pos == string::npos)
-         {
-          //NOT VALUE
-          return;
-         }
-
-      string path = val.substr (pos + 1);
-      string t1 = string_file_load (path);
-      if (! t1.empty())
-         {
-          string t2 = string_replace_all (t1, "\n", "|");
-          t2 = string_replace_all (t2, "\r\n", "|"); //for windows
-          t2.pop_back(); //remove last |
-          value = t2;
-
-         }
-      }
-
-/*
-  if (vartype != VT_SEQ && val.find ("@str_path") != string::npos)
-     {
-      vector <string> vt = split_string_to_vector (value, ":");
-      if (vt.size() == 4)
-         {
-          rnd_path_min = atoi (vt[1].c_str());
-          rnd_path_max = atoi (vt[2].c_str());
-          rnd_path_deep = atoi (vt[3].c_str());
-
-          if (rnd_path_deep == 0)
-             rnd_path_deep = 1;
-
-          vartype = VT_SINGLE;
-          value = "STRRNDPATH";
-         }
-     }
-*/
-
   if (vartype == VT_SINGLE || vartype == VT_DATETIME)
      v.push_back (value);
   else
@@ -170,24 +125,6 @@ int CVar::get_rnd (int ta, int tb)
    return distrib (*rnd_generator);
 }
 
-/*
-string CVar::gen_rnd_path (size_t min, size_t max, size_t deep)
-{
-  string result;
-
-  size_t deep_max = get_rnd (1, deep);
-
-  for (size_t d = 0; d < deep_max; d++)
-      {
-       result += "/";
-       int len = get_rnd (min, max);
-       result += gen_string (len);
-
-      }
-
-  return result;
-}
-*/
 
 string CVar::gen_msecs()
 {
@@ -201,8 +138,6 @@ string CVar::gen_msecs()
 
   return sstream.str();
 }
-
-
 
 
 
@@ -221,21 +156,14 @@ string CVar::get_val()
   else
   if (vartype == VT_FLOATRANGE)
      result = gen_msecs();
- /* else
-  if (vartype == VT_DATETIME)
-     result = get_datetime (v[0]);
-*/
 
    //pre process macros
 
+
    if (vartype == VT_SEQ && result[0] == '@')
-      {
-//      if (result[0] == '@')
-        macroname = get_macro_name (result);
-      }
+       macroname = get_macro_name (result);
 
    //handle macros
-
 
 
   if (result[0] == '@')

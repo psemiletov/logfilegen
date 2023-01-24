@@ -150,7 +150,8 @@ CMacrosPool::CMacrosPool()
    macros.insert (std::make_pair ("@str_random", new CMacroStrRandom()));
    macros.insert (std::make_pair ("@int_random", new CMacroIntRandom()));
    macros.insert (std::make_pair ("@datetime", new CMacroDateTime()));
-   macros.insert (std::make_pair ("@str_path", new CPathRandom()));
+   macros.insert (std::make_pair ("@str_path", new CMacroPathRandom()));
+   macros.insert (std::make_pair ("@file_source", new CMacroFileSource()));
 
 }
 
@@ -309,21 +310,16 @@ string CMacroDateTime::process()
 
 
 
-CPathRandom* CPathRandom::create_self (const string &s)
+CMacroPathRandom* CMacroPathRandom::create_self (const string &s)
 {
-
-  CPathRandom *m = new CPathRandom();
+  CMacroPathRandom *m = new CMacroPathRandom();
   m->parse (s);
-
   return m;
 }
 
 
-void CPathRandom::parse (const string &s)
+void CMacroPathRandom::parse (const string &s)
 {
-
-//cout << " void CPathRandom::parse (const string &s): " << s << endl;
-
 
   len_min = 0;
   len_max = 0;
@@ -339,25 +335,55 @@ void CPathRandom::parse (const string &s)
 
      if (length == 0)
          length = 1;
-/*
-
-cout << "void CPathRandom::parse (const string &s) --- 1" << endl;
-
-cout << "len_min: " << len_min << endl;
-cout << "len_max: " << len_max << endl;
-cout << "length: " << length << endl;
-
-
-cout << "void CPathRandom::parse (const string &s) --- 2" << endl;
-*/
     }
 
 }
 
 
-string CPathRandom::process()
+string CMacroPathRandom::process()
 {
-  cout << "CPathRandom::process()" << endl;
+   return gen_rnd_path (rnd_generator, len_min, len_max, length);
+}
 
-  return gen_rnd_path (rnd_generator, len_min, len_max, length);
+
+CMacroFileSource* CMacroFileSource::create_self (const string &s)
+{
+  CMacroFileSource *m = new CMacroFileSource();
+  m->parse (s);
+  return m;
+}
+
+
+void CMacroFileSource::parse (const string &s)
+{
+
+  len_min = 0;
+  len_max = 0;
+  length = 0;
+  text = "";
+
+  size_t pos = s.find (":");
+  if (pos == string::npos)
+      return;
+
+  string path = s.substr (pos + 1);
+  string t1 = string_file_load (path);
+
+  if (! t1.empty())
+     {
+      string t2 = string_replace_all (t1, "\n", "|");
+      t2 = string_replace_all (t2, "\r\n", "|"); //for windows
+      t2.pop_back(); //remove last |
+
+      vector <string> v; //values
+      v = split_string_to_vector (t2, "|");
+
+      text = v[get_rnd (rnd_generator, 0, v.size()-1)];
+     }
+}
+
+
+string CMacroFileSource::process()
+{
+  return text;
 }
