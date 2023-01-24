@@ -334,6 +334,36 @@ CMacroFileSource* CMacroFileSource::create_self (const string &s)
 }
 
 
+
+void CMacroFileSource::parse (const string &s)
+{
+
+  cout << "void CMacroFileSource::parse (const string &s) " << s << endl;
+
+  len_min = 0;
+  len_max = 0;
+  length = 0;
+  text = "";
+
+  size_t pos = s.find (":");
+  if (pos == string::npos)
+      return;
+
+  string path = s.substr (pos + 1);
+
+  cout << "path " << path << endl;
+
+  vector <string> v = vector_file_load (path);
+
+  cout << "v.size() " << v.size() << endl;
+
+  text = v[get_rnd (rnd_generator, 0, v.size()-1)];
+
+}
+
+
+
+/*
 void CMacroFileSource::parse (const string &s)
 {
 
@@ -347,22 +377,22 @@ void CMacroFileSource::parse (const string &s)
       return;
 
   string path = s.substr (pos + 1);
-  //string t1 = string_file_load (path);
+  string t1 = string_file_load (path);
 
-  //if (! t1.empty())
+  if (! t1.empty())
      {
-/*      string t2 = string_replace_all (t1, "\n", "|");
+      string t2 = string_replace_all (t1, "\n", "|");
       t2 = string_replace_all (t2, "\r\n", "|"); //for windows
       t2.pop_back(); //remove last |
 
       vector <string> v; //values
       v = split_string_to_vector (t2, "|");
-*/
-      vector <string> v = vector_file_load (path);
+
+      //vector <string> v = vector_file_load (path);
       text = v[get_rnd (rnd_generator, 0, v.size()-1)];
      }
 }
-
+*/
 
 string CMacroFileSource::process()
 {

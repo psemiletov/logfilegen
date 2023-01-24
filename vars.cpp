@@ -57,8 +57,8 @@ CVar::CVar (const string &key, const string &val)
 ///
   rnd_length = 8;
   precision = 3;
-  len_min = 0;
-  len_max = 0;
+//  len_min = 0;
+  //len_max = 0;
 
   rnd_generator = new std::mt19937 (rnd_dev());
   vartype = get_value_nature (val);
@@ -160,13 +160,32 @@ string CVar::get_val()
    //pre process macros
 
 
-   if (vartype == VT_SEQ && result[0] == '@')
-       macroname = get_macro_name (result);
+//   if (vartype == VT_SEQ && result[0] == '@')
+  //    macroname = get_macro_name (result);
 
    //handle macros
+/*
+   if (vartype == VT_SEQ && result[0] == '@')
+   {
+     macroname = get_macro_name (result);
+     if (! macroname.empty())
+         {
+          auto f = pool.macros.find (macroname);
+          if (f != pool.macros.end())
+             f->second->parse (result);
+         }
+
+   }
+*/
+
+  //cout << "1111111-----------------------" << endl;
+
+//    cout << "2222-----------------------" << result << endl;
 
 
-  if (result[0] == '@')
+  bool is_macro = (result[0] == '@');
+
+  if (vartype == VT_SEQ && result[0] == '@')
      {
       macroname = get_macro_name (result);
 
@@ -174,12 +193,17 @@ string CVar::get_val()
          {
           auto f = pool.macros.find (macroname);
           if (f != pool.macros.end())
-            f->second->parse (result);
+            {
+             f->second->parse (result);
+            result = f->second->process();
+            }
          }
      }
-
+  else
   if (! macroname.empty())
      {
+      //cout << "simple macro" << endl;
+
      auto f = pool.macros.find (macroname);
      if (f != pool.macros.end())
         result = f->second->process();

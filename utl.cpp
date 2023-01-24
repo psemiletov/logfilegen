@@ -299,15 +299,24 @@ vector <string> vector_file_load (const string &fname)
 
   vector <string> v;
 
-     stringstream st (fname);
-     string line;
+  ifstream infile (fname.c_str());
 
-     while (getline (st, line))
-           {
-            v.push_back (line);
+  if (infile.fail())
+     {
+    //  cout << "CPairFile::CPairFile - Could not open file: " << fname << endl;
+      return v;
+     }
 
-           }
+  string line;
 
+  while (getline (infile, line))
+        {
+
+         v.push_back (line);
+
+        }
+
+   infile.close();
    return v;
 }
 
