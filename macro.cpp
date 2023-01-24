@@ -18,6 +18,12 @@
 
 int get_rnd (std::mt19937 *rnd_generator, int ta, int tb)
 {
+/*cout << "int get_rnd (std::mt19937 *rnd_generator, int ta, int tb)" << endl;
+cout << "int ta " << ta << endl;
+cout << "int bb " << tb << endl;
+
+
+*/
    std::uniform_int_distribution <> distrib (ta, tb);
    return distrib (*rnd_generator);
 }
@@ -61,17 +67,29 @@ string gen_string (std::mt19937 *rnd_generator, size_t min, size_t max)
 
 string gen_rnd_path (std::mt19937 *rnd_generator, size_t min, size_t max, size_t deep)
 {
+ /* cout << "string gen_rnd_path " << endl;
+  cout << "deep " << deep << endl;
+  cout << "min " << min << endl;
+  cout << "max " << max << endl;
+*/
   string result;
 
   size_t deep_max = get_rnd (rnd_generator, 1, deep);
+
+  cout << "2" << endl;
 
   for (size_t d = 0; d < deep_max; d++)
       {
        result += "/";
        int len = get_rnd (rnd_generator, min, max);
-       result += gen_string (rnd_generator, len);
 
+       cout << "len:" << len << endl;
+
+       result += gen_string (rnd_generator, len);
       }
+
+  cout << "string gen_rnd_path 2" << endl;
+
 
   return result;
 }
@@ -303,6 +321,10 @@ CPathRandom* CPathRandom::create_self (const string &s)
 
 void CPathRandom::parse (const string &s)
 {
+
+//cout << " void CPathRandom::parse (const string &s): " << s << endl;
+
+
   len_min = 0;
   len_max = 0;
   length = 0;
@@ -310,18 +332,32 @@ void CPathRandom::parse (const string &s)
 
   vector <string> vt = split_string_to_vector (s, ":");
   if (vt.size() == 4)
-         {
-          len_min = atoi (vt[1].c_str());
-          len_min = atoi (vt[2].c_str());
-          length = atoi (vt[3].c_str());
+     {
+     len_min = atoi (vt[1].c_str());
+     len_max = atoi (vt[2].c_str());
+     length = atoi (vt[3].c_str());
 
-          if (length == 0)
-             length = 1;
-         }
+     if (length == 0)
+         length = 1;
+/*
+
+cout << "void CPathRandom::parse (const string &s) --- 1" << endl;
+
+cout << "len_min: " << len_min << endl;
+cout << "len_max: " << len_max << endl;
+cout << "length: " << length << endl;
+
+
+cout << "void CPathRandom::parse (const string &s) --- 2" << endl;
+*/
+    }
+
 }
 
 
 string CPathRandom::process()
 {
+  cout << "CPathRandom::process()" << endl;
+
   return gen_rnd_path (rnd_generator, len_min, len_max, length);
 }

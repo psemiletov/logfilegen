@@ -60,17 +60,8 @@ public:
   ~CVar();
 
   int get_rnd (int ta, int tb);
-  string gen_rnd_path (size_t min, size_t max, size_t deep);
   string gen_msecs();
-  string gen_random_ip();
-  string gen_number (size_t len);
-  string gen_number (size_t min, size_t max);
-  string gen_string (size_t len);
-  string gen_string (size_t min, size_t max);
-  string get_datetime (const string &format);
   string get_val();
-
-
 
 };
 

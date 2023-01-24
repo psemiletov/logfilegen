@@ -164,14 +164,13 @@ CVar::~CVar()
 
 
 
-
 int CVar::get_rnd (int ta, int tb)
 {
    std::uniform_int_distribution <> distrib (ta, tb);
    return distrib (*rnd_generator);
 }
 
-
+/*
 string CVar::gen_rnd_path (size_t min, size_t max, size_t deep)
 {
   string result;
@@ -188,7 +187,7 @@ string CVar::gen_rnd_path (size_t min, size_t max, size_t deep)
 
   return result;
 }
-
+*/
 
 string CVar::gen_msecs()
 {
@@ -203,113 +202,6 @@ string CVar::gen_msecs()
   return sstream.str();
 }
 
-
-
-string CVar::gen_random_ip()
-{
-  std::uniform_int_distribution<> distrib (0, 255);
-
-  ostringstream st;
-
-  st << distrib (*rnd_generator);
-  st << ".";
-
-  st << distrib (*rnd_generator);
-  st << ".";
-
-  st << distrib (*rnd_generator);
-  st << ".";
-
-  st << distrib (*rnd_generator);
-
-  return st.str();
-}
-
-
-string CVar::gen_number (size_t len)
-{
-  std::uniform_int_distribution<> distrib (0, 9);
-
-  ostringstream st;
-
-  for (size_t i = 0; i < len; i++)
-      {
-       st << distrib (*rnd_generator);
-      }
-
-  return st.str();
-}
-
-
-string CVar::gen_number (size_t min, size_t max)
-{
-  std::uniform_int_distribution<> distrib (0, 9);
-
-  std::uniform_int_distribution<> dminmax (min, max);
-
-  size_t len = dminmax (*rnd_generator);
-
-  ostringstream st;
-
-  for (size_t i = 0; i < len; i++)
-      {
-       st << distrib (*rnd_generator);
-      }
-
-  return st.str();
-}
-
-
-string CVar::gen_string (size_t len)
-{
-  ostringstream st;
-
-  std::uniform_int_distribution<> distrib (0, 25);
-
-  for (size_t i = 0; i < len; i++)
-      {
-       int g = distrib (*rnd_generator);
-       char d = static_cast<char> (g + 'a');
-       st << d;
-      }
-
-  return st.str();
-}
-
-
-string CVar::gen_string (size_t min, size_t max)
-{
-  ostringstream st;
-
-  std::uniform_int_distribution<> distrib (0, 25);
-
-  std::uniform_int_distribution<> dminmax (min, max);
-
-  size_t len = dminmax (*rnd_generator);
-
-  for (size_t i = 0; i < len; i++)
-      {
-       int g = distrib (*rnd_generator);
-       char d = static_cast<char> (g + 'a');
-       st << d;
-      }
-
-  return st.str();
-}
-
-
-
-string CVar::get_datetime (const string &format)
-{
-  auto t = std::time (nullptr);
-  auto tm = *std::localtime(&t);
-
-  std::ostringstream oss;
-  oss << std::put_time (&tm, format.c_str());
-
-  auto result = oss.str();
-  return result;
-}
 
 
 
@@ -343,13 +235,6 @@ string CVar::get_val()
       }
 
    //handle macros
-
-
-  if (result == "STRRNDPATH")
-    {
-  //   cout << "result == STRRNDPATH" << endl;
-     return gen_rnd_path (rnd_path_min, rnd_path_max, rnd_path_deep);
-    }
 
 
 
