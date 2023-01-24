@@ -16,6 +16,13 @@
 #include "macro.h"
 
 
+int get_rnd (std::mt19937 *rnd_generator, int ta, int tb)
+{
+   std::uniform_int_distribution <> distrib (ta, tb);
+   return distrib (*rnd_generator);
+}
+
+
 string gen_string (std::mt19937 *rnd_generator, size_t len)
 {
   ostringstream st;
@@ -49,6 +56,24 @@ string gen_string (std::mt19937 *rnd_generator, size_t min, size_t max)
       }
 
   return st.str();
+}
+
+
+string gen_rnd_path (std::mt19937 *rnd_generator, size_t min, size_t max, size_t deep)
+{
+  string result;
+
+  size_t deep_max = get_rnd (rnd_generator, 1, deep);
+
+  for (size_t d = 0; d < deep_max; d++)
+      {
+       result += "/";
+       int len = get_rnd (rnd_generator, min, max);
+       result += gen_string (rnd_generator, len);
+
+      }
+
+  return result;
 }
 
 
@@ -91,7 +116,7 @@ CMacro::CMacro()
 
   len_min = 0;
   len_max = 0;
-  rnd_length = 0;
+  length = 0;
 }
 
 
@@ -107,6 +132,7 @@ CMacrosPool::CMacrosPool()
    macros.insert (std::make_pair ("@str_random", new CMacroStrRandom()));
    macros.insert (std::make_pair ("@int_random", new CMacroIntRandom()));
    macros.insert (std::make_pair ("@datetime", new CMacroDateTime()));
+   macros.insert (std::make_pair ("@str_path", new CPathRandom()));
 
 }
 
@@ -151,22 +177,8 @@ string CMacroIPRandom::process()
 
 CMacroStrRandom* CMacroStrRandom::create_self (const string &s)
 {
-
   CMacroStrRandom *m = new CMacroStrRandom();
   m->parse (s);
-/*
-  vector <string> vt = split_string_to_vector (s, ":");
-
-  if (vt.size() == 2)
-      m->rnd_length = atoi (vt[1].c_str());
-
-  if (vt.size() == 3)
-      {
-       m->len_min = atoi (vt[1].c_str());
-       m->len_max = atoi (vt[2].c_str());
-      }
-*/
-
   return m;
 }
 
@@ -175,12 +187,12 @@ void CMacroStrRandom::parse (const string &s)
 {
   len_min = 0;
   len_max = 0;
-  rnd_length = 0;
+  length = 0;
 
   vector <string> vt = split_string_to_vector (s, ":");
 
   if (vt.size() == 2)
-      rnd_length = atoi (vt[1].c_str());
+      length = atoi (vt[1].c_str());
 
   if (vt.size() == 3)
       {
@@ -194,7 +206,7 @@ string CMacroStrRandom::process()
 {
 
   if (len_max == 0)
-     return gen_string (rnd_generator, rnd_length);
+     return gen_string (rnd_generator, length);
 
    return gen_string (rnd_generator, len_min, len_max);
 }
@@ -202,23 +214,8 @@ string CMacroStrRandom::process()
 
 CMacroIntRandom* CMacroIntRandom::create_self (const string &s)
 {
-
   CMacroIntRandom *m = new CMacroIntRandom();
   m->parse (s);
-
-/*
-  vector <string> vt = split_string_to_vector (s, ":");
-
-  if (vt.size() == 2)
-      m->rnd_length = atoi (vt[1].c_str());
-
-  if (vt.size() == 3)
-      {
-       m->len_min = atoi (vt[1].c_str());
-       m->len_max = atoi (vt[2].c_str());
-      }
-*/
-
   return m;
 }
 
@@ -227,12 +224,12 @@ void CMacroIntRandom::parse (const string &s)
 {
   len_min = 0;
   len_max = 0;
-  rnd_length = 0;
+  length = 0;
 
   vector <string> vt = split_string_to_vector (s, ":");
 
   if (vt.size() == 2)
-      rnd_length = atoi (vt[1].c_str());
+      length = atoi (vt[1].c_str());
 
   if (vt.size() == 3)
       {
@@ -244,9 +241,8 @@ void CMacroIntRandom::parse (const string &s)
 
 string CMacroIntRandom::process()
 {
-
   if (len_max == 0)
-     return gen_number (rnd_generator, rnd_length);
+     return gen_number (rnd_generator, length);
 
    return gen_number (rnd_generator, len_min, len_max);
 }
@@ -268,7 +264,7 @@ void CMacroDateTime::parse (const string &s)
 {
   len_min = 0;
   len_max = 0;
-  rnd_length = 0;
+  length = 0;
   text = "";
 
   size_t pos = s.find (":");
@@ -291,4 +287,41 @@ string CMacroDateTime::process()
 
   auto result = oss.str();
   return result;
+}
+
+
+
+CPathRandom* CPathRandom::create_self (const string &s)
+{
+
+  CPathRandom *m = new CPathRandom();
+  m->parse (s);
+
+  return m;
+}
+
+
+void CPathRandom::parse (const string &s)
+{
+  len_min = 0;
+  len_max = 0;
+  length = 0;
+  text = "";
+
+  vector <string> vt = split_string_to_vector (s, ":");
+  if (vt.size() == 4)
+         {
+          len_min = atoi (vt[1].c_str());
+          len_min = atoi (vt[2].c_str());
+          length = atoi (vt[3].c_str());
+
+          if (length == 0)
+             length = 1;
+         }
+}
+
+
+string CPathRandom::process()
+{
+  return gen_rnd_path (rnd_generator, len_min, len_max, length);
 }

@@ -20,7 +20,7 @@ public:
 
    size_t len_min;
    size_t len_max;
-   size_t rnd_length;
+   size_t length;
 
    CMacro();
    virtual ~CMacro();
@@ -77,6 +77,16 @@ public:
   ~CMacroDateTime(){};
 };
 
+
+class CPathRandom: public CMacro
+{
+public:
+
+  CPathRandom* create_self (const string &s);
+  string process();
+  void parse (const string &s);
+  ~CPathRandom(){};
+};
 
 
 

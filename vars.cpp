@@ -76,23 +76,6 @@ CVar::CVar (const string &key, const string &val)
        }
      }
 
-/*
-  if (val.find ("@datetime") != string::npos && vartype != VT_SEQ)
-     {
-      vartype = VT_DATETIME;
-
-      size_t pos = val.find (":");
-      if (pos == string::npos)
-         {
-          //NOT VALUE
-          return;
-         }
-
-       value = val.substr (pos + 1);
-
-//      cout << "value: " << value << endl;
-      }
-*/
 
 
   if (val.find ("@file_source") != string::npos)
@@ -120,7 +103,7 @@ CVar::CVar (const string &key, const string &val)
          }
       }
 
-
+/*
   if (vartype != VT_SEQ && val.find ("@str_path") != string::npos)
      {
       vector <string> vt = split_string_to_vector (value, ":");
@@ -137,7 +120,7 @@ CVar::CVar (const string &key, const string &val)
           value = "STRRNDPATH";
          }
      }
-
+*/
 
   if (vartype == VT_SINGLE || vartype == VT_DATETIME)
      v.push_back (value);
@@ -359,27 +342,6 @@ string CVar::get_val()
         macroname = get_macro_name (result);
       }
 
-   /*
-   if (vartype == VT_SEQ)
-     {
-       if (result.find ("@datetime") != string::npos)
-          {
-           size_t pos = result.find (":");
-          if (pos == string::npos)
-            {
-            //NOT VALUE
-             return string();
-            }
-
-           result = result.substr (pos + 1);
-           return get_datetime (result);
-          }
-
-
-
-           }
-      }
-*/
    //handle macros
 
 
