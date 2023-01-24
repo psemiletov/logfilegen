@@ -30,8 +30,8 @@ int get_value_nature (const string &s)
   if (s.find ("..") != string::npos)
      return VT_RANGE;
 
-  if (s.find ("@") != string::npos)
-     return VT_MACRO;
+//  if (s.find ("@") != string::npos)
+  //   return VT_MACRO;
 
 
   return VT_SINGLE;
@@ -53,49 +53,7 @@ CVar::CVar (const string &key, const string &val)
   k = key;
   string value = val;
 
-////
 
-  if (value[0] == '@')
-  {
-     macroname = get_macro_name (value);
-
-     if (! macroname.empty())
-  {
-   auto f = pool.macros.find (macroname);
-   if (f != pool.macros.end())
-      {
-       //cout << "f->second->len_min:" << f->second->len_min  << endl;
-       f->second->parse (value);
-//      result = f->first;
-
-     }
-
-
-  }
-  }
-/*     {
-      //get macro name
-
-      size_t pos = value.find_first_of (':');
-      if (pos == string::npos)
-          pos = value.size();
-
-      macroname = value.substr (0, pos);
-
-      auto f = pool.macros.find (macroname);
-      if (f != pool.macros.end())
-         {
-           CMacro *m = pool.macros[macroname]->create_self (value);
-
-           if (m)
-            { macros.insert (std::make_pair (macroname, m));
-           //macros.insert (std::make_pair (macroname, pool.macros[macroname]->create_self (value)));
-
-           //  cout << "macroname : " << macroname << " value: " << value << endl;
-            }
-         }
-     }
-*/
 ///
   rnd_length = 8;
   precision = 3;
@@ -105,6 +63,20 @@ CVar::CVar (const string &key, const string &val)
   rnd_generator = new std::mt19937 (rnd_dev());
   vartype = get_value_nature (val);
 
+
+  if (value[0] == '@' && vartype == VT_SINGLE)
+    {
+     macroname = get_macro_name (value);
+
+     if (! macroname.empty())
+        {
+         auto f = pool.macros.find (macroname);
+         if (f != pool.macros.end())
+            f->second->parse (value);
+       }
+     }
+
+/*
   if (val.find ("@datetime") != string::npos && vartype != VT_SEQ)
      {
       vartype = VT_DATETIME;
@@ -120,7 +92,7 @@ CVar::CVar (const string &key, const string &val)
 
 //      cout << "value: " << value << endl;
       }
-
+*/
 
 
   if (val.find ("@file_source") != string::npos)
@@ -147,44 +119,6 @@ CVar::CVar (const string &key, const string &val)
 
          }
       }
-
-
-  if (vartype != VT_SEQ && val.find ("@int_random") != string::npos)
-     {
-      vector <string> vt = split_string_to_vector (value, ":");
-      if (vt.size() == 2)
-         {
-          rnd_length = atoi (vt[1].c_str());
-          value = "INTRNDMZ";
-         }
-
-       if (vt.size() == 3)
-            {
-             len_min = atoi (vt[1].c_str());
-             len_max = atoi (vt[2].c_str());
-             value = "INTRNDMZ";
-            }
-
-     }
-
-
-  if (vartype != VT_SEQ && val.find ("@str_random") != string::npos)
-     {
-      vector <string> vt = split_string_to_vector (value, ":");
-      if (vt.size() == 2)
-         {
-          rnd_length = atoi (vt[1].c_str());
-          value = "STRRNDMZ";
-         }
-
-      if (vt.size() == 3)
-         {
-           len_min = atoi (vt[1].c_str());
-           len_max = atoi (vt[2].c_str());
-            value = "STRRNDMZ";
-          }
-
-     }
 
 
   if (vartype != VT_SEQ && val.find ("@str_path") != string::npos)
@@ -412,21 +346,18 @@ string CVar::get_val()
   else
   if (vartype == VT_FLOATRANGE)
      result = gen_msecs();
-  else
+ /* else
   if (vartype == VT_DATETIME)
      result = get_datetime (v[0]);
-
+*/
 
    //pre process macros
 
-   if (vartype == VT_SEQ)
-     {
-      if (result[0] == '@')
-       { cout << "macro!"  << result << endl;
+   if (vartype == VT_SEQ && result[0] == '@')
+      {
+//      if (result[0] == '@')
         macroname = get_macro_name (result);
       }
-
-     }
 
    /*
    if (vartype == VT_SEQ)
@@ -445,44 +376,6 @@ string CVar::get_val()
           }
 
 
-      if (result.find ("@str_random") != string::npos)
-         {
-          // cout << "result: " << result << endl;
-
-           vector <string> vt = split_string_to_vector (result, ":");
-
-           if (vt.size() == 2)
-            {
-             rnd_length = atoi (vt[1].c_str());
-             result = "STRRNDMZ";
-            }
-
-          if (vt.size() == 3)
-            {
-             len_min = atoi (vt[1].c_str());
-             len_max = atoi (vt[2].c_str());
-             result = "STRRNDMZ";
-            }
-
-
-         }
-
-       if (result.find ("@int_random") != string::npos)
-          {
-           vector <string> vt = split_string_to_vector (result, ":");
-           if (vt.size() == 2)
-              {
-               rnd_length = atoi (vt[1].c_str());
-               result = "INTRNDMZ";
-             }
-
-          if (vt.size() == 3)
-            {
-             len_min = atoi (vt[1].c_str());
-             len_max = atoi (vt[2].c_str());
-             result = "INTRNDMZ";
-            }
-
 
            }
       }
@@ -499,35 +392,23 @@ string CVar::get_val()
 
 
   if (result[0] == '@')
-  {
-     macroname = get_macro_name (result);
+     {
+      macroname = get_macro_name (result);
 
-     if (! macroname.empty())
-  {
-   auto f = pool.macros.find (macroname);
-   if (f != pool.macros.end())
-      {
-       //cout << "f->second->len_min:" << f->second->len_min  << endl;
-       f->second->parse (result);
-//      result = f->first;
-
+      if (! macroname.empty())
+         {
+          auto f = pool.macros.find (macroname);
+          if (f != pool.macros.end())
+            f->second->parse (result);
+         }
      }
-
-
-  }
-  }
 
   if (! macroname.empty())
-  {
-   auto f = pool.macros.find (macroname);
-   if (f != pool.macros.end())
-      {
-       //cout << "f->second->len_min:" << f->second->len_min  << endl;
-       result = f->second->process();
-//      result = f->first;
-
+     {
+     auto f = pool.macros.find (macroname);
+     if (f != pool.macros.end())
+        result = f->second->process();
      }
-  }
 
   return result;
 }

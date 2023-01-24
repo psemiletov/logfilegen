@@ -16,6 +16,8 @@ public:
    std::mt19937 *rnd_generator;
    std::random_device rnd_dev;
 
+   string text;
+
    size_t len_min;
    size_t len_max;
    size_t rnd_length;
@@ -51,9 +53,6 @@ public:
   void parse (const string &s);
 
   ~CMacroStrRandom(){};
-
- // string gen_string (size_t len);
- // string gen_string (size_t min, size_t max);
 };
 
 
@@ -65,9 +64,17 @@ public:
   string process();
   void parse (const string &s);
   ~CMacroIntRandom(){};
+};
 
- // string gen_number (size_t len);
- // string gen_number (size_t min, size_t max);
+
+class CMacroDateTime: public CMacro
+{
+public:
+
+  CMacroDateTime* create_self (const string &s);
+  string process();
+  void parse (const string &s);
+  ~CMacroDateTime(){};
 };
 
 
