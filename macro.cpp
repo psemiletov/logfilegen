@@ -338,7 +338,7 @@ CMacroFileSource* CMacroFileSource::create_self (const string &s)
 void CMacroFileSource::parse (const string &s)
 {
 
-  cout << "void CMacroFileSource::parse (const string &s) " << s << endl;
+  //cout << "void CMacroFileSource::parse (const string &s) " << s << endl;
 
   len_min = 0;
   len_max = 0;
@@ -351,13 +351,12 @@ void CMacroFileSource::parse (const string &s)
 
   string path = s.substr (pos + 1);
 
-  cout << "path " << path << endl;
+  //cout << "path " << path << endl;
 
-  vector <string> v = vector_file_load (path);
+  vt = vector_file_load (path);
 
-  cout << "v.size() " << v.size() << endl;
+  //cout << "vt.size() " << vt.size() << endl;
 
-  text = v[get_rnd (rnd_generator, 0, v.size()-1)];
 
 }
 
@@ -396,5 +395,10 @@ void CMacroFileSource::parse (const string &s)
 
 string CMacroFileSource::process()
 {
+  //cout << "CMacroFileSource::process()" << endl;
+
+  if (vt.size() != 0)
+     text = vt[get_rnd (rnd_generator, 0, vt.size()-1)];
+
   return text;
 }

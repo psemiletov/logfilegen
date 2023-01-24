@@ -94,6 +94,8 @@ class CMacroFileSource: public CMacro
 {
 public:
 
+  vector <string> vt;
+
   CMacroFileSource* create_self (const string &s);
   string process();
   void parse (const string &s);

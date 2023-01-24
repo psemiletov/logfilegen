@@ -53,28 +53,24 @@ CVar::CVar (const string &key, const string &val)
   k = key;
   string value = val;
 
-
-///
   rnd_length = 8;
   precision = 3;
-//  len_min = 0;
-  //len_max = 0;
 
   rnd_generator = new std::mt19937 (rnd_dev());
   vartype = get_value_nature (val);
 
-
+  //если макрос и не SEQ
   if (value[0] == '@' && vartype == VT_SINGLE)
-    {
-     macroname = get_macro_name (value);
+     {
+      macroname = get_macro_name (value);
 
-     if (! macroname.empty())
-        {
-         auto f = pool.macros.find (macroname);
-         if (f != pool.macros.end())
-            f->second->parse (value);
-       }
-     }
+      if (! macroname.empty())
+         {
+          auto f = pool.macros.find (macroname);
+          if (f != pool.macros.end())
+             f->second->parse (value);
+         }
+      }
 
 
   if (vartype == VT_SINGLE || vartype == VT_DATETIME)
@@ -183,7 +179,10 @@ string CVar::get_val()
 //    cout << "2222-----------------------" << result << endl;
 
 
-  bool is_macro = (result[0] == '@');
+  //bool is_macro = (result[0] == '@');
+
+
+   //Если VT_SEQ и result еще не что-либо а макрос, инициализуем (парсим) его
 
   if (vartype == VT_SEQ && result[0] == '@')
      {
@@ -193,21 +192,21 @@ string CVar::get_val()
          {
           auto f = pool.macros.find (macroname);
           if (f != pool.macros.end())
-            {
-             f->second->parse (result);
-            result = f->second->process();
-            }
+             {
+              f->second->parse (result);
+              result = f->second->process();
+             }
          }
      }
-  else
+  else //иначе просто макрос, который был инициализиван в CVar
   if (! macroname.empty())
      {
-      //cout << "simple macro" << endl;
+    //  cout << "simple macro" << endl;
 
-     auto f = pool.macros.find (macroname);
-     if (f != pool.macros.end())
-        result = f->second->process();
-     }
+      auto f = pool.macros.find (macroname);
+      if (f != pool.macros.end())
+         result = f->second->process();
+      }
 
   return result;
 }
