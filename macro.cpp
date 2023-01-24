@@ -11,21 +11,14 @@
 #include <sys/time.h>
 
 
-
 #include "utl.h"
 #include "macro.h"
 
 
 int get_rnd (std::mt19937 *rnd_generator, int ta, int tb)
 {
-/*cout << "int get_rnd (std::mt19937 *rnd_generator, int ta, int tb)" << endl;
-cout << "int ta " << ta << endl;
-cout << "int bb " << tb << endl;
-
-
-*/
-   std::uniform_int_distribution <> distrib (ta, tb);
-   return distrib (*rnd_generator);
+  std::uniform_int_distribution <> distrib (ta, tb);
+  return distrib (*rnd_generator);
 }
 
 
@@ -67,16 +60,9 @@ string gen_string (std::mt19937 *rnd_generator, size_t min, size_t max)
 
 string gen_rnd_path (std::mt19937 *rnd_generator, size_t min, size_t max, size_t deep)
 {
- /* cout << "string gen_rnd_path " << endl;
-  cout << "deep " << deep << endl;
-  cout << "min " << min << endl;
-  cout << "max " << max << endl;
-*/
   string result;
 
   size_t deep_max = get_rnd (rnd_generator, 1, deep);
-
-  cout << "2" << endl;
 
   for (size_t d = 0; d < deep_max; d++)
       {
@@ -87,9 +73,6 @@ string gen_rnd_path (std::mt19937 *rnd_generator, size_t min, size_t max, size_t
 
        result += gen_string (rnd_generator, len);
       }
-
-  cout << "string gen_rnd_path 2" << endl;
-
 
   return result;
 }
@@ -268,13 +251,10 @@ string CMacroIntRandom::process()
 
 
 
-
 CMacroDateTime* CMacroDateTime::create_self (const string &s)
 {
-
   CMacroDateTime *m = new CMacroDateTime();
   m->parse (s);
-
   return m;
 }
 
@@ -367,17 +347,18 @@ void CMacroFileSource::parse (const string &s)
       return;
 
   string path = s.substr (pos + 1);
-  string t1 = string_file_load (path);
+  //string t1 = string_file_load (path);
 
-  if (! t1.empty())
+  //if (! t1.empty())
      {
-      string t2 = string_replace_all (t1, "\n", "|");
+/*      string t2 = string_replace_all (t1, "\n", "|");
       t2 = string_replace_all (t2, "\r\n", "|"); //for windows
       t2.pop_back(); //remove last |
 
       vector <string> v; //values
       v = split_string_to_vector (t2, "|");
-
+*/
+      vector <string> v = vector_file_load (path);
       text = v[get_rnd (rnd_generator, 0, v.size()-1)];
      }
 }

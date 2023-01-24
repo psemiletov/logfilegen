@@ -271,16 +271,7 @@ size_t string_to_file_size (const string &val)
 
 
   string s = string_to_lower (val);
-  /*
-  string s = val;
 
-  std::for_each (
-                 s.begin(),
-                 s.end(),
-                 [](char & c) {
-                               c = ::tolower(c);
-                              });
-*/
   if (s.find ("k") != string::npos)
      result = result * 1024;
 
@@ -301,6 +292,23 @@ string string_file_load (const string &fname)
                  std::istreambuf_iterator<char>());
 
  return s;
+}
+
+vector <string> vector_file_load (const string &fname)
+{
+
+  vector <string> v;
+
+     stringstream st (fname);
+     string line;
+
+     while (getline (st, line))
+           {
+            v.push_back (line);
+
+           }
+
+   return v;
 }
 
 
