@@ -40,11 +40,11 @@ int get_value_nature (const string &s)
 
 string get_macro_name (const string &value)
 {
-  size_t pos = value.find_first_of (':');
+ size_t pos = value.find_first_of (':');
  if (pos == string::npos)
-      pos = value.size();
+     pos = value.size();
 
-  return = value.substr (0, pos);
+  return value.substr (0, pos);
 }
 
 
@@ -56,7 +56,24 @@ CVar::CVar (const string &key, const string &val)
 ////
 
   if (value[0] == '@')
-     {
+  {
+     macroname = get_macro_name (value);
+
+     if (! macroname.empty())
+  {
+   auto f = pool.macros.find (macroname);
+   if (f != pool.macros.end())
+      {
+       //cout << "f->second->len_min:" << f->second->len_min  << endl;
+       f->second->parse (value);
+//      result = f->first;
+
+     }
+
+
+  }
+  }
+/*     {
       //get macro name
 
       size_t pos = value.find_first_of (':');
@@ -74,11 +91,11 @@ CVar::CVar (const string &key, const string &val)
             { macros.insert (std::make_pair (macroname, m));
            //macros.insert (std::make_pair (macroname, pool.macros[macroname]->create_self (value)));
 
-             cout << "macroname : " << macroname << " value: " << value << endl;
+           //  cout << "macroname : " << macroname << " value: " << value << endl;
             }
          }
      }
-
+*/
 ///
   rnd_length = 8;
   precision = 3;
@@ -481,10 +498,29 @@ string CVar::get_val()
 
 
 
+  if (result[0] == '@')
+  {
+     macroname = get_macro_name (result);
+
+     if (! macroname.empty())
+  {
+   auto f = pool.macros.find (macroname);
+   if (f != pool.macros.end())
+      {
+       //cout << "f->second->len_min:" << f->second->len_min  << endl;
+       f->second->parse (result);
+//      result = f->first;
+
+     }
+
+
+  }
+  }
+
   if (! macroname.empty())
   {
-   auto f = macros.find (macroname);
-   if (f != macros.end())
+   auto f = pool.macros.find (macroname);
+   if (f != pool.macros.end())
       {
        //cout << "f->second->len_min:" << f->second->len_min  << endl;
        result = f->second->process();

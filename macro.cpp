@@ -164,6 +164,24 @@ CMacroStrRandom* CMacroStrRandom::create_self (const string &s)
 }
 
 
+void CMacroStrRandom::parse (const string &s)
+{
+
+  vector <string> vt = split_string_to_vector (s, ":");
+
+  if (vt.size() == 2)
+      rnd_length = atoi (vt[1].c_str());
+
+  if (vt.size() == 3)
+      {
+       len_min = atoi (vt[1].c_str());
+       len_max = atoi (vt[2].c_str());
+      }
+}
+
+
+
+
 string CMacroStrRandom::process()
 {
 
@@ -234,6 +252,21 @@ CMacroIntRandom* CMacroIntRandom::create_self (const string &s)
   return m;
 }
 
+
+void CMacroIntRandom::parse (const string &s)
+{
+
+  vector <string> vt = split_string_to_vector (s, ":");
+
+  if (vt.size() == 2)
+      rnd_length = atoi (vt[1].c_str());
+
+  if (vt.size() == 3)
+      {
+       len_min = atoi (vt[1].c_str());
+       len_max = atoi (vt[2].c_str());
+      }
+}
 
 
 string CMacroIntRandom::process()

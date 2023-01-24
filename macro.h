@@ -24,6 +24,7 @@ public:
    virtual ~CMacro();
    virtual CMacro* create_self (const string &s) {return new CMacro();};
    virtual string process() {return string ("CMacro::process()");};
+   virtual void parse (const string &s) {};
 
 };
 
@@ -35,6 +36,8 @@ public:
 
    CMacroIPRandom* create_self (const string &s);
    string process();
+   void parse (const string &s){};
+
    ~CMacroIPRandom(){};
 };
 
@@ -45,6 +48,8 @@ public:
 
   CMacroStrRandom* create_self (const string &s);
   string process();
+  void parse (const string &s);
+
   ~CMacroStrRandom(){};
 
  // string gen_string (size_t len);
@@ -58,6 +63,7 @@ public:
 
   CMacroIntRandom* create_self (const string &s);
   string process();
+  void parse (const string &s);
   ~CMacroIntRandom(){};
 
  // string gen_number (size_t len);
