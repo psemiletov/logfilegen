@@ -294,9 +294,6 @@ string string_file_load (const string &fname)
  return s;
 }
 
-
-
-
 vector <string> vector_file_load (const string &fname)
 {
 
@@ -316,6 +313,7 @@ vector <string> vector_file_load (const string &fname)
         {
 
          v.push_back (line);
+
         }
 
    infile.close();

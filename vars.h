@@ -31,11 +31,20 @@ public:
   std::random_device rnd_dev;
 
   CMacrosPool pool;
+  map <string, CMacro*> macros;
 
 
   int vartype;
   int precision;
   int rnd_length;
+/*
+  size_t rnd_path_deep;
+  size_t rnd_path_min;
+  size_t rnd_path_max;
+
+  int len_min;
+  int len_max;
+*/
   int a;
   int b;
 
@@ -55,5 +64,7 @@ public:
   string get_val();
 
 };
+
+
 
 #endif
