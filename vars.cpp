@@ -66,9 +66,9 @@ CVar::CVar (const string &key, const string &val)
 
       if (! macroname.empty())
          {
-          auto f = pool.macros.find (macroname);
-          if (f != pool.macros.end())
-             f->second->parse (value);
+          auto f = pool.find (macroname);
+          if (f)
+             f->parse (value);
          }
       }
 
@@ -105,12 +105,12 @@ CVar::CVar (const string &key, const string &val)
 CVar::~CVar()
 {
   delete rnd_generator;
-
+/*
     for (auto itr = macros.begin(); itr != macros.end(); ++itr)
       {
        delete (itr->second);
       }
-
+*/
 }
 
 
@@ -156,23 +156,6 @@ string CVar::get_val()
    //pre process macros
 
 
-//   if (vartype == VT_SEQ && result[0] == '@')
-  //    macroname = get_macro_name (result);
-
-   //handle macros
-/*
-   if (vartype == VT_SEQ && result[0] == '@')
-   {
-     macroname = get_macro_name (result);
-     if (! macroname.empty())
-         {
-          auto f = pool.macros.find (macroname);
-          if (f != pool.macros.end())
-             f->second->parse (result);
-         }
-
-   }
-*/
 
   //cout << "1111111-----------------------" << endl;
 
@@ -188,13 +171,16 @@ string CVar::get_val()
      {
       macroname = get_macro_name (result);
 
+
+
       if (! macroname.empty())
          {
-          auto f = pool.macros.find (macroname);
-          if (f != pool.macros.end())
-             {
-              f->second->parse (result);
-              result = f->second->process();
+
+         auto f = pool.find (macroname);
+          if (f)
+               {
+                f->parse (result);
+              result = f->process();
              }
          }
      }
@@ -203,9 +189,9 @@ string CVar::get_val()
      {
     //  cout << "simple macro" << endl;
 
-      auto f = pool.macros.find (macroname);
-      if (f != pool.macros.end())
-         result = f->second->process();
+      auto f = pool.find (macroname);
+      if (f)
+         result = f->process();
       }
 
   return result;

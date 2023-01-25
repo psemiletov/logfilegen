@@ -129,22 +129,28 @@ CMacro::~CMacro()
 
 CMacrosPool::CMacrosPool()
 {
-   macros.insert (std::make_pair ("@ip_random", new CMacroIPRandom()));
-   macros.insert (std::make_pair ("@str_random", new CMacroStrRandom()));
-   macros.insert (std::make_pair ("@int_random", new CMacroIntRandom()));
-   macros.insert (std::make_pair ("@datetime", new CMacroDateTime()));
-   macros.insert (std::make_pair ("@str_path", new CMacroPathRandom()));
-   macros.insert (std::make_pair ("@file_source", new CMacroFileSource()));
-
+   macros.push_back (new CMacroIPRandom());
+   macros.push_back (new CMacroStrRandom());
+   macros.push_back (new CMacroIntRandom());
+   macros.push_back (new CMacroDateTime());
+   macros.push_back (new CMacroPathRandom());
+   macros.push_back (new CMacroFileSource());
 }
+
 
 
 CMacrosPool::~CMacrosPool()
 {
-  for (auto itr = macros.begin(); itr != macros.end(); ++itr)
-      {
-       delete (itr->second);
-      }
+  for (vector<CMacro*>::iterator it = macros.begin(); it != macros.end(); it++)
+     {
+       delete *it;
+     }
+}
+
+
+CMacroIPRandom::CMacroIPRandom(): CMacro()
+{
+  name = "@ip_random";
 }
 
 
@@ -204,6 +210,13 @@ void CMacroStrRandom::parse (const string &s)
 }
 
 
+
+CMacroStrRandom::CMacroStrRandom(): CMacro()
+{
+  name = "@str_random";
+}
+
+
 string CMacroStrRandom::process()
 {
 
@@ -212,6 +225,14 @@ string CMacroStrRandom::process()
 
    return gen_string (rnd_generator, len_min, len_max);
 }
+
+
+
+CMacroIntRandom::CMacroIntRandom(): CMacro()
+{
+  name = "@int_random";
+}
+
 
 
 CMacroIntRandom* CMacroIntRandom::create_self (const string &s)
@@ -249,6 +270,13 @@ string CMacroIntRandom::process()
    return gen_number (rnd_generator, len_min, len_max);
 }
 
+
+
+
+CMacroDateTime::CMacroDateTime(): CMacro()
+{
+  name = "@datetime";
+}
 
 
 CMacroDateTime* CMacroDateTime::create_self (const string &s)
@@ -290,6 +318,13 @@ string CMacroDateTime::process()
 
 
 
+
+CMacroPathRandom::CMacroPathRandom(): CMacro()
+{
+  name = "@str_path";
+}
+
+
 CMacroPathRandom* CMacroPathRandom::create_self (const string &s)
 {
   CMacroPathRandom *m = new CMacroPathRandom();
@@ -326,6 +361,12 @@ string CMacroPathRandom::process()
 }
 
 
+CMacroFileSource::CMacroFileSource(): CMacro()
+{
+  name = "@file_source";
+}
+
+
 CMacroFileSource* CMacroFileSource::create_self (const string &s)
 {
   CMacroFileSource *m = new CMacroFileSource();
@@ -338,8 +379,6 @@ CMacroFileSource* CMacroFileSource::create_self (const string &s)
 void CMacroFileSource::parse (const string &s)
 {
 
-  //cout << "void CMacroFileSource::parse (const string &s) " << s << endl;
-
   len_min = 0;
   len_max = 0;
   length = 0;
@@ -350,55 +389,36 @@ void CMacroFileSource::parse (const string &s)
       return;
 
   string path = s.substr (pos + 1);
-
-  //cout << "path " << path << endl;
 
   vt = vector_file_load (path);
-
-  //cout << "vt.size() " << vt.size() << endl;
-
-
 }
 
-
-
-/*
-void CMacroFileSource::parse (const string &s)
-{
-
-  len_min = 0;
-  len_max = 0;
-  length = 0;
-  text = "";
-
-  size_t pos = s.find (":");
-  if (pos == string::npos)
-      return;
-
-  string path = s.substr (pos + 1);
-  string t1 = string_file_load (path);
-
-  if (! t1.empty())
-     {
-      string t2 = string_replace_all (t1, "\n", "|");
-      t2 = string_replace_all (t2, "\r\n", "|"); //for windows
-      t2.pop_back(); //remove last |
-
-      vector <string> v; //values
-      v = split_string_to_vector (t2, "|");
-
-      //vector <string> v = vector_file_load (path);
-      text = v[get_rnd (rnd_generator, 0, v.size()-1)];
-     }
-}
-*/
 
 string CMacroFileSource::process()
 {
-  //cout << "CMacroFileSource::process()" << endl;
 
   if (vt.size() != 0)
      text = vt[get_rnd (rnd_generator, 0, vt.size()-1)];
 
   return text;
 }
+
+
+
+CMacro* CMacrosPool::find (const string &name)
+{
+  CMacro *m = NULL;
+
+  for (size_t i = 0; i < macros.size(); i++)
+     {
+      if (macros[i]->name == name)
+         {
+          m = macros.at(i);
+          break;
+         }
+
+     }
+
+  return m;
+}
+

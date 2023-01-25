@@ -1,2 +1,1 @@
---benchmark option
-add Windows abs path determine
+общий рэндомайзер для макросов, брать по указателю из CVar

@@ -16,6 +16,8 @@ public:
    std::mt19937 *rnd_generator;
    std::random_device rnd_dev;
 
+
+   string name;
    string text;
 
    size_t len_min;
@@ -39,7 +41,7 @@ public:
    CMacroIPRandom* create_self (const string &s);
    string process();
    void parse (const string &s){};
-
+   CMacroIPRandom();
    ~CMacroIPRandom(){};
 };
 
@@ -52,6 +54,7 @@ public:
   string process();
   void parse (const string &s);
 
+  CMacroStrRandom();
   ~CMacroStrRandom(){};
 };
 
@@ -63,6 +66,7 @@ public:
   CMacroIntRandom* create_self (const string &s);
   string process();
   void parse (const string &s);
+  CMacroIntRandom();
   ~CMacroIntRandom(){};
 };
 
@@ -74,6 +78,7 @@ public:
   CMacroDateTime* create_self (const string &s);
   string process();
   void parse (const string &s);
+  CMacroDateTime();
   ~CMacroDateTime(){};
 };
 
@@ -85,6 +90,7 @@ public:
   CMacroPathRandom* create_self (const string &s);
   string process();
   void parse (const string &s);
+  CMacroPathRandom();
   ~CMacroPathRandom(){};
 };
 
@@ -99,6 +105,7 @@ public:
   CMacroFileSource* create_self (const string &s);
   string process();
   void parse (const string &s);
+  CMacroFileSource();
   ~CMacroFileSource(){};
 };
 
@@ -108,7 +115,9 @@ class CMacrosPool
 {
 public:
 
-   map <string, CMacro*> macros;
+   vector <CMacro*> macros;
+
+   CMacro* find (const string &name);
 
    CMacrosPool();
    ~CMacrosPool();
