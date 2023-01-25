@@ -155,33 +155,6 @@ string CVar::get_val()
 
    //pre process macros
 
-
-//   if (vartype == VT_SEQ && result[0] == '@')
-  //    macroname = get_macro_name (result);
-
-   //handle macros
-/*
-   if (vartype == VT_SEQ && result[0] == '@')
-   {
-     macroname = get_macro_name (result);
-     if (! macroname.empty())
-         {
-          auto f = pool.macros.find (macroname);
-          if (f != pool.macros.end())
-             f->second->parse (result);
-         }
-
-   }
-*/
-
-  //cout << "1111111-----------------------" << endl;
-
-//    cout << "2222-----------------------" << result << endl;
-
-
-  //bool is_macro = (result[0] == '@');
-
-
    //Если VT_SEQ и result еще не что-либо а макрос, инициализуем (парсим) его
 
   if (vartype == VT_SEQ && result[0] == '@')
@@ -201,7 +174,6 @@ string CVar::get_val()
   else //иначе просто макрос, который был инициализиван в CVar
   if (! macroname.empty())
      {
-    //  cout << "simple macro" << endl;
 
       auto f = pool.macros.find (macroname);
       if (f != pool.macros.end())

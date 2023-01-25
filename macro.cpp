@@ -69,8 +69,6 @@ string gen_rnd_path (std::mt19937 *rnd_generator, size_t min, size_t max, size_t
        result += "/";
        int len = get_rnd (rnd_generator, min, max);
 
-       cout << "len:" << len << endl;
-
        result += gen_string (rnd_generator, len);
       }
 
