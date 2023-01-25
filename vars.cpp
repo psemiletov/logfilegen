@@ -30,9 +30,6 @@ int get_value_nature (const string &s)
   if (s.find ("..") != string::npos)
      return VT_RANGE;
 
-//  if (s.find ("@") != string::npos)
-  //   return VT_MACRO;
-
 
   return VT_SINGLE;
 }
@@ -105,12 +102,6 @@ CVar::CVar (const string &key, const string &val)
 CVar::~CVar()
 {
   delete rnd_generator;
-/*
-    for (auto itr = macros.begin(); itr != macros.end(); ++itr)
-      {
-       delete (itr->second);
-      }
-*/
 }
 
 
@@ -156,27 +147,15 @@ string CVar::get_val()
    //pre process macros
 
 
-
-  //cout << "1111111-----------------------" << endl;
-
-//    cout << "2222-----------------------" << result << endl;
-
-
-  //bool is_macro = (result[0] == '@');
-
-
    //Если VT_SEQ и result еще не что-либо а макрос, инициализуем (парсим) его
 
   if (vartype == VT_SEQ && result[0] == '@')
      {
       macroname = get_macro_name (result);
 
-
-
       if (! macroname.empty())
          {
-
-         auto f = pool.find (macroname);
+          auto f = pool.find (macroname);
           if (f)
                {
                 f->parse (result);

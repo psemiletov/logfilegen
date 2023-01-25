@@ -32,8 +32,6 @@ vector <string> split_string_to_vector (const string& s, const string& delimeter
 string string_to_lower (const string &s);
 size_t string_to_file_size (const string &val);
 string string_file_load (const string &fname);
-vector <string> vector_file_load2 (const string &fname);
-
 vector <string> vector_file_load (const string &fname);
 
 

@@ -297,18 +297,6 @@ string string_file_load (const string &fname)
 
 
 
-vector <string> vector_file_load2 (const string &fname)
-{
-
-  string s = string_file_load (fname);
-
-  vector <string> v = split_string_to_vector (s, "\n");
-   return v;
-}
-
-
-
-
 vector <string> vector_file_load (const string &fname)
 {
 
