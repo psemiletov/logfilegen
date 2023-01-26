@@ -82,7 +82,7 @@ CVar::CVar (const string &key, const string &val)
      {
       v = split_string_to_vector (value, "|");
 
-      for (size_t i = 0; i < v.size() - 1; i++)
+      for (size_t i = 0; i < v.size(); i++)
          {
 
           string t = v[i];
