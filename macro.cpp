@@ -400,3 +400,19 @@ string CMacroFileSource::process()
 
   return text;
 }
+
+
+
+void CMacrosCache::add (size_t pos, CMacro *m)
+{
+   macros.insert (std::make_pair (pos, m));
+}
+
+
+CMacrosCache::~CMacrosCache()
+{
+  for (auto itr = macros.begin(); itr != macros.end(); ++itr)
+      {
+       delete (itr->second);
+      }
+}

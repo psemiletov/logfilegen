@@ -53,6 +53,8 @@ CVar::CVar (const string &key, const string &val)
   k = key;
   string value = val;
 
+//  cout << "CVar::CVar key:" << key << " val:" << val << endl;
+
   rnd_length = 8;
   precision = 3;
 
@@ -75,10 +77,37 @@ CVar::CVar (const string &key, const string &val)
 
   if (vartype == VT_SINGLE || vartype == VT_DATETIME)
      v.push_back (value);
-  else
+
   if (vartype == VT_SEQ)
+     {
       v = split_string_to_vector (value, "|");
-  else
+
+      for (size_t i = 0; i < v.size() - 1; i++)
+         {
+
+          string t = v[i];
+
+          if (t[0] != '@')
+             continue;
+
+   //      cout << "i:" << i << endl;
+     //    cout << "t:" << t << endl;
+
+          string name = get_macro_name (t);
+          if (name.empty())
+             continue;
+
+          auto f = pool.macros.find (name);
+          if (f == pool.macros.end())
+             continue;
+
+        //   cout << "!!!!!!!!!!!!!!!!!: " << name << endl;
+
+          CMacro *tm = f->second->create_self (t);
+          cache.add (i, tm);
+         }
+     }
+
   if (vartype == VT_RANGE)
      {
       v = split_string_to_vector (value, "..");
@@ -106,11 +135,11 @@ CVar::~CVar()
 {
   delete rnd_generator;
 
-    for (auto itr = macros.begin(); itr != macros.end(); ++itr)
+/*    for (auto itr = macros.begin(); itr != macros.end(); ++itr)
       {
        delete (itr->second);
       }
-
+*/
 }
 
 
@@ -136,7 +165,7 @@ string CVar::gen_msecs()
 }
 
 
-
+/*
 string CVar::get_val()
 {
   string result;
@@ -173,6 +202,57 @@ string CVar::get_val()
      }
   else //иначе просто макрос, который был инициализиван в CVar
   if (! macroname.empty())
+     {
+
+      auto f = pool.macros.find (macroname);
+      if (f != pool.macros.end())
+         result = f->second->process();
+      }
+
+  return result;
+}
+*/
+
+string CVar::get_val()
+{
+  string result;
+
+  if (vartype == VT_SINGLE)
+     result = v[0];
+  else
+  if (vartype == VT_RANGE)
+     result = std::to_string (get_rnd (a, b));
+  else
+  if (vartype == VT_SEQ)
+     {
+      int i = get_rnd (0, v.size()-1);
+      result = v[i];
+
+      if (result[0] == '@')
+        {
+     //    cout << "MACRO IN SEQ:" << result << endl;
+
+         auto f = cache.macros.find (i);
+         if (f != cache.macros.end())
+            {
+
+             result = f->second->process();
+       //      cout << "PROCESS CACHED:" << result << endl;
+
+            }
+        }
+
+     }
+  else
+  if (vartype == VT_FLOATRANGE)
+     result = gen_msecs();
+
+   //pre process macros
+
+   //Если VT_SEQ и result еще не что-либо а макрос, инициализуем (парсим) его
+
+  //иначе просто макрос, который был инициализиван в CVar
+  if (! macroname.empty() && vartype == VT_SINGLE)
      {
 
       auto f = pool.macros.find (macroname);

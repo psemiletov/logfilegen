@@ -115,4 +115,17 @@ public:
 };
 
 
+class CMacrosCache
+{
+public:
+
+   map <int, CMacro*> macros;
+
+   void add (size_t pos, CMacro *m);
+   //CMacrosPool();
+   ~CMacrosCache();
+};
+
+
+
 #endif

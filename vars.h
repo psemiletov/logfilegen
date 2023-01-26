@@ -21,6 +21,7 @@ using namespace std;
 #define VT_FLOATRANGE 4
 #define VT_DATETIME 5
 #define VT_MACRO 6
+#define VT_MACSEQ 6
 
 
 class CVar
@@ -31,20 +32,15 @@ public:
   std::random_device rnd_dev;
 
   CMacrosPool pool;
-  map <string, CMacro*> macros;
+
+  CMacrosCache cache;
+
+  //map <string, CMacro*> macros;
 
 
   int vartype;
   int precision;
   int rnd_length;
-/*
-  size_t rnd_path_deep;
-  size_t rnd_path_min;
-  size_t rnd_path_max;
-
-  int len_min;
-  int len_max;
-*/
   int a;
   int b;
 
