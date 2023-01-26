@@ -1,3 +1,6 @@
++ macros caching
++ new variables and macros engine
+
 * --templatefile renamed to --template
 
 + multilply use of variables in $logstring
