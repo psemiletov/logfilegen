@@ -1,6 +1,17 @@
 # logfilegen
 
-The server log file generator
+Logfilegen is a fast and highly customizable tool to generate common server (nginx, etc) or user-defined format log files. You can generate log file with the desired rate (lines per second), the file size, lines count and the duration. Each variable of the log file can be redefined by the random or static value. logfilegen depends just on GCC or Clang with C++17 support, and, optionally, cmake.
+
+## LINKS
+
+[Official site](https://psemiletov.github.io/logfilegen/)
+
+[Dockerhub repo](https://hub.docker.com/r/psemiletov/logfilegen/general)
+
+[AUR](https://aur.archlinux.org/packages/logfilegen)
+
+
+## MANUAL
 
 To install it, please read
 
