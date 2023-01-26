@@ -22,15 +22,15 @@ There are some ready-to-use examples below to build logfilegen on some systems o
 
 #### Ubuntu 22.04
 
-1. Download and unpack the tarball. Go to the unpacked source directory.
+- Download and unpack the tarball. Go to the unpacked source directory.
 
-2. Install dependencies (do ```sudo apt update``` if didn't before):
+- Install dependencies (do ```sudo apt update``` if didn't before):
 
 ```console
 sudo apt install make g++
 ```
 
-3. Build and install:
+- Build and install:
 
 ```console
 make
@@ -40,15 +40,15 @@ sudo make install
 
 #### Amazon Linux 2
 
-1. Download and unpack the tarball. Go to the unpacked source directory.
+- Download and unpack the tarball. Go to the unpacked source directory.
 
-2. Install dependencies:
+- Install dependencies:
 
 ```console
 sudo yum install git make gcc-c++
 ```
 
-3. Build and install:
+- Build and install:
 
 ```console
 make
@@ -58,15 +58,15 @@ sudo make install
 
 #### OpenBSD
 
-1. Download and unpack the tarball. Go to the unpacked source directory.
+- Download and unpack the tarball. Go to the unpacked source directory.
 
-2. Install dependencies:
+- Install dependencies:
 
 ```console
 pkg_add llvm
 pkg_add make
 ```
-3. Build and install:
+- Build and install:
 
 
 ```console
