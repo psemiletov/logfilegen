@@ -4,7 +4,7 @@ Logfilegen is a fast and highly customizable tool to generate common server (ngi
 
 ## LINKS
 
-[Official site](https://psemiletov.github.io/logfilegen/)
+[Github repo](https://github.com/psemiletov/logfilegen)
 
 [Dockerhub repo](https://hub.docker.com/r/psemiletov/logfilegen/general)
 
