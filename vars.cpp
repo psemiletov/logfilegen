@@ -90,8 +90,8 @@ CVar::CVar (const string &key, const string &val)
           if (t[0] != '@')
              continue;
 
-   //      cout << "i:" << i << endl;
-     //    cout << "t:" << t << endl;
+         cout << "i:" << i << endl;
+         cout << "t:" << t << endl;
 
           string name = get_macro_name (t);
           if (name.empty())
@@ -101,9 +101,11 @@ CVar::CVar (const string &key, const string &val)
           if (f == pool.macros.end())
              continue;
 
-        //   cout << "!!!!!!!!!!!!!!!!!: " << name << endl;
 
           CMacro *tm = f->second->create_self (t);
+
+          cout << "!!!! CACHE: " << t << endl;
+
           cache.add (i, tm);
          }
      }
@@ -134,12 +136,6 @@ CVar::CVar (const string &key, const string &val)
 CVar::~CVar()
 {
   delete rnd_generator;
-
-/*    for (auto itr = macros.begin(); itr != macros.end(); ++itr)
-      {
-       delete (itr->second);
-      }
-*/
 }
 
 
@@ -237,7 +233,7 @@ string CVar::get_val()
             {
 
              result = f->second->process();
-       //      cout << "PROCESS CACHED:" << result << endl;
+             cout << "PROCESS CACHED:" << result << endl;
 
             }
         }

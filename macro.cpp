@@ -15,6 +15,9 @@
 #include "macro.h"
 
 
+char arr_nums [] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+
+
 int get_rnd (std::mt19937 *rnd_generator, int ta, int tb)
 {
   std::uniform_int_distribution <> distrib (ta, tb);
@@ -75,7 +78,7 @@ string gen_rnd_path (std::mt19937 *rnd_generator, size_t min, size_t max, size_t
   return result;
 }
 
-
+/*
 string gen_number (std::mt19937 *rnd_generator, size_t len)
 {
   std::uniform_int_distribution<> distrib (0, 9);
@@ -105,6 +108,39 @@ string gen_number (std::mt19937 *rnd_generator, size_t min, size_t max)
       }
 
   return st.str();
+}
+*/
+
+
+string gen_number (std::mt19937 *rnd_generator, size_t len)
+{
+  std::uniform_int_distribution<> distrib (0, 9);
+
+  string result;
+
+  for (size_t i = 0; i < len; i++)
+      {
+       result += arr_nums[distrib (*rnd_generator)];
+      }
+
+  return result;
+}
+
+
+string gen_number (std::mt19937 *rnd_generator, size_t min, size_t max)
+{
+  std::uniform_int_distribution<> distrib (0, 9);
+  std::uniform_int_distribution<> dminmax (min, max);
+  size_t len = dminmax (*rnd_generator);
+
+  string result;
+
+  for (size_t i = 0; i < len; i++)
+      {
+       result += arr_nums[distrib (*rnd_generator)];
+      }
+
+  return result;
 }
 
 
