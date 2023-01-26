@@ -15,6 +15,10 @@ The server log file generator
 [AUR](https://aur.archlinux.org/packages/logfilegen)
 
 
+## ABOUT
+
+Logfilegen is a fast and highly customizable tool to generate common server (nginx, etc) or user-defined format log files. You can generate log file with the desired rate (lines per second), the file size, lines count and the duration. Each variable of the log file can be redefined by the random or static value.
+
 ## USE
 
 The server log file generator. logfilegen is controlled by the configuration variables and templates. The usual way to run logfilegen from the command line is, for example:
