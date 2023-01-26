@@ -247,7 +247,7 @@ int main (int argc, char *argv[])
       params.duration = 5;
       params.size = 0;
       params.lines = 0;
-      params.pure = false;
+//      params.pure = false;
      }
 
 
