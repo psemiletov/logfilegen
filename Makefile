@@ -4,11 +4,11 @@ endif
 
 CXX = g++
 #CXXFLAGS = -Wall -g -O3 -fopenmp
-CXXFLAGS = -Wall -g -O3
+CXXFLAGS = -Wall -g -O3 -std=c++17
 
 
 all: main.cpp
-	$(CXX) $(CXXFLAGS) -std=c++17 -o logfilegen utl.cpp params.cpp macro.cpp vars.cpp tpl.cpp pairfile.cpp cycle.cpp logrot.cpp main.cpp
+	$(CXX) $(CXXFLAGS) -o logfilegen utl.cpp params.cpp macro.cpp vars.cpp tpl.cpp pairfile.cpp cycle.cpp logrot.cpp main.cpp
 
 clean:
 	$(RM) logfilegen
