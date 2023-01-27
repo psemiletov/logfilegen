@@ -9,7 +9,7 @@
 #include <chrono>
 #include <vector>
 #include <sys/time.h>
-
+//#include <time.h>
 
 #include "utl.h"
 #include "macro.h"
@@ -306,7 +306,7 @@ void CMacroDateTime::parse (const string &s)
 
 }
 
-
+/*
 string CMacroDateTime::process()
 {
   if (text.empty())
@@ -321,6 +321,33 @@ string CMacroDateTime::process()
   auto result = oss.str();
   return result;
 }
+*/
+
+
+
+string CMacroDateTime::process()
+{
+  if (text.empty())
+     return string();
+
+  time_t rawtime;
+  struct tm * timeinfo;
+
+  time (&rawtime);
+  timeinfo = localtime (&rawtime);
+
+
+  char buffer [128];
+  strftime (buffer, 128, text.c_str(), timeinfo);
+  //std::ostringstream oss;
+  //oss << std::put_time (&tm, text.c_str());
+
+
+
+  auto result = buffer;
+  return result;
+}
+
 
 
 

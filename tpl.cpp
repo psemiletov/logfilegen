@@ -116,32 +116,6 @@ CTpl::CTpl (const string &fname, const string &amode)
 
 }
 
-/*
-string CTpl::prepare_log_string()
-{
-
-  string logstring = vars["$logstring"]->get_val();
-
-  if (logstring.empty())
-     {
-      cout << "$logstring mandatory variable is not defined!" << endl;
-      return "";
-     }
-
-//change to     for (auto it = mymap.rbegin(); it != mymap.rend(); it++)
-  map <string, CVar*>::reverse_iterator it;
-  for (it = vars.rbegin(); it != vars.rend(); it++)
-      {
-       string variable = it->first;
-       string replacement = it->second->get_val();
-       str_replace (logstring, variable, replacement);
-      }
-
-  return logstring;
-}
-*/
-
-
 
 string CTpl::prepare_log_string()
 {
@@ -159,12 +133,7 @@ string CTpl::prepare_log_string()
   for (it = vars.rbegin(); it != vars.rend(); it++)
       {
        string variable = it->first;
-       //string replacement = it->second->get_val();
 
-       //str_replace (logstring, variable, replacement);
-
-
-       //string result = s;
        size_t i = 0;
        do
          {
