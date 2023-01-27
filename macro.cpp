@@ -189,7 +189,7 @@ CMacroIPRandom* CMacroIPRandom::create_self (const string &s)
 
 }
 
-
+/*
 string CMacroIPRandom::process()
 {
   std::uniform_int_distribution<> distrib (0, 255);
@@ -208,6 +208,45 @@ string CMacroIPRandom::process()
   st << distrib (*rnd_generator);
 
   return st.str();
+}
+*/
+
+
+
+string CMacroIPRandom::process()
+{
+  std::uniform_int_distribution<> distrib (0, 255);
+
+  string result;
+
+  result += to_string (distrib (*rnd_generator));
+  result += ".";
+
+  result += to_string (distrib (*rnd_generator));
+  result += ".";
+
+  result += to_string (distrib (*rnd_generator));
+  result += ".";
+
+  result += to_string (distrib (*rnd_generator));
+
+
+
+/*
+  ostringstream st;
+
+  st << distrib (*rnd_generator);
+  st << ".";
+
+  st << distrib (*rnd_generator);
+  st << ".";
+
+  st << distrib (*rnd_generator);
+  st << ".";
+
+  st << distrib (*rnd_generator);
+*/
+  return result;
 }
 
 
