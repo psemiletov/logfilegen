@@ -1,13 +1,9 @@
 #ifndef CYCLE_H
 #define CYCLE_H
 
-//#include <cstdint>
 #include <cstdlib>
-//#include <vector>
 #include <fstream>
-//#include <unistd.h>
 #include <csignal>
-
 
 #include "pairfile.h"
 #include "utl.h"
@@ -18,7 +14,6 @@
 
 using namespace std;
 using namespace std::chrono;
-
 
 
 

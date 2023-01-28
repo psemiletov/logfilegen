@@ -16,14 +16,14 @@ $body_bytes_sent=100..10000
 $logstring=$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
 ```
 
-As you see, ```$logstring``` is the variable which value is a free form string defining the log output string. Here we can mix the usual text and variables.
+As you see, ```$logstring``` is the variable which value is a free form string defining the log output string. Here we can mix the usual text and variables. If no ```$logstring``` provided at the template, the default built-in template (for the current mode, i.e. nginx, apache, etc.) will be used.
 
-The variables can be pre-defined in the server (such as ```$status```, ```$body_bytes_sent```, etc) or defined by the user. All pre-defined variables can be overrided at the template file.
+The variables can be pre-defined in the server itself (such as ```$status```, ```$body_bytes_sent``` for nginx, etc) or defined by the user. All pre-defined variables can be overrided at the template file.
 
 Currently logfilegen "knows" the following [standard nginx variables](http://nginx.org/en/docs/varindex.html) variables: ```$body_bytes_sent```, ```$connection_time```, ```$document_uri```, ```$http_referer```, ```$http_user_agent```, ```$protocol```, ```$remote_addr```, ```$remote_user```, ```$request```, ```$request_time```, ```$status```, ```$time_iso8601```, ```$time_local```, ```$uri```.
 
 
-There are also special logfilegen variables ```$seconds_random``` (WRITE ABOUT IT!!!!) and ```$logstring```.
+There are also special logfilegen variable ```$logstring``` for all logfilegen modes.
 
 To redefine the "built-in" variable use just need to set new value to it. To define a new variable you need do the same. Example of the small template file:
 
@@ -48,7 +48,7 @@ The value of the variable can be:
 
 - sequence (```$var=APPLE|2000|FRUITS|HELLO|POTATO```)
 
-- macros (```@macros:value1:value2```). Note! Using of macros directly in ```$logstring``` is possible but not desirable.
+- macros (```@macros:value1:value2```). Note! Using of macros directly in ```$logstring``` is not supported! Macros can be used exclusively in variable values.
 
 
 ### text value
@@ -99,7 +99,7 @@ At the each log string generating iteration, ```$status``` will be random number
 
 ### sequence
 
-The sequence is a set of values, delimeted by ```|```. Each value can be choosed randomly at each variable use during the logstring generation.
+The sequence is a set of values, delimeted by ```|```. Each value can be choosed randomly at each variable use during the logstring generation. At the sequence you can mix plain values and macros.
 
 Format: ```$variable=value 1|value 2|etc|```
 
@@ -112,10 +112,17 @@ $logstring=status is $status
 
 When processed, $status value will be 403 or 404 or 502 or 200 randomly.
 
+Example 2:
+
+```
+$test=@str_random:8|world
+$logstring=Hello, $test!
+```
+
 
 ### macros
 
-Macros are programmatically-generated values with a special names and parameters (optional or mandatory). Parameters are delimited by the colons (":"). Macros must be used as **variable values**, not as the elements of the ```$logstring``` directly.
+Macros are the generated values with special names and parameters (optional or mandatory). Parameters are delimited by the colons (``:``). Macros must be used as **variable values**, not as the elements of the ```$logstring``` directly.
 
 Here are a list of logfilegen macros:
 
@@ -133,6 +140,7 @@ $logstring=how is $timestamp
 ```
 
 Here we set the standard date-time format of **nginx** log.
+
 
 #### @str_random
 
@@ -154,6 +162,7 @@ $test=@str_random:8:16
 $logstring=hello, $test
 ```
 
+
 #### @int_random
 
 Generates a random integer number with a given length.
@@ -174,6 +183,21 @@ $test=@int_random:8:16
 $logstring=hello, $test
 ```
 
+
+#### @hex_random
+
+Generates a random hexodecimal number with a given (in decimal) length.
+
+Syntax: ```$variable=@hex_random:length``` or ```$variable=@hex_random:min:max```
+
+Example. Here we generate a random humber of 7 digits:
+
+```
+$test=@hex_random:7
+$logstring=hello, $test
+```
+
+
 #### @ip_random
 
 Generates the random IP address.
@@ -186,6 +210,7 @@ Example:
 $test=@ip_random
 $logstring=hello, $test
 ```
+
 
 #### @str_path
 
@@ -231,11 +256,11 @@ Radiohead
 Nirvana
 Pixies
 Frank Black
+Depeche Mode
 Skinny Puppy
 ```
 
 When processed, the ```@file_source:/home/test/testsource.txt``` directive will load ```/home/test/testsource.txt```, transform it to ```|```-separated values and choose one of them randomly.
-
 
 
 ### Complex examples
