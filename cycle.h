@@ -1,14 +1,11 @@
 #ifndef CYCLE_H
 #define CYCLE_H
 
-
-#include <cstdint>
+//#include <cstdint>
 #include <cstdlib>
-#include <vector>
-#include <iostream>
+//#include <vector>
 #include <fstream>
-#include <chrono>
-#include <unistd.h>
+//#include <unistd.h>
 #include <csignal>
 
 

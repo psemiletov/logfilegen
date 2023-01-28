@@ -14,8 +14,8 @@ public:
   string logfile; //output logfile name with full path
   string mode;    //"nginx" or "apache"
 
-  int duration; //duration of log generation, in seconds
-  int rate;  //during the log generation, how many lines per second will be written
+  size_t duration; //duration of log generation, in seconds
+  size_t rate;  //during the log generation, how many lines per second will be written
   size_t lines;
   size_t size;
   string s_size;

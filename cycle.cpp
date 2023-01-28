@@ -1,4 +1,7 @@
 #include <thread>
+#include <chrono>
+#include <iostream>
+
 
 #include "cycle.h"
 
@@ -76,7 +79,6 @@ CGenCycle::~CGenCycle()
 
 CGenCycleRated::CGenCycleRated (CParameters *prms, const string &fname): CGenCycle (prms, fname)
 {
-
 }
 
 
@@ -121,8 +123,8 @@ void CGenCycleRated::loop()
 
    size_t lines_counter = 0;
 
-   int seconds_counter = 0;
-   int frame_counter = 0;
+   size_t seconds_counter = 0;
+   size_t frame_counter = 0;
 
    using clock = std::chrono::steady_clock;
 
@@ -136,7 +138,6 @@ void CGenCycleRated::loop()
 //          std::cout << "seconds_counter: " << seconds_counter << endl;
   //        std::cout << "frame_counter: " << frame_counter << endl;
 
-//          if (params->lines == 0)
           if (frame_counter == params->rate)
              {
               frame_counter = 0;
@@ -145,7 +146,6 @@ void CGenCycleRated::loop()
 
           frame_counter++;
           lines_counter++;
-
 
           if (params->duration != 0) //not endless
           if (params->lines == 0 && seconds_counter == params->duration)
@@ -293,8 +293,8 @@ void CGenCycleUnrated::loop()
 
   if (params->stats)
      {
-      cout << "lines_counter : " << lines_counter << endl;
-      cout << "duration_s.count : " << duration_s.count() << endl;
+//      cout << "lines_counter : " << lines_counter << endl;
+//      cout << "duration_s.count : " << duration_s.count() << endl;
 
       double lines_per_second = (double) lines_counter / duration_s.count();
       cout << "Statistics, lines per seconds: " << lines_per_second << endl;

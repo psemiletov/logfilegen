@@ -121,6 +121,9 @@ string CTpl::prepare_log_string()
 {
 
   string logstring = vars["$logstring"]->get_val();
+  logstring.reserve (256);
+
+
 
   if (logstring.empty())
      {
