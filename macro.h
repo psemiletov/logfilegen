@@ -67,6 +67,17 @@ public:
 };
 
 
+class CMacroHexRandom: public CMacro
+{
+public:
+
+  CMacroHexRandom* create_self (const string &s);
+  string process();
+  void parse (const string &s);
+  ~CMacroHexRandom(){};
+};
+
+
 class CMacroDateTime: public CMacro
 {
 public:

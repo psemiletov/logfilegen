@@ -15,7 +15,7 @@
 #include "macro.h"
 
 
-char arr_nums [] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+char arr_nums [] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
 
 int get_rnd (std::mt19937 *rnd_generator, int ta, int tb)
@@ -145,6 +145,38 @@ string gen_number (std::mt19937 *rnd_generator, size_t min, size_t max)
 
 
 
+string gen_hex_number (std::mt19937 *rnd_generator, size_t len)
+{
+  std::uniform_int_distribution<> distrib (0, 15);
+
+  string result;
+
+  for (size_t i = 0; i < len; i++)
+      {
+       result += arr_nums[distrib (*rnd_generator)];
+      }
+
+  return result;
+}
+
+
+string gen_hex_number (std::mt19937 *rnd_generator, size_t min, size_t max)
+{
+  std::uniform_int_distribution<> distrib (0, 15);
+  std::uniform_int_distribution<> dminmax (min, max);
+  size_t len = dminmax (*rnd_generator);
+
+  string result;
+
+  for (size_t i = 0; i < len; i++)
+      {
+       result += arr_nums[distrib (*rnd_generator)];
+      }
+
+  return result;
+}
+
+
 CMacro::CMacro()
 {
   rnd_generator = new std::mt19937 (rnd_dev());
@@ -166,6 +198,7 @@ CMacrosPool::CMacrosPool()
    macros.insert (std::make_pair ("@ip_random", new CMacroIPRandom()));
    macros.insert (std::make_pair ("@str_random", new CMacroStrRandom()));
    macros.insert (std::make_pair ("@int_random", new CMacroIntRandom()));
+   macros.insert (std::make_pair ("@hex_random", new CMacroHexRandom()));
    macros.insert (std::make_pair ("@datetime", new CMacroDateTime()));
    macros.insert (std::make_pair ("@str_path", new CMacroPathRandom()));
    macros.insert (std::make_pair ("@file_source", new CMacroFileSource()));
@@ -321,6 +354,44 @@ string CMacroIntRandom::process()
 
    return gen_number (rnd_generator, len_min, len_max);
 }
+
+
+
+CMacroHexRandom* CMacroHexRandom::create_self (const string &s)
+{
+  CMacroHexRandom *m = new CMacroHexRandom();
+  m->parse (s);
+  return m;
+}
+
+
+void CMacroHexRandom::parse (const string &s)
+{
+  len_min = 0;
+  len_max = 0;
+  length = 0;
+
+  vector <string> vt = split_string_to_vector (s, ":");
+
+  if (vt.size() == 2)
+      length = atoi (vt[1].c_str());
+
+  if (vt.size() == 3)
+      {
+       len_min = atoi (vt[1].c_str());
+       len_max = atoi (vt[2].c_str());
+      }
+}
+
+
+string CMacroHexRandom::process()
+{
+  if (len_max == 0)
+     return gen_hex_number (rnd_generator, length);
+
+   return gen_hex_number (rnd_generator, len_min, len_max);
+}
+
 
 
 
