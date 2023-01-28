@@ -123,8 +123,6 @@ string CTpl::prepare_log_string()
   string logstring = vars["$logstring"]->get_val();
   logstring.reserve (256);
 
-
-
   if (logstring.empty())
      {
       cout << "$logstring mandatory variable is not defined!" << endl;
@@ -142,7 +140,9 @@ string CTpl::prepare_log_string()
          {
           i = logstring.find (variable);
           if (i != string::npos)
-             logstring = logstring.replace (i, variable.length(), it->second->get_val());
+//             logstring = logstring.replace (i, variable.length(), it->second->get_val());
+            logstring.replace (i, variable.length(), it->second->get_val());
+
          }
        while (i != string::npos);
 
