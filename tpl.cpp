@@ -66,10 +66,10 @@ CTpl::CTpl (const string &fname, const string &amode)
       vars.insert (std::make_pair ("$document_uri", new CVar ("$document_uri", "/|/favico.ico|/doc")));
       vars.insert (std::make_pair ("$http_referer", new CVar ("$http_referer", "-")));
       vars.insert (std::make_pair ("$http_user_agent", new CVar ("$http_user_agent", "Mozilla|Chrome|Vivaldi|Opera")));
-      vars.insert (std::make_pair ("$seconds_random", new CVar ("$seconds_random", "0.001..60.000")));
+//      vars.insert (std::make_pair ("$seconds_random", new CVar ("$seconds_random", "0.001..60.000")));
       vars.insert (std::make_pair ("$protocol", new CVar ("$protocol", "HTTP/1.1")));
-      vars.insert (std::make_pair ("$remote_addr", new CVar ("$remote_addr", "@ip_random")));
-      vars.insert (std::make_pair ("$remote_user", new CVar ("$remote_user", "@str_random:8|@int_random:8")));
+      vars.insert (std::make_pair ("$remote_addr", new CVar ("$remote_addr", "@ip")));
+      vars.insert (std::make_pair ("$remote_user", new CVar ("$remote_user", "@str:8|@int:8")));
       vars.insert (std::make_pair ("$request", new CVar ("$request", "GET|POST|PUT|PATCH|DELETE")));
       vars.insert (std::make_pair ("$request_time", new CVar ("$request_time", "0.001..60.000")));
       vars.insert (std::make_pair ("$status", new CVar ("$status", "200|400")));
@@ -85,9 +85,9 @@ CTpl::CTpl (const string &fname, const string &amode)
      {
       vars.insert (std::make_pair ("$logstring", new CVar ("$logstring", logstrings["apache"])));
 
-      vars.insert (std::make_pair ("%h", new CVar ("%h", "@ip_random")));
-      vars.insert (std::make_pair ("%l", new CVar ("%l", "@str_random:8|-")));
-      vars.insert (std::make_pair ("%u", new CVar ("%u", "@str_random:8|-")));
+      vars.insert (std::make_pair ("%h", new CVar ("%h", "@ip")));
+      vars.insert (std::make_pair ("%l", new CVar ("%l", "@str:8|-")));
+      vars.insert (std::make_pair ("%u", new CVar ("%u", "@str:8|-")));
       vars.insert (std::make_pair ("%t", new CVar ("%t", "@datetime:%d/%b/%Y:%H:%M:%S %z")));
       vars.insert (std::make_pair ("%r", new CVar ("%r", "/GET /hello.html HTTP/1.1.")));
 

@@ -7,13 +7,7 @@
 #include <cstdlib>
 #include <vector>
 #include <iostream>
-#include <fstream>
-#include <thread>
-#include <chrono>
-#include <unistd.h>
-#include <stdio.h>  // for FILENAME_MAX
-#include <sys/stat.h>
-#include <csignal>
+//#include <fstream>
 
 
 #include "pairfile.h"
@@ -29,7 +23,7 @@
 
 
 using namespace std;
-using namespace std::chrono;
+//using namespace std::chrono;
 
 
 string find_config_in_paths (const string &fname)

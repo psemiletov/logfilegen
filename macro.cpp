@@ -8,7 +8,7 @@
 #include <ctime>
 #include <chrono>
 #include <vector>
-#include <sys/time.h>
+//#include <sys/time.h>
 //#include <time.h>
 
 #include "utl.h"
@@ -77,39 +77,6 @@ string gen_rnd_path (std::mt19937 *rnd_generator, size_t min, size_t max, size_t
 
   return result;
 }
-
-/*
-string gen_number (std::mt19937 *rnd_generator, size_t len)
-{
-  std::uniform_int_distribution<> distrib (0, 9);
-
-  ostringstream st;
-
-  for (size_t i = 0; i < len; i++)
-      {
-       st << distrib (*rnd_generator);
-      }
-
-  return st.str();
-}
-
-
-string gen_number (std::mt19937 *rnd_generator, size_t min, size_t max)
-{
-  std::uniform_int_distribution<> distrib (0, 9);
-  std::uniform_int_distribution<> dminmax (min, max);
-  size_t len = dminmax (*rnd_generator);
-
-  ostringstream st;
-
-  for (size_t i = 0; i < len; i++)
-      {
-       st << distrib (*rnd_generator);
-      }
-
-  return st.str();
-}
-*/
 
 
 string gen_number (std::mt19937 *rnd_generator, size_t len)
@@ -192,7 +159,7 @@ CMacro::~CMacro()
   delete rnd_generator;
 }
 
-
+/*
 CMacrosPool::CMacrosPool()
 {
    macros.insert (std::make_pair ("@ip_random", new CMacroIPRandom()));
@@ -202,7 +169,19 @@ CMacrosPool::CMacrosPool()
    macros.insert (std::make_pair ("@datetime", new CMacroDateTime()));
    macros.insert (std::make_pair ("@str_path", new CMacroPathRandom()));
    macros.insert (std::make_pair ("@file_source", new CMacroFileSource()));
+}
+*/
 
+
+CMacrosPool::CMacrosPool()
+{
+   macros.insert (std::make_pair ("@ip", new CMacroIPRandom()));
+   macros.insert (std::make_pair ("@str", new CMacroStrRandom()));
+   macros.insert (std::make_pair ("@int", new CMacroIntRandom()));
+   macros.insert (std::make_pair ("@hex", new CMacroHexRandom()));
+   macros.insert (std::make_pair ("@datetime", new CMacroDateTime()));
+   macros.insert (std::make_pair ("@path", new CMacroPathRandom()));
+   macros.insert (std::make_pair ("@file", new CMacroFileSource()));
 }
 
 
@@ -221,28 +200,6 @@ CMacroIPRandom* CMacroIPRandom::create_self (const string &s)
   return new CMacroIPRandom();
 
 }
-
-/*
-string CMacroIPRandom::process()
-{
-  std::uniform_int_distribution<> distrib (0, 255);
-
-  ostringstream st;
-
-  st << distrib (*rnd_generator);
-  st << ".";
-
-  st << distrib (*rnd_generator);
-  st << ".";
-
-  st << distrib (*rnd_generator);
-  st << ".";
-
-  st << distrib (*rnd_generator);
-
-  return st.str();
-}
-*/
 
 
 
@@ -263,22 +220,6 @@ string CMacroIPRandom::process()
 
   result += to_string (distrib (*rnd_generator));
 
-
-
-/*
-  ostringstream st;
-
-  st << distrib (*rnd_generator);
-  st << ".";
-
-  st << distrib (*rnd_generator);
-  st << ".";
-
-  st << distrib (*rnd_generator);
-  st << ".";
-
-  st << distrib (*rnd_generator);
-*/
   return result;
 }
 

@@ -1,3 +1,13 @@
+Macros renamed:
+
+@ip_random -> @ip
+@str_random -> @str
+@int_random -> @int
+@hex_random -> @hex
+@str_path -> @path
+@file_source -> @file
+
+
 + @hex_random
 + macros caching
 + new variables and macros engine

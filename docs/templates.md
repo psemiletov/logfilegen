@@ -7,8 +7,8 @@ Template is a plain text file with key=value lines. Each key corresonds to varia
 Example of such file:
 
 ```
-$remote_addr=@ip_random
-$remote_user=@str_random:4:12|@int_random:22
+$remote_addr=@ip
+$remote_user=@str:4:12|@int:22
 $time_local=@datetime:%x:%X
 $request=GET|POST|PUT|PATCH|DELETE
 $status=200|404
@@ -115,7 +115,7 @@ When processed, $status value will be 403 or 404 or 502 or 200 randomly.
 Example 2:
 
 ```
-$test=@str_random:8|world
+$test=@str:8|world
 $logstring=Hello, $test!
 ```
 
@@ -142,97 +142,97 @@ $logstring=how is $timestamp
 Here we set the standard date-time format of **nginx** log.
 
 
-#### @str_random
+#### @str
 
 Generates a random string with a given length.
 
-Syntax: ```$variable=@str_random:length``` or ```$variable=@str_random:min:max```
+Syntax: ```$variable=@str:length``` or ```$variable=@str:min:max```
 
 Example. Here we generate a random string of 8 characters:
 
 ```
-$test=@str_random:8
+$test=@str:8
 $logstring=hello, $test
 ```
 
 Example. Here we generate a random string with the length from 8 to 16 characters:
 
 ```
-$test=@str_random:8:16
+$test=@str:8:16
 $logstring=hello, $test
 ```
 
 
-#### @int_random
+#### @int
 
 Generates a random integer number with a given length.
 
-Syntax: ```$variable=@int_random:length``` or ```$variable=@int_random:min:max```
+Syntax: ```$variable=@int:length``` or ```$variable=@int:min:max```
 
 Example. Here we generate a random humber of 8 digits:
 
 ```
-$test=@int_random:8
+$test=@int:8
 $logstring=hello, $test
 ```
 
 Example. Here we generate a random digits with the length from 8 to 16 digits:
 
 ```
-$test=@int_random:8:16
+$test=@int:8:16
 $logstring=hello, $test
 ```
 
 
-#### @hex_random
+#### @hex
 
 Generates a random hexodecimal number with a given (in decimal) length.
 
-Syntax: ```$variable=@hex_random:length``` or ```$variable=@hex_random:min:max```
+Syntax: ```$variable=@hex:length``` or ```$variable=@hex:min:max```
 
 Example. Here we generate a random humber of 7 digits:
 
 ```
-$test=@hex_random:7
+$test=@hex:7
 $logstring=hello, $test
 ```
 
 
-#### @ip_random
+#### @ip
 
 Generates the random IP address.
 
-Syntax: ```$variable=@ip_random```
+Syntax: ```$variable=@ip```
 
 Example:
 
 ```
-$test=@ip_random
+$test=@ip
 $logstring=hello, $test
 ```
 
 
-#### @str_path
+#### @path
 
 Generates the random path with a given minimum and maximum length of each path **element**, and the maximum subdirectories depths.
 
-Syntax: ```@str_path:min:max:depth```
+Syntax: ```@path:min:max:depth```
 
 Example:
 
 ```
-$testpath=@str_path:1:10:3
+$testpath=@path:1:10:3
 $logstring=The paths is $testpath
 ```
 
-Were, macro ```@str_path``` expands to the random-generated path with the path parts length randomly varied from 1 to 10, and depth from 1 to 3
+Where, macro ```@path``` expands to the random-generated path with the path parts length randomly varied from 1 to 10, and depth from 1 to 3
 
 
-#### $file_source
+#### $file
 
 Acts as the text file loader for **sequence** variable values.
 
-Syntax: ```@file_source:full path to file```
+Syntax: ```@file:full path to file```
 
 Consider we have the template like this:
 
@@ -241,10 +241,10 @@ $groups=Beatles|Nirvana|Radiohead
 $logstring=hello, $groups!
 ```
 
-Here we defined the sequence of values, separated by ``|``. But what if we want to have large list of such values, dozens or hundreds? In this case, use ```$file_source``` variable (with the **full file path**). Edit our example to something like that:
+Here we defined the sequence of values, separated by ``|``. But what if we want to have large list of such values, dozens or hundreds? In this case, use ```@file``` variable (with the **full file path**). Edit our example to something like that:
 
 ```
-$groups=@file_source:/home/test/testsource.txt
+$groups=@file:/home/test/testsource.txt
 $logstring=hello, $groups!
 ```
 
@@ -260,7 +260,7 @@ Depeche Mode
 Skinny Puppy
 ```
 
-When processed, the ```@file_source:/home/test/testsource.txt``` directive will load ```/home/test/testsource.txt```, transform it to ```|```-separated values and choose one of them randomly.
+When processed, the ```@file:/home/test/testsource.txt``` directive will load ```/home/test/testsource.txt```, transform it to ```|```-separated values and choose one of them randomly.
 
 
 ### Complex examples
@@ -268,8 +268,8 @@ When processed, the ```@file_source:/home/test/testsource.txt``` directive will 
 #### Example 01
 
 ```
-$remote_addr=@ip_random
-$remote_user=@str_random:4:12|@int_random:16
+$remote_addr=@ip
+$remote_user=@str:4:12|@int:16
 $time_local=@datetime:%x:%X
 $request=POST|GET
 $status=200|404
@@ -277,4 +277,3 @@ $body_bytes_sent=100..10000
 $time_iso8601=@datetime:%Y-%m-%dT%H:%M:%SZ
 $logstring=$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
 ```
-

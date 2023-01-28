@@ -6,8 +6,6 @@
 #define UTL_H
 
 
-using namespace std;
-
 //#include <sys/statvfs.h>
 #include <sys/stat.h>
 #include <algorithm>
@@ -39,6 +37,9 @@ using namespace std;
 #define DIR_SEPARATOR '/'
 #endif
 
+
+
+using namespace std;
 
 
 size_t get_file_size (const string &fname)

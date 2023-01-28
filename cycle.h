@@ -13,8 +13,6 @@
 
 
 using namespace std;
-using namespace std::chrono;
-
 
 
 class CGenCycle
