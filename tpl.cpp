@@ -71,6 +71,9 @@ CTpl::CTpl (const string &fname, const string &amode)
       vars.insert (std::make_pair ("$remote_addr", new CVar ("$remote_addr", "@ip")));
       vars.insert (std::make_pair ("$remote_user", new CVar ("$remote_user", "@str:8|@int:8")));
       vars.insert (std::make_pair ("$request", new CVar ("$request", "GET|POST|PUT|PATCH|DELETE")));
+      vars.insert (std::make_pair ("$request_completion", new CVar ("$request_completion", "ok|")));
+
+      vars.insert (std::make_pair ("$request_id", new CVar ("$request", "@hex:16")));
       vars.insert (std::make_pair ("$request_time", new CVar ("$request_time", "0.001..60.000")));
       vars.insert (std::make_pair ("$status", new CVar ("$status", "200|400")));
       vars.insert (std::make_pair ("$time_iso8601", new CVar ("$time_iso8601", "@datetime:%Y-%m-%dT%H:%M:%SZ"))); //don't redefine
