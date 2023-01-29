@@ -55,9 +55,6 @@ void CPairFile::set_float (const string &key, float value)
 
 float CPairFile::get_float (const string &key, float def_value)
 {
-//  if (values.size() == 0)
- //    return def_value;
-
   float result = def_value; 
 
   if (values[key].size() == 0)
@@ -110,51 +107,60 @@ int CPairFile::get_int (const string &key, int def_value)
   return result;
 }
 
-
+/*
 unsigned int CPairFile::get_uint (const string &key, unsigned int def_value)
 {
-
   unsigned int result = def_value;
 
   if (values.find (key) == values.end())
      return result;
 
-
   const char *s = values[key].c_str();
   if (! s)
      return result;
 
   char* end;
-     // finding the unsigned long
-    // integer with base 36
   result = strtoul (s, &end, 10);
 
   return result;
 }
-
-
+*/
+/*
 unsigned long long CPairFile::get_uulong (const string &key, unsigned long long def_value)
 {
-
   unsigned long long result = def_value;
 
   if (values.find (key) == values.end())
      return result;
 
+  const char *s = values[key].c_str();
+  if (! s)
+     return result;
+
+  char* end;
+  result = strtoull (s, &end, 10);
+
+  return result;
+}
+*/
+
+
+size_t CPairFile::get_num (const string &key, unsigned long long def_value)
+{
+  size_t result = def_value;
+
+  if (values.find (key) == values.end())
+     return result;
 
   const char *s = values[key].c_str();
   if (! s)
      return result;
 
   char* end;
-     // finding the unsigned long
-    // integer with base 36
   result = strtoull (s, &end, 10);
 
   return result;
 }
-
-
 
 
 string CPairFile::get_string (const string &key, 
@@ -175,7 +181,6 @@ string CPairFile::get_string (const string &key,
 
 CPairFile::CPairFile (const string &fname, bool from_data)
 {
-
   if (from_data)
     {
      stringstream st (fname);
@@ -196,8 +201,6 @@ CPairFile::CPairFile (const string &fname, bool from_data)
                     
             string a = line.substr (0, pos);
             string b = line.substr (pos + 1, line.size() - pos);
-
-//            cout << a << ":" << b << endl;
             
             values[a] = b;
            }
@@ -231,9 +234,6 @@ CPairFile::CPairFile (const string &fname, bool from_data)
          string a = line.substr (0, pos);
          string b = line.substr (pos + 1, line.size() - pos);
 
-  //       cout << a << ":" << b << endl;
-
-
          values[a] = b;
         }
 
@@ -246,10 +246,10 @@ CPairFile::CPairFile (int argc, char *argv[])
   stringstream st;
 
   for (int i = 0; i < argc; i++)
-     {
-      st << argv[i];
-      st << endl;
-     }
+      {
+       st << argv[i];
+       st << endl;
+      }
 
   string line;
 
@@ -301,7 +301,6 @@ CPairFile::CPairFile (vector <string> envars)
 
            string value = env_p;
 
-//           cout << param << "=" << value << endl;
            st << param << "=" << value << endl;
          }
      }
@@ -344,4 +343,3 @@ size_t CPairFile::get_file_size (const string &key, const string &def_value)
 
   return string_to_file_size (s);
 }
-

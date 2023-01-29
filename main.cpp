@@ -125,7 +125,7 @@ printf ("Nginx template:\n");
 printf ("\n");
 printf ("logfilegen --duration=60 --rate=1000 --mode=nginx\n");
 printf ("\n");
-printf ("# Run for 60 seconds with a rete 1000 lines per second and use a custom\n");
+printf ("# Run for 60 seconds with a rate 1000 lines per second and use a custom\n");
 printf ("Nginx template:\n");
 printf ("\n");
 printf ("logfilegen --duration=60 --rate=1000 --template=nginx.tpl --logfile=access.log\n");
@@ -175,11 +175,11 @@ int main (int argc, char *argv[])
 
    params.benchmark = opts_config.get_bool ("benchmark", false);
    params.debug = opts_config.get_bool ("debug", false);
-   params.duration = opts_config.get_int ("duration", 0);
-   params.lines = opts_config.get_uint ("lines", 0);
+   params.duration = opts_config.get_num ("duration", 0);
+   params.lines = opts_config.get_num ("lines", 0);
    params.logfile = opts_config.get_string ("logfile", "stdout");
    params.max_log_file_size = opts_config.get_string ("logsize", "16m");
-   params.max_log_files = opts_config.get_int ("logcount", 5);
+   params.max_log_files = opts_config.get_num ("logcount", 5);
    params.mode = opts_config.get_string ("mode", "nginx");
    params.pure = opts_config.get_bool ("pure", false);
    params.random = opts_config.get_bool ("random", false);
@@ -203,15 +203,15 @@ int main (int argc, char *argv[])
 
   params.benchmark = opts_cmdline.get_bool ("benchmark", params.benchmark);
   params.debug = opts_cmdline.get_bool ("debug", params.debug);
-  params.duration = opts_cmdline.get_int ("duration", params.duration);
-  params.lines = opts_cmdline.get_uint ("lines", params.lines);
+  params.duration = opts_cmdline.get_num ("duration", params.duration);
+  params.lines = opts_cmdline.get_num ("lines", params.lines);
   params.logfile = opts_cmdline.get_string ("logfile", params.logfile);
   params.max_log_file_size = opts_cmdline.get_string ("logsize", params.max_log_file_size);
-  params.max_log_files = opts_cmdline.get_int ("logcount", params.max_log_files);
+  params.max_log_files = opts_cmdline.get_num ("logcount", params.max_log_files);
   params.mode = opts_cmdline.get_string ("mode", params.mode);
   params.pure = opts_cmdline.get_bool ("pure", params.pure);
   params.random = opts_cmdline.get_bool ("random", params.random);
-  params.rate = opts_cmdline.get_int ("rate", params.rate);
+  params.rate = opts_cmdline.get_num ("rate", params.rate);
   params.s_size = opts_cmdline.get_string ("size", params.s_size);
   params.stats = opts_cmdline.get_bool ("stats", params.stats);
   params.templatefile = opts_cmdline.get_string ("template", params.templatefile);
@@ -244,15 +244,15 @@ int main (int argc, char *argv[])
 
   params.benchmark = opts_envars.get_bool ("benchmark", params.benchmark);
   params.debug = opts_envars.get_bool ("debug", params.debug);
-  params.duration = opts_envars.get_int ("duration", params.duration);
-  params.lines = opts_envars.get_uint ("lines", params.lines);
+  params.duration = opts_envars.get_num ("duration", params.duration);
+  params.lines = opts_envars.get_num ("lines", params.lines);
   params.logfile = opts_envars.get_string ("logfile", params.logfile);
   params.max_log_file_size = opts_envars.get_string ("logsize", params.max_log_file_size);
-  params.max_log_files = opts_envars.get_int ("logcount", params.max_log_files);
+  params.max_log_files = opts_envars.get_num ("logcount", params.max_log_files);
   params.mode = opts_envars.get_string ("mode", params.mode);
   params.pure = opts_envars.get_bool ("pure", params.pure);
   params.random = opts_envars.get_bool ("random", params.random);
-  params.rate = opts_envars.get_int ("rate", params.rate);
+  params.rate = opts_envars.get_num ("rate", params.rate);
   params.s_size = opts_envars.get_string ("size", params.s_size);
   params.size = string_to_file_size (params.s_size);
   params.stats = opts_envars.get_bool ("stats", params.stats);
