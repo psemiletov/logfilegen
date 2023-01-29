@@ -49,7 +49,7 @@ CTpl::CTpl (const string &fname, const string &amode)
 
   mode = amode;
 
-  logstrings["nginx"] = "$remote_addr - $remote_user [$time_local] \"$request $uri $protocol\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\"";
+  logstrings["nginx"] = "$remote_addr - $remote_user [$time_local] \"$request $uri $server_protocol\" $status $body_bytes_sent \"$http_referer\" \"$http_user_agent\"";
 
   //see https://httpd.apache.org/docs/2.4/mod/mod_log_config.html
   logstrings["apache"] = "\"%h %l %u %t \"%r\" %>s %b\"";
@@ -82,7 +82,7 @@ CTpl::CTpl (const string &fname, const string &amode)
 
       vars.insert (std::make_pair ("$pipe", new CVar ("$pipe", "p|.")));
 
-      vars.insert (std::make_pair ("$protocol", new CVar ("$protocol", "HTTP/1.1")));
+      //vars.insert (std::make_pair ("$protocol", new CVar ("$protocol", "HTTP/1.1")));
       vars.insert (std::make_pair ("$remote_addr", new CVar ("$remote_addr", "@ip")));
       vars.insert (std::make_pair ("$remote_user", new CVar ("$remote_user", "@str:8|@int:8")));
       vars.insert (std::make_pair ("$request", new CVar ("$request", "GET|POST|PUT|PATCH|DELETE")));
@@ -90,6 +90,8 @@ CTpl::CTpl (const string &fname, const string &amode)
 
       vars.insert (std::make_pair ("$request_id", new CVar ("$request", "@hex:16")));
       vars.insert (std::make_pair ("$request_time", new CVar ("$request_time", "0.001..60.000")));
+      vars.insert (std::make_pair ("$server_protocol", new CVar ("$server_protocol", "HTTP/1.0|HTTP/1.1|HTTP/2.0")));
+
       vars.insert (std::make_pair ("$scheme", new CVar ("$scheme", "http|https")));
 
       vars.insert (std::make_pair ("$status", new CVar ("$status", "200|400")));

@@ -1,3 +1,6 @@
+- $protocol
++ $server_protocol
+
 + $request_id built-in support
 + $request_completion
 + $scheme
