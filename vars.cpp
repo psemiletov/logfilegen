@@ -161,54 +161,6 @@ string CVar::gen_msecs()
 }
 
 
-/*
-string CVar::get_val()
-{
-  string result;
-
-  if (vartype == VT_SINGLE)
-     result = v[0];
-  else
-  if (vartype == VT_RANGE)
-     result = std::to_string (get_rnd (a, b));
-  else
-  if (vartype == VT_SEQ)
-      result = v[get_rnd (0, v.size()-1)];
-  else
-  if (vartype == VT_FLOATRANGE)
-     result = gen_msecs();
-
-   //pre process macros
-
-   //Если VT_SEQ и result еще не что-либо а макрос, инициализуем (парсим) его
-
-  if (vartype == VT_SEQ && result[0] == '@')
-     {
-      macroname = get_macro_name (result);
-
-      if (! macroname.empty())
-         {
-          auto f = pool.macros.find (macroname);
-          if (f != pool.macros.end())
-             {
-              f->second->parse (result);
-              result = f->second->process();
-             }
-         }
-     }
-  else //иначе просто макрос, который был инициализиван в CVar
-  if (! macroname.empty())
-     {
-
-      auto f = pool.macros.find (macroname);
-      if (f != pool.macros.end())
-         result = f->second->process();
-      }
-
-  return result;
-}
-*/
-
 string CVar::get_val()
 {
   string result;
