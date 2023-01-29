@@ -75,7 +75,13 @@ All configuration variables from the configuration file can be **overriden** usi
 logfilegen --duration=3
 ```
 
-You can mix config file and command line options, as good as with Environment variables (See below).
+You can mix config file and command line options, as good as with Environment variables (See below). For boolean variables, the explicitly stated key means "true", i.e.:
+
+```
+logfilegen --benchmark
+```
+
+But, in the case of the configuration file or environment variable, you need to set to true or false
 
 
 ### Environment variables

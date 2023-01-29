@@ -7,6 +7,8 @@
 #include <cstdlib>
 #include <vector>
 #include <iostream>
+#include <iomanip>
+
 //#include <fstream>
 
 
@@ -20,6 +22,18 @@
 #ifndef VERSION_NUMBER
 #define VERSION_NUMBER "0.5.0"
 #endif
+
+
+
+#define RED   "\x1B[31m"
+#define GRN   "\x1B[32m"
+#define YEL   "\x1B[33m"
+#define BLU   "\x1B[34m"
+#define MAG   "\x1B[35m"
+#define CYN   "\x1B[36m"
+#define WHT   "\x1B[37m"
+#define RESET "\x1B[0m"
+
 
 
 using namespace std;
@@ -51,13 +65,34 @@ string find_config_in_paths (const string &fname)
 void show_version()
 {
   cout << "logfilegen v." << VERSION_NUMBER << endl;
-}
 
+//  printf("This is " RED "red" RESET " and this is " BLU "blue" RESET "\n");
+}
 
 
 void show_help()
 {
-  cout << "HELP!" << endl;
+//  cout << "HELP!" << endl;
+
+
+/*
+  printf(RED "red\n"     RESET);
+  printf(GRN "green\n"   RESET);
+  printf(YEL "yellow\n"  RESET);
+  printf(BLU "blue\n"    RESET);
+  printf(MAG "magenta\n" RESET);
+  printf(CYN "cyan\n"    RESET);
+  printf(WHT "white\n"   RESET);*/
+
+  cout << "logfilegen v." << VERSION_NUMBER << endl;
+
+  cout << left << setw(25) << "--pure" << left << "generate lines without actual output" << endl;
+  cout << left << setw(25) << "--benchmark" << left << "run the benchmark with current settings" << endl;
+  cout << left << setw(25) << "--duration=integer" << left << "how many seconds runs the lines gerenation cycle. If 0 (zero), cycle will run until break by Ctrl-C." << endl;
+  cout << left << setw(25) << "--rate=integer" << left << "how many lines we generate at the each cycle iteration. If rate = 0, we perform non-timed loop with the full processor power." << endl;
+  cout << left << setw(25) << "--lines=integer" << left << "overrides duration with the lines count to generate exact number of the lines. Maximum lines count: 18446744073709551615." << endl;
+
+
 }
 
 
