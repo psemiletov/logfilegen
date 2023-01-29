@@ -82,7 +82,7 @@ CTpl::CTpl (const string &fname, const string &amode)
 
       vars.insert (std::make_pair ("$pipe", new CVar ("$pipe", "p|.")));
 
-      //vars.insert (std::make_pair ("$protocol", new CVar ("$protocol", "HTTP/1.1")));
+      vars.insert (std::make_pair ("$protocol", new CVar ("$protocol", " TCP/UDP")));
       vars.insert (std::make_pair ("$remote_addr", new CVar ("$remote_addr", "@ip")));
       vars.insert (std::make_pair ("$remote_user", new CVar ("$remote_user", "@str:8|@int:8")));
       vars.insert (std::make_pair ("$request", new CVar ("$request", "GET|POST|PUT|PATCH|DELETE")));
