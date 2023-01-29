@@ -20,7 +20,7 @@ As you see, ```$logstring``` is the variable which value is a free form string d
 
 The variables can be pre-defined in the server itself (such as ```$status```, ```$body_bytes_sent``` for nginx, etc) or defined by the user. All pre-defined variables can be overrided at the template file.
 
-Currently logfilegen "knows" the following [standard nginx variables](http://nginx.org/en/docs/varindex.html) variables: ```$body_bytes_sent```, ```$connection_time```, ```$document_uri```, ```$http_referer```, ```$http_user_agent```, ```$protocol```, ```$remote_addr```, ```$remote_user```, ```$request```, ```$request_time```, ```$status```, ```$time_iso8601```, ```$time_local```, ```$uri```.
+Currently logfilegen "knows" the following [standard nginx variables](http://nginx.org/en/docs/varindex.html) variables: ```$body_bytes_sent```, ```$connection_time```, ```$document_uri```, ```$https```, ```$http_referer```, ```$http_user_agent```, ```$is_args```, ```$pipe```, ```$protocol```, ```$remote_addr```, ```$remote_user```, ```$request```, ```$request_id```, ```$request_completion```, ```$request_time```, ```$scheme```, ```$status```, ```$time_iso8601```, ```$time_local```, ```$uri```.
 
 
 There are also special logfilegen variable ```$logstring``` for all logfilegen modes.

@@ -29,7 +29,7 @@ You can use following configuration variables:
 
 **lines=integer** - overrides ```duration``` with the ```lines``` count to generate exact number of the lines. Maximum lines count is 18446744073709551615.
 
-**size=integer** - overrided ```duration``` and ```lines``` to produce the log file with ```size``` content. Default units is bytes. You can use the suffix "k" to define kilobytes, "m" for Mbss, and "g" for Gb's, i.e.: 64k, 16m, etc.
+**size=integer** - overrided ```duration``` and ```lines``` to produce the log file with ```size``` content. Default units is bytes. You can use the suffix "k" to define kilobytes, "m" for Mb's, and "g" for Gb's, i.e.: 64k, 16m, etc.
 
 **template=string** - file name of the template that is used for logfile lines generation. (See [Using templates](templates.md) chapter).
 
@@ -106,7 +106,7 @@ In thos case, the usual variable name must be prefoxed with ```LFG``` (shortened
 
 **LFG_SIZE** - set **size**
 
-**LFG_BENCHMARK* - set **size**
+**LFG_BENCHMARK** - set **size**
 
 
 Example:

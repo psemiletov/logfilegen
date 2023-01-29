@@ -1,5 +1,6 @@
 + $request_id built-in support
 + $request_completion
++ $scheme
 + $https
 + $is_args
 + $pipe

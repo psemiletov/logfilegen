@@ -90,6 +90,8 @@ CTpl::CTpl (const string &fname, const string &amode)
 
       vars.insert (std::make_pair ("$request_id", new CVar ("$request", "@hex:16")));
       vars.insert (std::make_pair ("$request_time", new CVar ("$request_time", "0.001..60.000")));
+      vars.insert (std::make_pair ("$scheme", new CVar ("$scheme", "http|https")));
+
       vars.insert (std::make_pair ("$status", new CVar ("$status", "200|400")));
       vars.insert (std::make_pair ("$time_iso8601", new CVar ("$time_iso8601", "@datetime:%Y-%m-%dT%H:%M:%SZ"))); //don't redefine
       vars.insert (std::make_pair ("$time_local", new CVar ("$time_local", "@datetime:%d/%b/%Y:%H:%M:%S %z")));
