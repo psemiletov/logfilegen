@@ -1,5 +1,8 @@
 + $request_id built-in support
 + $request_completion
++ $https
++ $is_args
++ $pipe
 
 Macros renamed:
 
