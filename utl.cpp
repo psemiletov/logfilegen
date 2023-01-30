@@ -73,12 +73,6 @@ string replace_file_ext (const string &fname, const string &ext)
 
 string get_file_path (const string &path)
 {
-  /*char sep = '/';
-
-#ifdef _WIN32
-   sep = '\\';
-#endif
-*/
   size_t i = path.rfind (DIR_SEPARATOR, path.length());
 
   if (i != string::npos)
@@ -205,7 +199,7 @@ string string_replace_all (const string &s, const string &from, const string &to
     {
      i = result.find (from);
      if (i != string::npos)
-         result = result.replace (i, from.length(), to);
+         result.replace (i, from.length(), to);
     }
   while (i != string::npos);
 
@@ -295,6 +289,7 @@ string string_file_load (const string &fname)
  return s;
 }
 
+
 vector <string> vector_file_load (const string &fname)
 {
 
@@ -312,9 +307,7 @@ vector <string> vector_file_load (const string &fname)
 
   while (getline (infile, line))
         {
-
          v.push_back (line);
-
         }
 
    infile.close();

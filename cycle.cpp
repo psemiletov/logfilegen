@@ -44,9 +44,6 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
 
   tpl = new CTpl (fname_template, params->mode);
 
-//  if (params->random)
-  //   tpl->replace_value_by_key ("$logstring", "$datetime - $str_random$int_random");
-
   std::signal (SIGINT, f_signal_handler);
 
 

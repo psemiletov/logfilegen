@@ -34,8 +34,6 @@ public:
 class CMacroIPRandom: public CMacro
 {
 public:
-   //string test;
-
    CMacroIPRandom* create_self (const string &s);
    string process();
    void parse (const string &s){};

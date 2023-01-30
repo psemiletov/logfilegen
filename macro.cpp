@@ -8,8 +8,6 @@
 #include <ctime>
 #include <chrono>
 #include <vector>
-//#include <sys/time.h>
-//#include <time.h>
 
 #include "utl.h"
 #include "macro.h"
@@ -111,7 +109,6 @@ string gen_number (std::mt19937 *rnd_generator, size_t min, size_t max)
 }
 
 
-
 string gen_hex_number (std::mt19937 *rnd_generator, size_t len)
 {
   std::uniform_int_distribution<> distrib (0, 15);
@@ -158,19 +155,6 @@ CMacro::~CMacro()
 {
   delete rnd_generator;
 }
-
-/*
-CMacrosPool::CMacrosPool()
-{
-   macros.insert (std::make_pair ("@ip_random", new CMacroIPRandom()));
-   macros.insert (std::make_pair ("@str_random", new CMacroStrRandom()));
-   macros.insert (std::make_pair ("@int_random", new CMacroIntRandom()));
-   macros.insert (std::make_pair ("@hex_random", new CMacroHexRandom()));
-   macros.insert (std::make_pair ("@datetime", new CMacroDateTime()));
-   macros.insert (std::make_pair ("@str_path", new CMacroPathRandom()));
-   macros.insert (std::make_pair ("@file_source", new CMacroFileSource()));
-}
-*/
 
 
 CMacrosPool::CMacrosPool()
@@ -253,7 +237,6 @@ void CMacroStrRandom::parse (const string &s)
 
 string CMacroStrRandom::process()
 {
-
   if (len_max == 0)
      return gen_string (rnd_generator, length);
 
@@ -335,7 +318,6 @@ string CMacroHexRandom::process()
 
 
 
-
 CMacroDateTime* CMacroDateTime::create_self (const string &s)
 {
   CMacroDateTime *m = new CMacroDateTime();
@@ -357,7 +339,7 @@ void CMacroDateTime::parse (const string &s)
 
 }
 
-/*
+/*  SLOW
 string CMacroDateTime::process()
 {
   if (text.empty())
@@ -387,13 +369,10 @@ string CMacroDateTime::process()
   time (&rawtime);
   timeinfo = localtime (&rawtime);
 
-
   char buffer [128];
   strftime (buffer, 128, text.c_str(), timeinfo);
   //std::ostringstream oss;
   //oss << std::put_time (&tm, text.c_str());
-
-
 
   auto result = buffer;
   return result;

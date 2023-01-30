@@ -21,7 +21,7 @@ You can use following configuration variables:
 
 **pure=boolean** - "true" or "false" (default). It "true", logfilegen just generate log lines at the memory without the actual file output.
 
-**benchmark=boolean** - "true" or "false" (default). It "true", logfilegen run the generation at full speed, with the current template (or the default one if not provided), to the current log file. Results, in lines per second, may vary depended on the template complexity, randomize engine work, use of gzip, log rotation settings.
+**benchmark=boolean** - "true" or "false" (default). It "true", logfilegen run the generation at full speed, with the current template (or the default one if not provided), to the current log file. Results, in lines per second, may vary depended on the template complexity, randomizer engine work, use of gzip, log rotation settings.
 
 **duration=integer** - how many seconds runs the lines gerenation cycle. If 0 (zero), cycle will run until break by Ctrl-C.
 
@@ -58,10 +58,8 @@ Example:
 duration=2
 rate=5
 logfile=stdout
-debug=false
-templatefile=example-nginx-test.tp
-#templatefile=/home/test/test01.tp
-pure=false
+template=example-nginx-test.tp
+#template=/home/test/test01.tp
 ```
 
 In this example, we run logfilgen for a 2 seconds, generating 5 lines per second, to the screen (stdout), using ```example-nginx-test.tp``` user-written template. Please note that we can "comment-out" lines with ```#``` to disable them.
@@ -120,7 +118,87 @@ Example:
 ```export LFG_DURATION=20```
 
 
-## READ NEXT - TEMPLATES
+### Examples
+
+Use the way that you prefere - configuration file, command line parameters or the environment.
+
+#### Example 000
+
+Know your system:
+
+```
+./logfilegen --benchmark
+```
+
+That show how many lines per second can generate logfilegen with a current settings (other parameters, config variables, etc.). So you will know the maximum generation rate that logfilegen gains.
+
+
+
+#### Example 001
+
+The config file to use default (built-in) template for nginx, generate lines at full speed, 20 seconds, to ```/home/test/out.log``` using ```test.tp```.
+
+
+```
+duration=20
+logfile=/home/test/out.log
+template=test.tp
+```
+
+And ```test.tp``` can be, for example:
+
+
+```
+$test=@str:1:10|world
+$logstring=Hello, $test
+```
+
+Here, at each ```$logstring``` generation iteration, it will be ```Hello, world``` or ```Hello, some random word```.
+
+
+
+#### Example 002
+
+
+Generate 20000 lines per second, 10 seconds, with the default (built-in) nginx template, then stop:
+
+
+```console
+logfilegen --duration=10 --rate=20000
+```
+
+#### Example 003
+
+
+Generate exactly 100000 with rate 20000 lines per second, with the default (built-in) nginx template, then stop:
+
+
+```console
+logfilegen --lines=100000 --rate=20000
+```
+
+#### Example 004
+
+
+Generate 64 Mb lines, at full speed, with the default (built-in) nginx template, making log rotation using 4 log filesm each 1 Mb size:
+
+
+```console
+logfilegen --size=64M --logcount=4 --logsize=1M
+```
+
+#### Example 005
+
+Generate lines to stdout (console), in the infinity loop, and rate 10 lines per second, until breaked by Ctrl-C:
+
+
+```console
+logfilegen --rate=10 --logfile=stdout
+```
+
+
+
+### Read next - Templates
 
 [Templates manual](templates.md)
 

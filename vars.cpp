@@ -30,9 +30,6 @@ int get_value_nature (const string &s)
   if (s.find ("..") != string::npos)
      return VT_RANGE;
 
-//  if (s.find ("@") != string::npos)
-  //   return VT_MACRO;
-
 
   return VT_SINGLE;
 }
@@ -84,14 +81,10 @@ CVar::CVar (const string &key, const string &val)
 
       for (size_t i = 0; i < v.size(); i++)
          {
-
           string t = v[i];
 
           if (t[0] != '@')
              continue;
-
-      //   cout << "i:" << i << endl;
-         //cout << "t:" << t << endl;
 
           string name = get_macro_name (t);
           if (name.empty())
@@ -101,10 +94,7 @@ CVar::CVar (const string &key, const string &val)
           if (f == pool.macros.end())
              continue;
 
-
           CMacro *tm = f->second->create_self (t);
-
-          //cout << "!!!! CACHE: " << t << endl;
 
           cache.add (i, tm);
          }
@@ -114,7 +104,7 @@ CVar::CVar (const string &key, const string &val)
      {
       v = split_string_to_vector (value, "..");
 
-       //check int or float
+       //check for int or fractional
       size_t pos = v[0].find (".");
 
       if (pos != string::npos)
@@ -137,7 +127,6 @@ CVar::~CVar()
 {
   delete rnd_generator;
 }
-
 
 
 int CVar::get_rnd (int ta, int tb)
@@ -178,16 +167,9 @@ string CVar::get_val()
 
       if (result[0] == '@')
         {
-     //    cout << "MACRO IN SEQ:" << result << endl;
-
          auto f = cache.macros.find (i);
          if (f != cache.macros.end())
-            {
-
              result = f->second->process();
-            // cout << "PROCESS CACHED:" << result << endl;
-
-            }
         }
 
      }
@@ -202,7 +184,6 @@ string CVar::get_val()
   //иначе просто макрос, который был инициализиван в CVar
   if (! macroname.empty() && vartype == VT_SINGLE)
      {
-
       auto f = pool.macros.find (macroname);
       if (f != pool.macros.end())
          result = f->second->process();
