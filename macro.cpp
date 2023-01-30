@@ -428,9 +428,6 @@ CMacroFileSource* CMacroFileSource::create_self (const string &s)
 
 void CMacroFileSource::parse (const string &s)
 {
-
-  //cout << "void CMacroFileSource::parse (const string &s) " << s << endl;
-
   len_min = 0;
   len_max = 0;
   length = 0;
@@ -441,14 +438,7 @@ void CMacroFileSource::parse (const string &s)
       return;
 
   string path = s.substr (pos + 1);
-
-  //cout << "path " << path << endl;
-
   vt = vector_file_load (path);
-
-  //cout << "vt.size() " << vt.size() << endl;
-
-
 }
 
 

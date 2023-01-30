@@ -13,10 +13,7 @@ Logfilegen is a fast and highly customizable tool to generate common server (ngi
 
 ## MANUAL
 
-To install it, please read
-
-[Installation guide](inst.md)
-
+To install it, please read [Installation guide](inst.md)
 
 logfilegen is controlled by the configuration variables and templates. The usual way to run logfilegen from the command line is, for example:
 

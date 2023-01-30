@@ -9,8 +9,6 @@
 #include <iostream>
 #include <iomanip>
 
-//#include <fstream>
-
 
 #include "pairfile.h"
 #include "utl.h"
@@ -20,7 +18,7 @@
 
 
 #ifndef VERSION_NUMBER
-#define VERSION_NUMBER "0.5.0"
+#define VERSION_NUMBER "1.0.0"
 #endif
 
 
@@ -35,9 +33,7 @@
 #define RESET "\x1B[0m"
 
 
-
 using namespace std;
-//using namespace std::chrono;
 
 
 string find_config_in_paths (const string &fname)
@@ -65,60 +61,37 @@ string find_config_in_paths (const string &fname)
 void show_version()
 {
   cout << "logfilegen v." << VERSION_NUMBER << endl;
-
-//  printf("This is " RED "red" RESET " and this is " BLU "blue" RESET "\n");
 }
 
 
 void show_help()
 {
-//  cout << "HELP!" << endl;
-
-
-/*
-  printf(RED "red\n"     RESET);
-  printf(GRN "green\n"   RESET);
-  printf(YEL "yellow\n"  RESET);
-  printf(BLU "blue\n"    RESET);
-  printf(MAG "magenta\n" RESET);
-  printf(CYN "cyan\n"    RESET);
-  printf(WHT "white\n"   RESET);*/
-
-  //cout << "logfilegen v." << VERSION_NUMBER << endl;
-/*
-  cout << left << setw(25) << "--pure" << left << "generate lines without actual output" << endl;
-  cout << left << setw(25) << "--benchmark" << left << "run the benchmark with current settings" << endl;
-  cout << left << setw(25) << "--duration=integer" << left << "how many seconds runs the lines gerenation cycle. If 0 (zero), cycle will run until break by Ctrl-C." << endl;
-  cout << left << setw(25) << "--rate=integer" << left << "how many lines we generate at the each cycle iteration. If rate = 0, we perform non-timed loop with the full processor power." << endl;
-  cout << left << setw(25) << "--lines=integer" << left << "overrides duration with the lines count to generate exact number of the lines. Maximum lines count: 18446744073709551615." << endl;
-*/
-
-printf (GRN "logfilegen v%s by Peter Semiletov\n" RESET, VERSION_NUMBER);
-printf (YEL "Please read the full Manual at https://psemiletov.github.io/logfilegen/\n" RESET);
-printf (MAG "Parameters short list:\n");
-printf (CYN"--pure" RESET "      - Generate lines in memory or output them to the log file, disabled by default.\n");
-printf (CYN"--benchmark" RESET " - Perfrom benchmark to test logs generation performance of the current system, disabled by default.\n");
-printf (CYN"--duration" RESET "  - Logs generation duration in seconds, default is 0 and it means unlimited.\n");
-printf (CYN"--rate" RESET "      - Generation speed, default is 0 and it means unlimited.\n");
-printf (CYN"--lines" RESET "     - Generate number of lines and exit, overrides duration.\n");
-printf (CYN"--size" RESET "      - Generate specific log file size and exit, overrides duration and lines. Default units are bytes and we can specify k/m/g etc.\n");
-printf (CYN"--template" RESET "  - Template file name that is used for log file generation. See documentation for more details about template file format.\n");
-printf (CYN"--logfile" RESET "   - File name for the resulting logfile. We can also use 'stdout' to output lines to the console.\n");
-printf (CYN"--logsize" RESET "   - Maximum log file size, if exceeded, the log file rotation will happen. Default is 16m, default units are bytes and we can specify k/m/g\n");
-printf ("etc.\n");
-printf (CYN"--logcount" RESET "  - Number of the files to retain during rotation.\n");
-printf (CYN"--gzip" RESET "      - Use external gzip to compress rotated log files, disabled by default.\n");
-printf (CYN"--debug" RESET "     - Enable or disable debug, disabled by default.\n");
-printf ("\n");
-printf (MAG "Examples:\n" RESET);
-printf ("\n");
-printf ("# Run for 60 seconds with a rate 1000 lines per second and use pre-define Nginx template:\n");
-printf ("\n");
-printf ("logfilegen --duration=60 --rate=1000 --mode=nginx\n");
-printf ("\n");
-printf ("# Run for 60 seconds with a rate 1000 lines per second and use a custom Nginx template:\n");
-printf ("\n");
-printf ("logfilegen --duration=60 --rate=1000 --template=nginx.tpl --logfile=access.log\n");
+  printf (GRN "logfilegen v%s by Peter Semiletov\n" RESET, VERSION_NUMBER);
+  printf (YEL "Please read the full Manual at https://psemiletov.github.io/logfilegen/\n" RESET);
+  printf (MAG "Parameters short list:\n");
+  printf (CYN"--pure" RESET "      - Generate lines in memory or output them to the log file, disabled by default.\n");
+  printf (CYN"--benchmark" RESET " - Perfrom benchmark to test logs generation performance of the current system, disabled by default.\n");
+  printf (CYN"--duration" RESET "  - Logs generation duration in seconds, default is 0 and it means unlimited.\n");
+  printf (CYN"--rate" RESET "      - Generation speed, default is 0 and it means unlimited.\n");
+  printf (CYN"--lines" RESET "     - Generate number of lines and exit, overrides duration.\n");
+  printf (CYN"--size" RESET "      - Generate specific log file size and exit, overrides duration and lines. Default units are bytes and we can specify k/m/g etc.\n");
+  printf (CYN"--template" RESET "  - Template file name that is used for log file generation. See documentation for more details about template file format.\n");
+  printf (CYN"--logfile" RESET "   - File name for the resulting logfile. We can also use 'stdout' to output lines to the console.\n");
+  printf (CYN"--logsize" RESET "   - Maximum log file size, if exceeded, the log file rotation will happen. Default is 16m, default units are bytes and we can specify k/m/g\n");
+  printf ("etc.\n");
+  printf (CYN"--logcount" RESET "  - Number of the files to retain during rotation.\n");
+  printf (CYN"--gzip" RESET "      - Use external gzip to compress rotated log files, disabled by default.\n");
+  printf (CYN"--debug" RESET "     - Enable or disable debug, disabled by default.\n");
+  printf ("\n");
+  printf (MAG "Examples:\n" RESET);
+  printf ("\n");
+  printf ("# Run for 60 seconds with a rate 1000 lines per second and use pre-define Nginx template:\n");
+  printf ("\n");
+  printf ("logfilegen --duration=60 --rate=1000 --mode=nginx\n");
+  printf ("\n");
+  printf ("# Run for 60 seconds with a rate 1000 lines per second and use a custom Nginx template:\n");
+  printf ("\n");
+  printf ("logfilegen --duration=60 --rate=1000 --template=nginx.tpl --logfile=access.log\n");
 }
 
 

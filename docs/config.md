@@ -120,7 +120,8 @@ Example:
 
 ### Examples
 
-Use the way that you prefere - configuration file, command line parameters or the environment.
+Use the way that you prefere - configuration file, command line parameters or the environment. Please not that some parameters are compatible one with other, and some are not, i.e. ```lines``` disables ```duration```, and ```size``` disabled ```lines```. That's the only rule.
+
 
 #### Example 000
 
