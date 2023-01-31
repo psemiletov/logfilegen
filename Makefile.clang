@@ -13,9 +13,9 @@ clean:
 
 
 uninstall:
-	rm $(prefix)/bin/logfilegen
+	rm $(DESTDIR)$(prefix)/bin/logfilegen
 
 install: logfilegen
-	install -m 0755 logfilegen $(prefix)/bin
+	install -m 0755 logfilegen $(DESTDIR)$(prefix)/bin
 
 .PHONY: install

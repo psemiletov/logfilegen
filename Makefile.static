@@ -13,10 +13,10 @@ clean:
 	$(RM) logfilegen
 
 uninstall:
-	rm $(prefix)/bin/logfilegen
+	rm $(DESTDIR)$(prefix)/bin/logfilegen
 
 install: logfilegen
-	install -m 0755 logfilegen $(prefix)/bin/logfilegen
+	install -m 0755 logfilegen $(DESTDIR)$(prefix)/bin/logfilegen
 
 test:
 	logfilegen --help
