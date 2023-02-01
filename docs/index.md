@@ -8,7 +8,7 @@ Logfilegen is a fast and highly customizable tool to generate common server (ngi
 
 [Dockerhub repo](https://hub.docker.com/r/psemiletov/logfilegen/general)
 
-[AUR](https://aur.archlinux.org/packages/logfilegen)
+[AUR](https://aur.archlinux.org/packages/logfilegen), [openSUSE](https://software.opensuse.org/package/logfilegen)
 
 
 ## MANUAL
