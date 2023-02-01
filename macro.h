@@ -112,6 +112,19 @@ public:
 };
 
 
+class CMacroMeta: public CMacro
+{
+public:
+
+  vector <string> vt;
+
+  CMacroMeta* create_self (const string &s);
+  string process();
+  void parse (const string &s);
+  ~CMacroMeta(){};
+};
+
+
 
 class CMacrosPool
 {
