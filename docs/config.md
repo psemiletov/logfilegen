@@ -69,7 +69,7 @@ In this example, we run logfilgen for a 2 seconds, generating 5 lines per second
 
 All configuration variables from the configuration file can be **overriden** using command line options in the format ```--key=value```. For example:
 
-```console
+```
 logfilegen --duration=3
 ```
 
@@ -164,7 +164,7 @@ Here, at each ```$logstring``` generation iteration, it will be ```Hello, world`
 Generate 20000 lines per second, 10 seconds, with the default (built-in) nginx template, then stop:
 
 
-```console
+```
 logfilegen --duration=10 --rate=20000
 ```
 
@@ -174,7 +174,7 @@ logfilegen --duration=10 --rate=20000
 Generate exactly 100000 with rate 20000 lines per second, with the default (built-in) nginx template, then stop:
 
 
-```console
+```
 logfilegen --lines=100000 --rate=20000
 ```
 
@@ -184,7 +184,7 @@ logfilegen --lines=100000 --rate=20000
 Generate 64 Mb lines, at full speed, with the default (built-in) nginx template, making log rotation using 4 log filesm each 1 Mb size:
 
 
-```console
+```
 logfilegen --size=64M --logcount=4 --logsize=1M
 ```
 
@@ -193,7 +193,7 @@ logfilegen --size=64M --logcount=4 --logsize=1M
 Generate lines to stdout (console), in the infinity loop, and rate 10 lines per second, until breaked by Ctrl-C:
 
 
-```console
+```
 logfilegen --rate=10 --logfile=stdout
 ```
 
