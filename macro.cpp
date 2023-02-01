@@ -486,6 +486,44 @@ string CMacroFileSource::process()
 
 
 
+
+CMacroMeta* CMacroMeta::create_self (const string &s)
+{
+  CMacroMeta *m = new CMacroMeta();
+  m->parse (s);
+  return m;
+}
+
+
+
+void CMacroMeta::parse (const string &s)
+{
+  len_min = 0;
+  len_max = 0;
+  length = 0;
+  text = "";
+
+  size_t pos = s.find (":");
+  if (pos == string::npos)
+      return;
+
+  string path = s.substr (pos + 1);
+  vt = vector_file_load (path);
+}
+
+
+string CMacroMeta::process()
+{
+
+  if (vt.size() != 0)
+     text = vt[get_rnd (rnd_generator, 0, vt.size()-1)];
+
+  return text;
+}
+
+
+
+
 void CMacrosCache::add (size_t pos, CMacro *m)
 {
    macros.insert (std::make_pair (pos, m));
