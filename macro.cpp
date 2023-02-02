@@ -579,6 +579,24 @@ string CMacroMeta::process()
  */
  // if (vt.size() != 0)
    //  text = vt[get_rnd (rnd_generator, 0, vt.size()-1)];
+  text = meta;
+
+  map <string, CMacro*>::iterator it;
+  for (it = cached.macros.begin(); it != cached.macros.end(); it++)
+      {
+       string macroname = it->first; //@1, @2, etc
+
+       size_t i = 0;
+       do
+         {
+          i = text.find (macroname);
+          if (i != string::npos)
+           text.replace (i, macroname.length(), it->second->process());
+         }
+       while (i != string::npos);
+
+      }
+
 
   return text;
 }
