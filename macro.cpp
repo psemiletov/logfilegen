@@ -201,6 +201,8 @@ CMacrosPool::CMacrosPool()
    macros.insert (std::make_pair ("@datetime", new CMacroDateTime()));
    macros.insert (std::make_pair ("@path", new CMacroPathRandom()));
    macros.insert (std::make_pair ("@file", new CMacroFileSource()));
+   macros.insert (std::make_pair ("@meta", new CMacroMeta()));
+
 }
 
 
@@ -554,17 +556,76 @@ CMacroMeta* CMacroMeta::create_self (const string &s)
 
 void CMacroMeta::parse (const string &s)
 {
+  cout << "void CMacroMeta::parse (const string &s) -111 " << endl;
+
   len_min = 0;
   len_max = 0;
   length = 0;
   text = "";
 
   size_t pos = s.find (":");
-  if (pos == string::npos)
-      return;
+  if (pos != string::npos)
+     text = s.substr (pos + 1); //after :
+  else
+      return; //check it
 
-  string path = s.substr (pos + 1);
-  vt = vector_file_load (path);
+  size_t i = 0;
+
+  while (i < text.size())
+       {
+        if (text[i] == '@') //start of macro
+           {
+            cout << "//start of macro" << endl;
+
+            //search to ), then get macro text
+            size_t j = i;
+
+            bool found = false;
+
+            while (j < text.size())
+                  {
+                   if (text[j] == ')')
+                     {
+                      found = true;
+                      break;
+                     }
+
+                   j++;
+                  }
+
+
+           //now, macro text in between i and j
+           if (found)
+           if (i != text.size() - 1)
+              {
+               string macrotext = text.substr (i, j-i + 1);
+               i += j;
+               cout << "macrotext:" << macrotext << endl;
+
+               //create cached macro
+               // ...
+
+
+
+           //copy metamacro instead of real one
+
+               meta += "@" + to_string(i);
+
+              }
+
+
+           }
+         else //just copy
+             meta += text[i];
+
+        i++;
+       }
+
+   cout << "meta:" << meta << endl;
+
+   cout << "void CMacroMeta::parse (const string &s) -222 " << endl;
+
+
 }
 
 
@@ -580,7 +641,7 @@ string CMacroMeta::process()
  // if (vt.size() != 0)
    //  text = vt[get_rnd (rnd_generator, 0, vt.size()-1)];
   text = meta;
-
+/*
   map <string, CMacro*>::iterator it;
   for (it = cached.macros.begin(); it != cached.macros.end(); it++)
       {
@@ -597,7 +658,7 @@ string CMacroMeta::process()
 
       }
 
-
+*/
   return text;
 }
 
