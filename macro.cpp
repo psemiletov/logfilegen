@@ -22,7 +22,7 @@ int get_rnd (std::mt19937 *rnd_generator, int ta, int tb)
   return distrib (*rnd_generator);
 }
 
-
+/*
 string gen_string (std::mt19937 *rnd_generator, size_t len)
 {
   ostringstream st;
@@ -57,7 +57,42 @@ string gen_string (std::mt19937 *rnd_generator, size_t min, size_t max)
 
   return st.str();
 }
+*/
 
+string gen_string (std::mt19937 *rnd_generator, size_t len)
+{
+  string result;
+
+  std::uniform_int_distribution<> distrib (0, 25);
+
+  for (size_t i = 0; i < len; i++)
+      {
+       int g = distrib (*rnd_generator);
+       char d = static_cast<char> (g + 'a');
+       result += d;
+      }
+
+  return result;
+}
+
+
+string gen_string (std::mt19937 *rnd_generator, size_t min, size_t max)
+{
+  string result;
+
+  std::uniform_int_distribution<> distrib (0, 25);
+  std::uniform_int_distribution<> dminmax (min, max);
+  size_t len = dminmax (*rnd_generator);
+
+  for (size_t i = 0; i < len; i++)
+      {
+       int g = distrib (*rnd_generator);
+       char d = static_cast<char> (g + 'a');
+       result += d;
+      }
+
+  return result;
+}
 
 string gen_rnd_path (std::mt19937 *rnd_generator, size_t min, size_t max, size_t deep)
 {
@@ -170,6 +205,27 @@ CMacrosPool::CMacrosPool()
 
 
 CMacrosPool::~CMacrosPool()
+{
+  for (auto itr = macros.begin(); itr != macros.end(); ++itr)
+      {
+       delete (itr->second);
+      }
+}
+
+
+CMacrosPoolMeta::CMacrosPoolMeta()
+{
+   macros.insert (std::make_pair ("@ip", new CMacroIPRandom()));
+   macros.insert (std::make_pair ("@str", new CMacroStrRandom()));
+   macros.insert (std::make_pair ("@int", new CMacroIntRandom()));
+   macros.insert (std::make_pair ("@hex", new CMacroHexRandom()));
+   macros.insert (std::make_pair ("@datetime", new CMacroDateTime()));
+   macros.insert (std::make_pair ("@path", new CMacroPathRandom()));
+   macros.insert (std::make_pair ("@file", new CMacroFileSource()));
+}
+
+
+CMacrosPoolMeta::~CMacrosPoolMeta()
 {
   for (auto itr = macros.begin(); itr != macros.end(); ++itr)
       {
@@ -514,9 +570,15 @@ void CMacroMeta::parse (const string &s)
 
 string CMacroMeta::process()
 {
+/*
 
-  if (vt.size() != 0)
-     text = vt[get_rnd (rnd_generator, 0, vt.size()-1)];
+прогнать все макросы из кэша
+
+по meta, в заменяя @1 @2
+
+ */
+ // if (vt.size() != 0)
+   //  text = vt[get_rnd (rnd_generator, 0, vt.size()-1)];
 
   return text;
 }
@@ -531,6 +593,22 @@ void CMacrosCache::add (size_t pos, CMacro *m)
 
 
 CMacrosCache::~CMacrosCache()
+{
+  for (auto itr = macros.begin(); itr != macros.end(); ++itr)
+      {
+       delete (itr->second);
+      }
+}
+
+
+
+void CMacrosCacheMeta::add (const string &s, CMacro *m)
+{
+   macros.insert (std::make_pair (s, m));
+}
+
+
+CMacrosCacheMeta::~CMacrosCacheMeta()
 {
   for (auto itr = macros.begin(); itr != macros.end(); ++itr)
       {

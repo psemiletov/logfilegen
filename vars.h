@@ -35,8 +35,6 @@ public:
 
   CMacrosCache cache;
 
-  //map <string, CMacro*> macros;
-
 
   int vartype;
   int precision;

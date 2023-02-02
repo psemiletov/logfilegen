@@ -10,6 +10,8 @@
 using namespace std;
 
 
+//class CMacrosPoolMeta;
+
 class CMacro
 {
 public:
@@ -17,6 +19,7 @@ public:
    std::random_device rnd_dev;
 
    string text;
+   string meta; //состоит из @1 @2 ..
 
    size_t len_min;
    size_t len_max;
@@ -27,6 +30,7 @@ public:
    virtual CMacro* create_self (const string &s) {return new CMacro();};
    virtual string process() {return string ("CMacro::process()");};
    virtual void parse (const string &s) {};
+   virtual void interpet (const string &s) {};
 
 };
 
@@ -112,17 +116,6 @@ public:
 };
 
 
-class CMacroMeta: public CMacro
-{
-public:
-
-  vector <string> vt;
-
-  CMacroMeta* create_self (const string &s);
-  string process();
-  void parse (const string &s);
-  ~CMacroMeta(){};
-};
 
 
 
@@ -137,6 +130,17 @@ public:
 };
 
 
+class CMacrosPoolMeta
+{
+public:
+
+   map <string, CMacro*> macros;
+
+   CMacrosPoolMeta();
+   ~CMacrosPoolMeta();
+};
+
+
 class CMacrosCache
 {
 public:
@@ -144,10 +148,36 @@ public:
    map <int, CMacro*> macros;
 
    void add (size_t pos, CMacro *m);
-   //CMacrosPool();
    ~CMacrosCache();
 };
 
+
+class CMacrosCacheMeta
+{
+public:
+
+   map <string, CMacro*> macros;
+
+   void add (const string &s, CMacro *m);
+   ~CMacrosCacheMeta();
+};
+
+
+
+class CMacroMeta: public CMacro
+{
+public:
+
+  CMacrosPoolMeta pool;
+  CMacrosCacheMeta cached;
+
+  vector <string> vt;
+
+  CMacroMeta* create_self (const string &s);
+  string process();
+  void parse (const string &s);
+  ~CMacroMeta(){};
+};
 
 
 #endif
