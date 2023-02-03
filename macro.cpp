@@ -571,40 +571,45 @@ void CMacroMeta::parse (const string &s)
   length = 0;
   text = "";
 
+  //отделяем название макроса
   size_t pos = s.find (":");
   if (pos != string::npos)
      text = s.substr (pos + 1); //after :
   else
       return; //check it
 
+   cout << "all text of macro: " << text << endl;
+
+  //ищем вложенные макросы
+
   size_t i = 0;
 
   while (i < text.size())
-       {
-        if (text[i] == '(') //start of macro
-           {
-            cout << "//start of macro" << endl;
+        {
+         if (text[i] == '(') //start of macro
+            {
+             cout << "//start of macro" << endl;
 
-            //search to ), then get macro text
-            size_t j = i;
+             //search to ), then get macro text
+             size_t j = i;
 
-            bool found = false;
+             bool found = false;
 
-            while (j < text.size())
-                  {
-                   if (text[j] == ')')
-                     {
-                      found = true;
-                      break;
-                     }
+             while (j < text.size())
+                   {
+                    if (text[j] == ')')
+                       {
+                        found = true;
+                        break;
+                       }
 
-                   j++;
-                  }
+                     j++;
+                    }
 
 
            //now, macro text in between i and j
            if (found)
-           if (i != text.size() - 1)
+           //if (i != text.size() - 1)
               {
                string macrotext = text.substr (i, j-i + 1);
                i += j;
@@ -617,6 +622,9 @@ void CMacroMeta::parse (const string &s)
                // ...
 
                string name = get_macro_name (macrotext);
+
+               cout << "and name is: " << name << endl;
+
                if (name.empty())
                   continue;
 
@@ -624,16 +632,17 @@ void CMacroMeta::parse (const string &s)
                if (f == pool.macros.end())
                   continue;
 
-                             cout << "macrotext:" << macrotext << endl;
+               cout << "macrotext:" << macrotext << endl;
 
 
            //copy metamacro instead of real one
+              string newname = "@" + to_string(i);
 
-               meta += "@" + to_string(i);
+               meta += newname;
 
                CMacro *tm = f->second->create_self (macrotext);
 
-               cache.add (meta, tm);
+               cache.add (newname, tm);
 
 
               }
