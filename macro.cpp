@@ -564,7 +564,7 @@ CMacroMeta* CMacroMeta::create_self (const string &s)
 
 void CMacroMeta::parse (const string &s)
 {
-  cout << "void CMacroMeta::parse (const string &s) -111 " << endl;
+ // cout << "void CMacroMeta::parse (const string &s) -111 " << endl;
 
   len_min = 0;
   len_max = 0;
@@ -578,7 +578,7 @@ void CMacroMeta::parse (const string &s)
   else
       return; //check it
 
-   cout << "all text of macro: " << text << endl;
+  // cout << "all text of macro: " << text << endl;
 
   //ищем вложенные макросы
 
@@ -588,7 +588,7 @@ void CMacroMeta::parse (const string &s)
         {
          if (text[i] == '(') //start of macro
             {
-             cout << "//start of macro" << endl;
+       //      cout << "//start of macro" << endl;
 
              //search to ), then get macro text
              size_t j = i;
@@ -612,18 +612,20 @@ void CMacroMeta::parse (const string &s)
            //if (i != text.size() - 1)
               {
                string macrotext = text.substr (i, j-i + 1);
-               i += j;
+               i += macrotext.size();
+
 
                macrotext.pop_back();
                macrotext.erase (0, 1);
 
+   //            cout << "macrotext:" << macrotext << endl;
 
                //create cached macro
                // ...
 
                string name = get_macro_name (macrotext);
 
-               cout << "and name is: " << name << endl;
+     //          cout << "and name is: " << name << endl;
 
                if (name.empty())
                   continue;
@@ -632,7 +634,6 @@ void CMacroMeta::parse (const string &s)
                if (f == pool.macros.end())
                   continue;
 
-               cout << "macrotext:" << macrotext << endl;
 
 
            //copy metamacro instead of real one
@@ -643,21 +644,21 @@ void CMacroMeta::parse (const string &s)
                CMacro *tm = f->second->create_self (macrotext);
 
                cache.add (newname, tm);
-
-
               }
 
 
            }
-         else //just copy
-             meta += text[i];
+   //      else //just copy
+         {
 
+         meta += text[i];
+         }
         i++;
        }
 
-   cout << "meta:" << meta << endl;
+  // cout << "meta:" << meta << endl;
 
-   cout << "void CMacroMeta::parse (const string &s) -222 " << endl;
+ //  cout << "void CMacroMeta::parse (const string &s) -222 " << endl;
 
 
 }
@@ -666,7 +667,7 @@ void CMacroMeta::parse (const string &s)
 string CMacroMeta::process()
 {
 
-cout << "string CMacroMeta::process()" << endl;
+//cout << "string CMacroMeta::process()" << endl;
 
   /*
 
@@ -679,14 +680,14 @@ cout << "string CMacroMeta::process()" << endl;
    //  text = vt[get_rnd (rnd_generator, 0, vt.size()-1)];
   text = meta;
 
-  cout << "text:"  << text << endl;
+ // cout << "text:"  << text << endl;
 
 
   map <string, CMacro*>::iterator it;
   for (it = cache.macros.begin(); it != cache.macros.end(); it++)
       {
        string macroname = it->first; //@1, @2, etc
-      cout << "macroname:" << macroname << endl;
+   //   cout << "macroname:" << macroname << endl;
 
        size_t i = 0;
        do
@@ -701,7 +702,7 @@ cout << "string CMacroMeta::process()" << endl;
 
       }
 
-  cout << "text:"  << text << endl;
+ // cout << "text:"  << text << endl;
   return text;
 }
 
