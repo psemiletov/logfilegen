@@ -209,6 +209,7 @@ CMacrosPool::CMacrosPool()
    macros.insert (std::make_pair ("@path", new CMacroPathRandom()));
    macros.insert (std::make_pair ("@file", new CMacroFileSource()));
    macros.insert (std::make_pair ("@meta", new CMacroMeta()));
+      macros.insert (std::make_pair ("@seq", new CMacroSeq()));
 
 }
 
@@ -231,6 +232,7 @@ CMacrosPoolMeta::CMacrosPoolMeta()
    macros.insert (std::make_pair ("@datetime", new CMacroDateTime()));
    macros.insert (std::make_pair ("@path", new CMacroPathRandom()));
    macros.insert (std::make_pair ("@file", new CMacroFileSource()));
+      macros.insert (std::make_pair ("@seq", new CMacroSeq()));
 }
 
 
@@ -480,6 +482,35 @@ void CMacroPathRandom::parse (const string &s)
 string CMacroPathRandom::process()
 {
    return gen_rnd_path (rnd_generator, len_min, len_max, length);
+}
+
+
+CMacroSeq* CMacroSeq::create_self (const string &s)
+{
+  CMacroSeq *m = new CMacroSeq();
+  m->parse (s);
+  return m;
+}
+
+
+void CMacroSeq::parse (const string &s)
+{
+
+  len_min = 0;
+  len_max = 0;
+  length = 0;
+  text = "";
+
+  vt = split_string_to_vector (s, ":");
+
+}
+
+
+string CMacroSeq::process()
+{
+   size_t i = get_rnd (rnd_generator, 1, vt.size() - 1);
+
+   return vt[i];
 }
 
 

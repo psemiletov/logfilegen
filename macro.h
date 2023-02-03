@@ -102,6 +102,17 @@ public:
 };
 
 
+class CMacroSeq: public CMacro
+{
+public:
+  vector <string> vt;
+
+  CMacroSeq* create_self (const string &s);
+  string process();
+  void parse (const string &s);
+  ~CMacroSeq(){};
+};
+
 
 class CMacroFileSource: public CMacro
 {
