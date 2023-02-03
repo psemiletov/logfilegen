@@ -276,6 +276,20 @@ $logstring=hello, $test
 ```
 
 
+#### @meta
+
+The macro for compound macros, to set the line with several macros as the variable value. Each macro in such compound macros must be placed to the braces.
+
+Syntax: ```@meta:(macro1)(macros)```
+
+Example:
+
+```
+$test=@macro:foo (@str:12) bar (@int:12:16) (@ip)
+$logstring=hello, $test
+```
+
+Such complex macro can contain the free form text among the macros. The nested @meta macros are not supported.
 
 
 ### Complex examples
