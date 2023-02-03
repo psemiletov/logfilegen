@@ -1,12 +1,7 @@
-$remote_addr=IP_RANDOM
-$remote_user=USER_WORD|USER_NUMBER
-#$time_local=%x:%X
-$request=POST
+$remote_addr=@ip
+$remote_user=@str:4:12|@int:22
+$time_local=@datetime:%x:%X
+$request=GET|POST|PUT|PATCH|DELETE
 $status=200|404
 $body_bytes_sent=100..10000
-$testvar=HELLO|WORLD
-$time_iso8601=%Y-%m-%dT%H:%M:%SZ
-$str_random01=6
-$int_random01=12
-$logstring=$time_iso8601 $testvar $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" $str_random01 test test $int_random01
-
+$logstring=$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"

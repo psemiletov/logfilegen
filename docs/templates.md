@@ -228,7 +228,7 @@ $logstring=The paths is $testpath
 Where, macro ```@path``` expands to the random-generated path with the path parts length randomly varied from 1 to 10, and depth from 1 to 3
 
 
-#### $file
+#### @file
 
 Acts as the text file loader for **sequence** variable values.
 
@@ -261,6 +261,21 @@ Skinny Puppy
 ```
 
 When processed, the ```@file:/home/test/testsource.txt``` directive will load ```/home/test/testsource.txt```, transform it to ```|```-separated values and choose one of them randomly.
+
+#### @seq
+
+Works like **sequence** variable values. Each value is separated by ```:```.
+
+Syntax: ```@seq:param1:param2:etc```
+
+Example:
+
+```
+$test=@seq:GET:PUT
+$logstring=hello, $test
+```
+
+
 
 
 ### Complex examples
