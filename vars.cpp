@@ -35,15 +35,6 @@ int get_value_nature (const string &s)
 }
 
 
-string get_macro_name (const string &value)
-{
- size_t pos = value.find_first_of (':');
- if (pos == string::npos)
-     pos = value.size();
-
-  return value.substr (0, pos);
-}
-
 
 CVar::CVar (const string &key, const string &val)
 {

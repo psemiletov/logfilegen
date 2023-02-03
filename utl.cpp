@@ -2,9 +2,6 @@
  *   this code by Peter Semiletov is Public Domain         *
  **********************************************************/
 
-#ifndef UTL_H
-#define UTL_H
-
 
 //#include <sys/statvfs.h>
 #include <sys/stat.h>
@@ -207,7 +204,7 @@ string string_replace_all (const string &s, const string &from, const string &to
 }
 
 
-vector <string> split_string_to_vector (const string& s, const string& delimeter, const bool keep_empty = true)
+vector <string> split_string_to_vector (const string& s, const string& delimeter, const bool keep_empty)
 {
   vector <string> result;
 
@@ -315,4 +312,13 @@ vector <string> vector_file_load (const string &fname)
 }
 
 
-#endif
+
+string get_macro_name (const string &value)
+{
+ size_t pos = value.find_first_of (':');
+ if (pos == string::npos)
+     pos = value.size();
+
+  return value.substr (0, pos);
+}
+

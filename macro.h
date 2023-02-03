@@ -169,7 +169,7 @@ class CMacroMeta: public CMacro
 public:
 
   CMacrosPoolMeta pool;
-  CMacrosCacheMeta cached;
+  CMacrosCacheMeta cache;
 
   vector <string> vt;
 

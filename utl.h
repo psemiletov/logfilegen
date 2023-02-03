@@ -33,6 +33,7 @@ string string_to_lower (const string &s);
 size_t string_to_file_size (const string &val);
 string string_file_load (const string &fname);
 vector <string> vector_file_load (const string &fname);
+string get_macro_name (const string &value);
 
 
 

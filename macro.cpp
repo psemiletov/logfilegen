@@ -62,6 +62,7 @@ string gen_string (std::mt19937 *rnd_generator, size_t min, size_t max)
 string gen_string (std::mt19937 *rnd_generator, size_t len)
 {
   string result;
+  result.reserve (128);
 
   std::uniform_int_distribution<> distrib (0, 25);
 
@@ -79,6 +80,7 @@ string gen_string (std::mt19937 *rnd_generator, size_t len)
 string gen_string (std::mt19937 *rnd_generator, size_t min, size_t max)
 {
   string result;
+  result.reserve (128);
 
   std::uniform_int_distribution<> distrib (0, 25);
   std::uniform_int_distribution<> dminmax (min, max);
@@ -97,6 +99,7 @@ string gen_string (std::mt19937 *rnd_generator, size_t min, size_t max)
 string gen_rnd_path (std::mt19937 *rnd_generator, size_t min, size_t max, size_t deep)
 {
   string result;
+  result.reserve (256);
 
   size_t deep_max = get_rnd (rnd_generator, 1, deep);
 
@@ -117,6 +120,7 @@ string gen_number (std::mt19937 *rnd_generator, size_t len)
   std::uniform_int_distribution<> distrib (0, 9);
 
   string result;
+  result.reserve (128);
 
   for (size_t i = 0; i < len; i++)
       {
@@ -134,6 +138,7 @@ string gen_number (std::mt19937 *rnd_generator, size_t min, size_t max)
   size_t len = dminmax (*rnd_generator);
 
   string result;
+  result.reserve (128);
 
   for (size_t i = 0; i < len; i++)
       {
@@ -149,6 +154,7 @@ string gen_hex_number (std::mt19937 *rnd_generator, size_t len)
   std::uniform_int_distribution<> distrib (0, 15);
 
   string result;
+  result.reserve (128);
 
   for (size_t i = 0; i < len; i++)
       {
@@ -166,6 +172,7 @@ string gen_hex_number (std::mt19937 *rnd_generator, size_t min, size_t max)
   size_t len = dminmax (*rnd_generator);
 
   string result;
+  result.reserve (128);
 
   for (size_t i = 0; i < len; i++)
       {
@@ -250,6 +257,7 @@ string CMacroIPRandom::process()
   std::uniform_int_distribution<> distrib (0, 255);
 
   string result;
+  result.reserve (64);
 
   result += to_string (distrib (*rnd_generator));
   result += ".";
@@ -573,7 +581,7 @@ void CMacroMeta::parse (const string &s)
 
   while (i < text.size())
        {
-        if (text[i] == '@') //start of macro
+        if (text[i] == '(') //start of macro
            {
             cout << "//start of macro" << endl;
 
@@ -600,16 +608,33 @@ void CMacroMeta::parse (const string &s)
               {
                string macrotext = text.substr (i, j-i + 1);
                i += j;
-               cout << "macrotext:" << macrotext << endl;
+
+               macrotext.pop_back();
+               macrotext.erase (0, 1);
+
 
                //create cached macro
                // ...
 
+               string name = get_macro_name (macrotext);
+               if (name.empty())
+                  continue;
+
+               auto f = pool.macros.find (name);
+               if (f == pool.macros.end())
+                  continue;
+
+                             cout << "macrotext:" << macrotext << endl;
 
 
            //copy metamacro instead of real one
 
                meta += "@" + to_string(i);
+
+               CMacro *tm = f->second->create_self (macrotext);
+
+               cache.add (meta, tm);
+
 
               }
 
@@ -631,7 +656,10 @@ void CMacroMeta::parse (const string &s)
 
 string CMacroMeta::process()
 {
-/*
+
+cout << "string CMacroMeta::process()" << endl;
+
+  /*
 
 прогнать все макросы из кэша
 
@@ -641,24 +669,30 @@ string CMacroMeta::process()
  // if (vt.size() != 0)
    //  text = vt[get_rnd (rnd_generator, 0, vt.size()-1)];
   text = meta;
-/*
+
+  cout << "text:"  << text << endl;
+
+
   map <string, CMacro*>::iterator it;
-  for (it = cached.macros.begin(); it != cached.macros.end(); it++)
+  for (it = cache.macros.begin(); it != cache.macros.end(); it++)
       {
        string macroname = it->first; //@1, @2, etc
+      cout << "macroname:" << macroname << endl;
 
        size_t i = 0;
        do
          {
           i = text.find (macroname);
           if (i != string::npos)
-           text.replace (i, macroname.length(), it->second->process());
-         }
+          { text.replace (i, macroname.length(), it->second->process());
+
+          }
+          }
        while (i != string::npos);
 
       }
 
-*/
+  cout << "text:"  << text << endl;
   return text;
 }
 
