@@ -493,6 +493,45 @@ CMacroSeq* CMacroSeq::create_self (const string &s)
 }
 
 
+
+vector <string> split_string_to_vector_a (const string &s, char delimeter, char aware)
+{
+  vector <string> result;
+
+  size_t a = 0;
+  size_t b = 0;
+
+  while (b < s.size())
+        {
+         if (b + 1 == s.size())
+            {
+             string t = s.substr (a + 1, b - a);
+             result.push_back (t);
+            }
+
+         if (s[b] == delimeter)
+            if (b + 1 != s.size())
+               if (s[b + 1] != aware)
+                  {
+                   string t;
+
+                   if (a == 0)
+                       t = s.substr (a, b - a);
+                   else
+                       t = s.substr (a + 1, b - a - 1);
+
+                   result.push_back (t);
+                   a = b;
+                  }
+
+         b++;
+        }
+
+
+  return result;
+}
+
+
 void CMacroSeq::parse (const string &s)
 {
 
@@ -501,7 +540,7 @@ void CMacroSeq::parse (const string &s)
   length = 0;
   text = "";
 
-  vt = split_string_to_vector (s, ":");
+  vt = split_string_to_vector_a (s, ':', '/');
 
 }
 

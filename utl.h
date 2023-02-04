@@ -34,7 +34,7 @@ size_t string_to_file_size (const string &val);
 string string_file_load (const string &fname);
 vector <string> vector_file_load (const string &fname);
 string get_macro_name (const string &value);
-
+vector <string> split_string_to_vector_aware (const string& s, const string& delimeter, const bool keep_empty);
 
 
 #endif
