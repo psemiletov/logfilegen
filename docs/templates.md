@@ -285,7 +285,7 @@ Syntax: ```@meta:(macro1)(macros)```
 Example:
 
 ```
-$test=@macro:foo (@str:12) bar (@int:12:16) (@ip)
+$test=@meta:foo (@str:12) bar (@int:12:16) (@ip)
 $logstring=hello, $test
 ```
 
