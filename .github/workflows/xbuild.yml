@@ -1,5 +1,5 @@
 # test
-name: CI
+name: XBUILD
 
 on: [push,workflow_dispatch]
 
