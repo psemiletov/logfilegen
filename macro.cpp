@@ -22,42 +22,6 @@ int get_rnd (std::mt19937 *rnd_generator, int ta, int tb)
   return distrib (*rnd_generator);
 }
 
-/*
-string gen_string (std::mt19937 *rnd_generator, size_t len)
-{
-  ostringstream st;
-
-  std::uniform_int_distribution<> distrib (0, 25);
-
-  for (size_t i = 0; i < len; i++)
-      {
-       int g = distrib (*rnd_generator);
-       char d = static_cast<char> (g + 'a');
-       st << d;
-      }
-
-  return st.str();
-}
-
-
-string gen_string (std::mt19937 *rnd_generator, size_t min, size_t max)
-{
-  ostringstream st;
-
-  std::uniform_int_distribution<> distrib (0, 25);
-  std::uniform_int_distribution<> dminmax (min, max);
-  size_t len = dminmax (*rnd_generator);
-
-  for (size_t i = 0; i < len; i++)
-      {
-       int g = distrib (*rnd_generator);
-       char d = static_cast<char> (g + 'a');
-       st << d;
-      }
-
-  return st.str();
-}
-*/
 
 string gen_string (std::mt19937 *rnd_generator, size_t len)
 {
@@ -120,7 +84,7 @@ string gen_number (std::mt19937 *rnd_generator, size_t len)
   std::uniform_int_distribution<> distrib (0, 9);
 
   string result;
-  result.reserve (128);
+  result.reserve (len);
 
   for (size_t i = 0; i < len; i++)
       {
@@ -138,7 +102,7 @@ string gen_number (std::mt19937 *rnd_generator, size_t min, size_t max)
   size_t len = dminmax (*rnd_generator);
 
   string result;
-  result.reserve (128);
+  result.reserve (len);
 
   for (size_t i = 0; i < len; i++)
       {
@@ -154,7 +118,7 @@ string gen_hex_number (std::mt19937 *rnd_generator, size_t len)
   std::uniform_int_distribution<> distrib (0, 15);
 
   string result;
-  result.reserve (128);
+  result.reserve (len);
 
   for (size_t i = 0; i < len; i++)
       {
@@ -172,7 +136,7 @@ string gen_hex_number (std::mt19937 *rnd_generator, size_t min, size_t max)
   size_t len = dminmax (*rnd_generator);
 
   string result;
-  result.reserve (128);
+  result.reserve (len);
 
   for (size_t i = 0; i < len; i++)
       {
@@ -209,8 +173,7 @@ CMacrosPool::CMacrosPool()
    macros.insert (std::make_pair ("@path", new CMacroPathRandom()));
    macros.insert (std::make_pair ("@file", new CMacroFileSource()));
    macros.insert (std::make_pair ("@meta", new CMacroMeta()));
-      macros.insert (std::make_pair ("@seq", new CMacroSeq()));
-
+   macros.insert (std::make_pair ("@seq", new CMacroSeq()));
 }
 
 
@@ -232,7 +195,7 @@ CMacrosPoolMeta::CMacrosPoolMeta()
    macros.insert (std::make_pair ("@datetime", new CMacroDateTime()));
    macros.insert (std::make_pair ("@path", new CMacroPathRandom()));
    macros.insert (std::make_pair ("@file", new CMacroFileSource()));
-      macros.insert (std::make_pair ("@seq", new CMacroSeq()));
+   macros.insert (std::make_pair ("@seq", new CMacroSeq()));
 }
 
 
@@ -245,13 +208,10 @@ CMacrosPoolMeta::~CMacrosPoolMeta()
 }
 
 
-
 CMacroIPRandom* CMacroIPRandom::create_self (const string &s)
 {
   return new CMacroIPRandom();
-
 }
-
 
 
 string CMacroIPRandom::process()
@@ -259,7 +219,7 @@ string CMacroIPRandom::process()
   std::uniform_int_distribution<> distrib (0, 255);
 
   string result;
-  result.reserve (64);
+  result.reserve (16);
 
   result += to_string (distrib (*rnd_generator));
   result += ".";
@@ -308,7 +268,7 @@ string CMacroStrRandom::process()
   if (len_max == 0)
      return gen_string (rnd_generator, length);
 
-   return gen_string (rnd_generator, len_min, len_max);
+  return gen_string (rnd_generator, len_min, len_max);
 }
 
 
@@ -344,9 +304,8 @@ string CMacroIntRandom::process()
   if (len_max == 0)
      return gen_number (rnd_generator, length);
 
-   return gen_number (rnd_generator, len_min, len_max);
+  return gen_number (rnd_generator, len_min, len_max);
 }
-
 
 
 CMacroHexRandom* CMacroHexRandom::create_self (const string &s)
@@ -381,9 +340,8 @@ string CMacroHexRandom::process()
   if (len_max == 0)
      return gen_hex_number (rnd_generator, length);
 
-   return gen_hex_number (rnd_generator, len_min, len_max);
+  return gen_hex_number (rnd_generator, len_min, len_max);
 }
-
 
 
 CMacroDateTime* CMacroDateTime::create_self (const string &s)
@@ -407,25 +365,6 @@ void CMacroDateTime::parse (const string &s)
 
 }
 
-/*  SLOW
-string CMacroDateTime::process()
-{
-  if (text.empty())
-     return string();
-
-  auto t = std::time (nullptr);
-  auto tm = *std::localtime(&t);
-
-  std::ostringstream oss;
-  oss << std::put_time (&tm, text.c_str());
-
-  auto result = oss.str();
-  return result;
-}
-*/
-
-
-
 string CMacroDateTime::process()
 {
   if (text.empty())
@@ -439,14 +378,10 @@ string CMacroDateTime::process()
 
   char buffer [128];
   strftime (buffer, 128, text.c_str(), timeinfo);
-  //std::ostringstream oss;
-  //oss << std::put_time (&tm, text.c_str());
 
   auto result = buffer;
   return result;
 }
-
-
 
 
 CMacroPathRandom* CMacroPathRandom::create_self (const string &s)
@@ -459,7 +394,6 @@ CMacroPathRandom* CMacroPathRandom::create_self (const string &s)
 
 void CMacroPathRandom::parse (const string &s)
 {
-
   len_min = 0;
   len_max = 0;
   length = 0;
@@ -493,7 +427,6 @@ CMacroSeq* CMacroSeq::create_self (const string &s)
 }
 
 
-
 vector <string> split_string_to_vector_a (const string &s, char delimeter, char aware)
 {
   vector <string> result;
@@ -510,23 +443,22 @@ vector <string> split_string_to_vector_a (const string &s, char delimeter, char 
             }
 
          if (s[b] == delimeter)
-            if (b + 1 != s.size())
-               if (s[b + 1] != aware)
-                  {
-                   string t;
+             if (b + 1 != s.size())
+                if (s[b + 1] != aware)
+                   {
+                    string t;
 
-                   if (a == 0)
-                       t = s.substr (a, b - a);
-                   else
-                       t = s.substr (a + 1, b - a - 1);
+                    if (a == 0)
+                        t = s.substr (a, b - a);
+                    else
+                        t = s.substr (a + 1, b - a - 1);
 
-                   result.push_back (t);
-                   a = b;
-                  }
+                    result.push_back (t);
+                    a = b;
+                   }
 
          b++;
         }
-
 
   return result;
 }
@@ -534,14 +466,12 @@ vector <string> split_string_to_vector_a (const string &s, char delimeter, char 
 
 void CMacroSeq::parse (const string &s)
 {
-
   len_min = 0;
   len_max = 0;
   length = 0;
   text = "";
 
   vt = split_string_to_vector_a (s, ':', '/');
-
 }
 
 
@@ -561,7 +491,6 @@ CMacroFileSource* CMacroFileSource::create_self (const string &s)
 }
 
 
-
 void CMacroFileSource::parse (const string &s)
 {
   len_min = 0;
@@ -578,49 +507,13 @@ void CMacroFileSource::parse (const string &s)
 }
 
 
-
-/*
-void CMacroFileSource::parse (const string &s)
-{
-
-  len_min = 0;
-  len_max = 0;
-  length = 0;
-  text = "";
-
-  size_t pos = s.find (":");
-  if (pos == string::npos)
-      return;
-
-  string path = s.substr (pos + 1);
-  string t1 = string_file_load (path);
-
-  if (! t1.empty())
-     {
-      string t2 = string_replace_all (t1, "\n", "|");
-      t2 = string_replace_all (t2, "\r\n", "|"); //for windows
-      t2.pop_back(); //remove last |
-
-      vector <string> v; //values
-      v = split_string_to_vector (t2, "|");
-
-      //vector <string> v = vector_file_load (path);
-      text = v[get_rnd (rnd_generator, 0, v.size()-1)];
-     }
-}
-*/
-
 string CMacroFileSource::process()
 {
-  //cout << "CMacroFileSource::process()" << endl;
-
   if (vt.size() != 0)
      text = vt[get_rnd (rnd_generator, 0, vt.size()-1)];
 
   return text;
 }
-
-
 
 
 CMacroMeta* CMacroMeta::create_self (const string &s)
@@ -631,11 +524,8 @@ CMacroMeta* CMacroMeta::create_self (const string &s)
 }
 
 
-
 void CMacroMeta::parse (const string &s)
 {
- // cout << "void CMacroMeta::parse (const string &s) -111 " << endl;
-
   len_min = 0;
   len_max = 0;
   length = 0;
@@ -679,11 +569,9 @@ void CMacroMeta::parse (const string &s)
 
            //now, macro text in between i and j
            if (found)
-           //if (i != text.size() - 1)
               {
                string macrotext = text.substr (i, j-i + 1);
                i += macrotext.size();
-
 
                macrotext.pop_back();
                macrotext.erase (0, 1);
@@ -704,10 +592,8 @@ void CMacroMeta::parse (const string &s)
                if (f == pool.macros.end())
                   continue;
 
-
-
            //copy metamacro instead of real one
-              string newname = "@" + to_string(i);
+               string newname = "@" + to_string(i);
 
                meta += newname;
 
@@ -715,14 +601,9 @@ void CMacroMeta::parse (const string &s)
 
                cache.add (newname, tm);
               }
-
-
            }
-   //      else //just copy
-         {
 
          meta += text[i];
-         }
         i++;
        }
 
