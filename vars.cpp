@@ -25,10 +25,8 @@ int get_value_nature (const string &s)
   if (s.find ("..") != string::npos)
      return VT_RANGE;
 
-
   return VT_SINGLE;
 }
-
 
 
 CVar::CVar (const string &key, const string &val)
