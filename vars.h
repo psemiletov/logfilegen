@@ -32,9 +32,7 @@ public:
   std::random_device rnd_dev;
 
   CMacrosPool pool;
-
   CMacrosCache cache;
-
 
   int vartype;
   int precision;
@@ -58,7 +56,5 @@ public:
   string get_val();
 
 };
-
-
 
 #endif

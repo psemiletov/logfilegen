@@ -164,7 +164,6 @@ bool is_path_abs (const string &path)
 }
 
 
-
 string str_replace (string &source, const string &text_to_find, const string &replace_with)
 {
   if (source.empty())
@@ -185,7 +184,6 @@ string str_replace (string &source, const string &text_to_find, const string &re
 
   return source;
 }
-
 
 
 string string_replace_all (const string &s, const string &from, const string &to)
@@ -239,7 +237,7 @@ string string_to_lower (const string &s)
 {
   string result = s;
 
-   std::for_each (
+  std::for_each (
                  result.begin(),
                  result.end(),
                  [](char & c) {
@@ -261,7 +259,6 @@ size_t string_to_file_size (const string &val)
   if (st)
      result = strtoull (st, &end, 10);
 
-
   string s = string_to_lower (val);
 
   if (s.find ("k") != string::npos)
@@ -275,7 +272,6 @@ size_t string_to_file_size (const string &val)
 
   return result;
 }
-
 
 string string_file_load (const string &fname)
 {
@@ -312,7 +308,6 @@ vector <string> vector_file_load (const string &fname)
 }
 
 
-
 string get_macro_name (const string &value)
 {
  size_t pos = value.find_first_of (':');
@@ -321,42 +316,3 @@ string get_macro_name (const string &value)
 
   return value.substr (0, pos);
 }
-
-
-
-vector <string> split_string_to_vector_aware (const string& s, const string& delimeter, const bool keep_empty)
-{
-  vector <string> result;
-
-  if (delimeter.empty())
-     {
-      result.push_back (s);
-      return result;
-     }
-
-  string::const_iterator substart = s.begin(), subend;
-
-  while (true)
-        {
-         subend = search (substart, s.end(), delimeter.begin(), delimeter.end());
-
-         string::const_iterator nxt = std::next (subend);
-         if (*nxt == '/')
-             subend = search (substart, s.end(), delimeter.begin(), delimeter.end());
-
-         string temp (substart, subend);
-
-         if (keep_empty || ! temp.empty())
-             result.push_back (temp);
-
-         if (subend == s.end())
-             break;
-
-
-
-         substart = subend + delimeter.size();
-        }
-
-  return result;
-}
-

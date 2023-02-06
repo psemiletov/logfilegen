@@ -1,8 +1,3 @@
-//full nginx vars see at
-//http://nginx.org/en/docs/varindex.html
-//Apache:
-//https://httpd.apache.org/docs/current/mod/mod_log_config.html
-
 #include <fstream>
 #include <iostream>
 #include <sstream>

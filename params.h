@@ -33,7 +33,6 @@ public:
   bool benchmark;
   bool stats;
 
-
   void print();
 };
 

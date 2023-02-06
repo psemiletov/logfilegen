@@ -2,7 +2,6 @@
  *   this code by Peter Semiletov is Public Domain         *
  **********************************************************/
 
-
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -10,7 +9,6 @@
 #include <string.h>
 #include <cstring>
 #include <algorithm>
-
 
 #include "pairfile.h"
 #include "utl.h"
@@ -98,7 +96,7 @@ int CPairFile::get_int (const string &key, int def_value)
   int result = def_value;
   
   if (values.find (key) == values.end())
-     return result;
+      return result;
 
   const char *s = values[key].c_str();
   if (s)
@@ -106,43 +104,6 @@ int CPairFile::get_int (const string &key, int def_value)
    
   return result;
 }
-
-/*
-unsigned int CPairFile::get_uint (const string &key, unsigned int def_value)
-{
-  unsigned int result = def_value;
-
-  if (values.find (key) == values.end())
-     return result;
-
-  const char *s = values[key].c_str();
-  if (! s)
-     return result;
-
-  char* end;
-  result = strtoul (s, &end, 10);
-
-  return result;
-}
-*/
-/*
-unsigned long long CPairFile::get_uulong (const string &key, unsigned long long def_value)
-{
-  unsigned long long result = def_value;
-
-  if (values.find (key) == values.end())
-     return result;
-
-  const char *s = values[key].c_str();
-  if (! s)
-     return result;
-
-  char* end;
-  result = strtoull (s, &end, 10);
-
-  return result;
-}
-*/
 
 
 size_t CPairFile::get_num (const string &key, unsigned long long def_value)
@@ -267,7 +228,7 @@ CPairFile::CPairFile (int argc, char *argv[])
              continue;
             }
 
-         if (pos > line.size()) //????
+         if (pos >= line.size())
              continue;
 
          string a = line.substr (0, pos);

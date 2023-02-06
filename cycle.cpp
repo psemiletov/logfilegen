@@ -2,12 +2,9 @@
 #include <chrono>
 #include <iostream>
 
-
 #include "cycle.h"
 
 using namespace std::chrono;
-
-
 
 namespace
 {
@@ -58,7 +55,7 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
       test_string_size = test_string.size();
 
       if (params->debug)
-         cout << "size_needed, bytes: " << size_needed << endl;
+          cout << "size_needed, bytes: " << size_needed << endl;
 
       if (size_needed >= free_space)
          {
@@ -66,7 +63,6 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
           no_free_space = true;
          }
      }
-
 }
 
 
@@ -166,7 +162,7 @@ void CGenCycleRated::loop()
           if (! params->pure)
              {
               if (params->bstdout)
-                 cout << log_string << "\n";
+                  cout << log_string << "\n";
 
               if (! file_out_error && ! no_free_space)
                  {
@@ -217,33 +213,33 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname): CGe
 
 void CGenCycleUnrated::loop()
 {
-   auto start = high_resolution_clock::now();
+  auto start = high_resolution_clock::now();
 
-   size_t lines_counter = 0;
+  size_t lines_counter = 0;
 
   // using clock = std::chrono::steady_clock;
 
-   while (true)
-         {
-          if (g_signal == SIGINT)
-              break;
-
-          lines_counter++;
-
-          if (params->lines != 0 && lines_counter > params->lines)
+  while (true)
+        {
+         if (g_signal == SIGINT)
              break;
 
-          if (params->size != 0 && file_size_total > params->size)
-              break;
+         lines_counter++;
 
-          if (params->duration != 0)
-             {
-              auto stop = high_resolution_clock::now();
+         if (params->lines != 0 && lines_counter > params->lines)
+             break;
+
+         if (params->size != 0 && file_size_total > params->size)
+             break;
+
+         if (params->duration != 0)
+            {
+             auto stop = high_resolution_clock::now();
              // auto duration = duration_cast<microseconds>(stop - start);
-              auto duration_s = duration_cast<seconds>(stop - start);
-              if (duration_s >= chrono::seconds(params->duration))
-                 break;
-             }
+             auto duration_s = duration_cast<seconds>(stop - start);
+             if (duration_s >= chrono::seconds(params->duration))
+                break;
+            }
 
 //          std::cout << "seconds_counter: " << seconds_counter << endl;
   //        std::cout << "frame_counter: " << frame_counter << endl;
@@ -259,6 +255,7 @@ void CGenCycleUnrated::loop()
               if (! file_out_error && ! no_free_space)
                  {
                   file_out << log_string << "\n";
+
                   log_current_size += log_string.size();
                   file_size_total += log_string.size();
 
@@ -293,9 +290,6 @@ void CGenCycleUnrated::loop()
 
   if (params->stats)
      {
-//      cout << "lines_counter : " << lines_counter << endl;
-//      cout << "duration_s.count : " << duration_s.count() << endl;
-
       double lines_per_second = (double) lines_counter / duration_s.count();
       cout << "Statistics, lines per seconds: " << lines_per_second << endl;
      }
@@ -306,7 +300,6 @@ void CGenCycleUnrated::loop()
       cout << "duration.count (microseconds): " << duration.count() << endl;
       cout << "duration_s.count (seconds): " << duration_s.count() << endl;
      }
-
 
   file_out.close();
 }

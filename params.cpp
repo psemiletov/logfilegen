@@ -14,7 +14,7 @@ void CParameters::print()
   cout << "lines: " << lines << endl;
   cout << "logfile: " << logfile << endl;
   cout << "logsize: " << max_log_file_size << endl;
-  cout << "max_log_files: " << max_log_files << endl;
+  cout << "logfiles: " << max_log_files << endl;
   cout << "mode: " << mode << endl;
   cout << "pure: " << pure << endl;
   cout << "rate: " << rate << endl;

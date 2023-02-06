@@ -37,7 +37,6 @@ void CLogRotator::rotate()
 
   if (has_gzip && use_gzip)
      {
-
       for (size_t i = filenames.size() - 1; i > 0; i--)
           {
            string oldname = filenames[i-1] + ".gz";
@@ -58,4 +57,3 @@ void CLogRotator::rotate()
          }
      }
 }
-

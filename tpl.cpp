@@ -14,8 +14,10 @@
 #include "tpl.h"
 #include "utl.h"
 
-
-
+//full nginx vars see at
+//http://nginx.org/en/docs/varindex.html
+//Apache:
+//https://httpd.apache.org/docs/current/mod/mod_log_config.html
 
 
 void CTpl::replace_value_by_key (const string &key, const string &value)
@@ -28,7 +30,6 @@ void CTpl::replace_value_by_key (const string &key, const string &value)
       vars.insert (std::make_pair (key, new CVar (key, value)));
      }
 }
-
 
 
 CTpl::~CTpl()
@@ -44,7 +45,6 @@ CTpl::~CTpl()
 
 CTpl::CTpl (const string &fname, const string &amode)
 {
-
   pf = new CPairFile (fname, false);
 
   mode = amode;
@@ -101,8 +101,6 @@ CTpl::CTpl (const string &fname, const string &amode)
 
       vars.insert (std::make_pair ("%>s", new CVar ("%>s", "200|400")));
       vars.insert (std::make_pair ("%b", new CVar ("%b", "1..9999")));
-
-
      }
 
 
@@ -146,12 +144,9 @@ string CTpl::prepare_log_string()
           i = logstring.find (variable);
           if (i != string::npos)
 //             logstring = logstring.replace (i, variable.length(), it->second->get_val());
-            logstring.replace (i, variable.length(), it->second->get_val());
-
+              logstring.replace (i, variable.length(), it->second->get_val());
          }
        while (i != string::npos);
-
-
       }
 
   return logstring;

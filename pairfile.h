@@ -23,7 +23,6 @@ public:
 
   bool get_bool (const string &key, bool def_value = false);
   int get_int (const string &key, int def_value = 0);
-//  unsigned int get_uint (const string &key, unsigned int def_value = 0);
   size_t get_num (const string &key, unsigned long long def_value = 0);
 
   float get_float (const string &key, float def_value = 0.0f);
