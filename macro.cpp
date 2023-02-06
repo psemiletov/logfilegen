@@ -165,15 +165,15 @@ CMacro::~CMacro()
 
 CMacrosPool::CMacrosPool()
 {
-   macros.insert (std::make_pair ("@ip", new CMacroIPRandom()));
-   macros.insert (std::make_pair ("@str", new CMacroStrRandom()));
-   macros.insert (std::make_pair ("@int", new CMacroIntRandom()));
-   macros.insert (std::make_pair ("@hex", new CMacroHexRandom()));
-   macros.insert (std::make_pair ("@datetime", new CMacroDateTime()));
-   macros.insert (std::make_pair ("@path", new CMacroPathRandom()));
-   macros.insert (std::make_pair ("@file", new CMacroFileSource()));
-   macros.insert (std::make_pair ("@meta", new CMacroMeta()));
-   macros.insert (std::make_pair ("@seq", new CMacroSeq()));
+  macros.insert (std::make_pair ("@ip", new CMacroIPRandom()));
+  macros.insert (std::make_pair ("@str", new CMacroStrRandom()));
+  macros.insert (std::make_pair ("@int", new CMacroIntRandom()));
+  macros.insert (std::make_pair ("@hex", new CMacroHexRandom()));
+  macros.insert (std::make_pair ("@datetime", new CMacroDateTime()));
+  macros.insert (std::make_pair ("@path", new CMacroPathRandom()));
+  macros.insert (std::make_pair ("@file", new CMacroFileSource()));
+  macros.insert (std::make_pair ("@meta", new CMacroMeta()));
+  macros.insert (std::make_pair ("@seq", new CMacroSeq()));
 }
 
 
@@ -188,14 +188,14 @@ CMacrosPool::~CMacrosPool()
 
 CMacrosPoolMeta::CMacrosPoolMeta()
 {
-   macros.insert (std::make_pair ("@ip", new CMacroIPRandom()));
-   macros.insert (std::make_pair ("@str", new CMacroStrRandom()));
-   macros.insert (std::make_pair ("@int", new CMacroIntRandom()));
-   macros.insert (std::make_pair ("@hex", new CMacroHexRandom()));
-   macros.insert (std::make_pair ("@datetime", new CMacroDateTime()));
-   macros.insert (std::make_pair ("@path", new CMacroPathRandom()));
-   macros.insert (std::make_pair ("@file", new CMacroFileSource()));
-   macros.insert (std::make_pair ("@seq", new CMacroSeq()));
+  macros.insert (std::make_pair ("@ip", new CMacroIPRandom()));
+  macros.insert (std::make_pair ("@str", new CMacroStrRandom()));
+  macros.insert (std::make_pair ("@int", new CMacroIntRandom()));
+  macros.insert (std::make_pair ("@hex", new CMacroHexRandom()));
+  macros.insert (std::make_pair ("@datetime", new CMacroDateTime()));
+  macros.insert (std::make_pair ("@path", new CMacroPathRandom()));
+  macros.insert (std::make_pair ("@file", new CMacroFileSource()));
+  macros.insert (std::make_pair ("@seq", new CMacroSeq()));
 }
 
 
@@ -563,8 +563,8 @@ void CMacroMeta::parse (const string &s)
                         break;
                        }
 
-                     j++;
-                    }
+                    j++;
+                   }
 
 
            //now, macro text in between i and j
@@ -579,8 +579,6 @@ void CMacroMeta::parse (const string &s)
    //            cout << "macrotext:" << macrotext << endl;
 
                //create cached macro
-               // ...
-
                string name = get_macro_name (macrotext);
 
      //          cout << "and name is: " << name << endl;
@@ -592,7 +590,7 @@ void CMacroMeta::parse (const string &s)
                if (f == pool.macros.end())
                   continue;
 
-           //copy metamacro instead of real one
+               //copy metamacro instead of real one
                string newname = "@" + to_string(i);
 
                meta += newname;
@@ -606,63 +604,35 @@ void CMacroMeta::parse (const string &s)
          meta += text[i];
         i++;
        }
-
-  // cout << "meta:" << meta << endl;
-
- //  cout << "void CMacroMeta::parse (const string &s) -222 " << endl;
-
-
 }
 
 
 string CMacroMeta::process()
 {
-
-//cout << "string CMacroMeta::process()" << endl;
-
-  /*
-
-прогнать все макросы из кэша
-
-по meta, в заменяя @1 @2
-
- */
- // if (vt.size() != 0)
-   //  text = vt[get_rnd (rnd_generator, 0, vt.size()-1)];
   text = meta;
-
- // cout << "text:"  << text << endl;
-
 
   map <string, CMacro*>::iterator it;
   for (it = cache.macros.begin(); it != cache.macros.end(); it++)
       {
        string macroname = it->first; //@1, @2, etc
    //   cout << "macroname:" << macroname << endl;
-
        size_t i = 0;
        do
          {
           i = text.find (macroname);
           if (i != string::npos)
-          { text.replace (i, macroname.length(), it->second->process());
-
-          }
+              text.replace (i, macroname.length(), it->second->process());
           }
        while (i != string::npos);
-
       }
 
  // cout << "text:"  << text << endl;
   return text;
 }
 
-
-
-
 void CMacrosCache::add (size_t pos, CMacro *m)
 {
-   macros.insert (std::make_pair (pos, m));
+  macros.insert (std::make_pair (pos, m));
 }
 
 
@@ -675,10 +645,9 @@ CMacrosCache::~CMacrosCache()
 }
 
 
-
 void CMacrosCacheMeta::add (const string &s, CMacro *m)
 {
-   macros.insert (std::make_pair (s, m));
+  macros.insert (std::make_pair (s, m));
 }
 
 
