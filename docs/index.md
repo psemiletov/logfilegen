@@ -4,12 +4,16 @@ Logfilegen is a fast and highly customizable tool to generate common server (ngi
 
 ## LINKS
 
-[Github repo](https://github.com/psemiletov/logfilegen)
+[Github repo](https://github.com/psemiletov/logfilegen), [Latest release](https://github.com/psemiletov/logfilegen/releases/latest)
 
 [Dockerhub repo](https://hub.docker.com/r/psemiletov/logfilegen/general)
 
 [AUR](https://aur.archlinux.org/packages/logfilegen), [openSUSE](https://software.opensuse.org/package/logfilegen)
 
+
+## NEWS
+
+***06 february 2023, 1.1.0*** - The new release is slighty faster. Two new macros were added: @meta and @seq. All of them are described at the documentation, here in a short - @meta allows to combine several macros into one, so we can use more than one macro at the simple (non-sequenced) variable value. And @seq can be used to use sequences at macro, as in the usual variable value.
 
 ## MANUAL
 

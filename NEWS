@@ -1,0 +1,12 @@
+What's new?
+The new release is slighty faster. Two new macros were added: @meta and @seq. All of them are described at the documentation, here in a short - @meta allows to combine several macros into one, so we can use more than one macro at the simple (non-sequenced) variable value. And @seq can be used to use sequences at macro, as in the usual variable value.
+
+Example 001:
+
+$test=@seq:GET:PUT
+$logstring=hello, $test
+
+Example 002:
+
+$test=@meta:foo (@str:12) bar (@int:12:16) (@ip)
+$logstring=hello, $test
