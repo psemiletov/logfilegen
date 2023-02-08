@@ -21,7 +21,9 @@ You can use following configuration variables:
 
 **pure=boolean** - "true" or "false" (default). It "true", logfilegen just generate log lines at the memory without the actual file output.
 
-**benchmark=boolean** - "true" or "false" (default). It "true", logfilegen run the generation at full speed, with the current template (or the default one if not provided), to the current log file. Results, in lines per second, may vary depended on the template complexity, randomizer engine work, use of gzip, log rotation settings.
+**test=boolean** - "true" or "false" (default). A some sort of quick benchmark at full speed, using the default template for the current mode (nginx by default), one step of the log rotation; output to the temporary file at system's temporary directory (the output log will be deleted after all is done). Result, in lines per second, may vary depended on the randomizer engine work and use of gzip.
+
+**benchmark=boolean** - "true" or "false" (default). It "true", logfilegen run the generation at full speed, with the current template (or the default one if not provided), to the current log file. Result, in lines per second, may vary depended on the template complexity, randomizer engine work, use of gzip, log rotation settings. Use ```benchmark``` instead of ```benchmark``` when you want to know the performance of some working template and config, on the given filesystem (```temp``` directory from ```test``` may have the performance different from the other disks or partitions).
 
 **duration=integer** - how many seconds runs the lines gerenation cycle. If 0 (zero), cycle will run until break by Ctrl-C.
 
@@ -110,7 +112,10 @@ In thos case, the usual variable name must be prefoxed with ```LFG``` (shortened
 
 **LFG_SIZE** - set **size**
 
-**LFG_BENCHMARK** - set **size**
+**LFG_BENCHMARK** - set **becnhmark**
+
+**LFG_TEST** - set **test**
+
 
 
 Example:

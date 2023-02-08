@@ -1,3 +1,6 @@
++ --test
+* params.max_log_files < 1  fix
+
 + DESTDIR support
 + $protocol //corrected
 + $server_protocol

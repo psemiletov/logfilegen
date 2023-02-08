@@ -19,7 +19,7 @@
 
 
 #ifndef VERSION_NUMBER
-#define VERSION_NUMBER "1.1.0"
+#define VERSION_NUMBER "1.2.0"
 #endif
 
 
