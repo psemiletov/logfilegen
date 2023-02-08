@@ -13,7 +13,12 @@ Logfilegen is a fast and highly customizable tool to generate common server (ngi
 
 ## NEWS
 
-***06 february 2023, 1.1.0*** - The new release is slighty faster. Two new macros were added: @meta and @seq. All of them are described at the documentation, here in a short - @meta allows to combine several macros into one, so we can use more than one macro at the simple (non-sequenced) variable value. And @seq can be used to use sequences at macro, as in the usual variable value.
+***08 february 2023, 1.2.0*** - This release adds a new, simplifier version of the benchmark: --test
+
+A some sort of quick benchmark at full speed, using the default template for the current mode (nginx by default), one step of the log rotation; output to the temporary file at system's temporary directory (the output log will be deleted after all is done). Result, in lines per second, may vary depended on the randomizer engine work and use of gzip.
+Useful to run on the clean installation, when we have no configs and templates yet.
+
+Fixes: log rotation queue minimal length is 1 now, i.e. one log file + at least one rotation file, if needed.
 
 ## MANUAL
 
