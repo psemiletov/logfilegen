@@ -285,11 +285,13 @@ int main (int argc, char *argv[])
       params.size = 0;
       params.lines = 0;
       params.max_log_files = 1;
+      params.bstdout = false;
 
       string tdir (std::filesystem::temp_directory_path());
       params.logfile = tdir + "/" + "logfilegen.log";
+      cout << "params.logfile " << params.logfile << endl;
 
-
+      fname_template = "";
      }
 
   if (params.benchmark)
