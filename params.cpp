@@ -9,6 +9,8 @@ void CParameters::print()
   cout << "------------ Print parameters -------------" << endl;
 
   cout << "benchmark: " << benchmark << endl;
+  cout << "test: " << test << endl;
+
   cout << "debug: " << debug << endl;
   cout << "duration: " << duration << endl;
   cout << "lines: " << lines << endl;

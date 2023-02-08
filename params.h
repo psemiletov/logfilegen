@@ -32,6 +32,7 @@ public:
   bool debug;
   bool benchmark;
   bool stats;
+  bool test;
 
   void print();
 };

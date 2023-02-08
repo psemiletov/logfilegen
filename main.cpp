@@ -8,6 +8,7 @@
 #include <vector>
 #include <iostream>
 #include <iomanip>
+#include <filesystem>
 
 
 #include "pairfile.h"
@@ -104,7 +105,7 @@ int main (int argc, char *argv[])
                             "LFG_TEMPLATE", "LFG_DEBUG", "LFG_PURE",
                             "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP",
                             "LFG_LINES", "LFG_SIZE", "LFG_RANDOM",
-                            "LFG_BENCHMARK", "LFG_STATS"};
+                            "LFG_BENCHMARK", "LFG_STATS", "LFG_TEST"};
 
   CParameters params;
   string fname_config;
@@ -152,6 +153,7 @@ int main (int argc, char *argv[])
    params.templatefile = opts_config.get_string ("template", "NOTEMPLATEFILE");
    params.timestamp = opts_config.get_string ("timestamp", "%d/%b/%Y:%H:%M:%S %z");
    params.use_gzip = opts_config.get_bool ("gzip", false);
+   params.test = opts_config.get_bool ("test", false);
 
    if (params.debug)
       params.print();
@@ -165,6 +167,8 @@ int main (int argc, char *argv[])
   CPairFile opts_cmdline (argc, argv);
 
   params.benchmark = opts_cmdline.get_bool ("benchmark", params.benchmark);
+  params.test = opts_cmdline.get_bool ("test", params.test);
+
   params.debug = opts_cmdline.get_bool ("debug", params.debug);
   params.duration = opts_cmdline.get_num ("duration", params.duration);
   params.lines = opts_cmdline.get_num ("lines", params.lines);
@@ -205,6 +209,7 @@ int main (int argc, char *argv[])
 
   CPairFile opts_envars (envars);
 
+  params.test = opts_envars.get_bool ("test", params.test);
   params.benchmark = opts_envars.get_bool ("benchmark", params.benchmark);
   params.debug = opts_envars.get_bool ("debug", params.debug);
   params.duration = opts_envars.get_num ("duration", params.duration);
@@ -222,6 +227,10 @@ int main (int argc, char *argv[])
   params.templatefile = opts_envars.get_string ("template", params.templatefile);
   params.timestamp = opts_envars.get_string ("timestamp", params.timestamp);
   params.use_gzip = opts_envars.get_bool ("gzip", params.use_gzip);
+
+  if (params.max_log_files < 1)
+     params.max_log_files = 1;
+
 
   if (params.debug)
       params.print();
@@ -268,6 +277,20 @@ int main (int argc, char *argv[])
          return 0;
         }
 
+  if (params.test)
+     {
+      params.benchmark = false;
+      params.rate = 0;
+      params.duration = 5;
+      params.size = 0;
+      params.lines = 0;
+      params.max_log_files = 1;
+
+      string tdir (std::filesystem::temp_directory_path());
+      params.logfile = tdir + "/" + "logfilegen.log";
+
+
+     }
 
   if (params.benchmark)
      {
@@ -292,6 +315,12 @@ int main (int argc, char *argv[])
          cycle.loop();
      }
 
+  if (params.test)
+     {
+      remove (params.logfile.c_str());
+      string t = params.logfile + ".0";
+      remove (t.c_str());
+     }
 
   return 0;
 }
