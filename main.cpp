@@ -100,6 +100,15 @@ int main (int argc, char *argv[])
 {
 //  cout << "version: " << VERSION_NUMBER << endl;
 
+  string tdir (std::filesystem::temp_directory_path());
+  string temp_logfile = tdir + "/" + "logfilegen.log";
+  string temp_logfile0 = tdir + "/" + "logfilegen.log.0";
+
+
+  remove (temp_logfile.c_str());
+  remove (temp_logfile0.c_str());
+
+
 
   vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE",
                             "LFG_TEMPLATE", "LFG_DEBUG", "LFG_PURE",
@@ -186,10 +195,10 @@ int main (int argc, char *argv[])
   params.use_gzip = opts_cmdline.get_bool ("gzip", params.use_gzip);
 
   if (opts_cmdline.get_bool ("help", false))
-    {
-     show_help();
-     return 0;
-    }
+     {
+      show_help();
+      return 0;
+     }
 
   if (opts_cmdline.get_bool ("version", false))
     {
@@ -287,9 +296,11 @@ int main (int argc, char *argv[])
       params.max_log_files = 1;
       params.bstdout = false;
 
-      string tdir (std::filesystem::temp_directory_path());
-      params.logfile = tdir + "/" + "logfilegen.log";
-      cout << "params.logfile " << params.logfile << endl;
+      //string tdir (std::filesystem::temp_directory_path());
+      //params.logfile = tdir + "/" + "logfilegen.log";
+      //cout << "params.logfile " << params.logfile << endl;
+
+      params.logfile = temp_logfile;
 
       fname_template = "";
      }
