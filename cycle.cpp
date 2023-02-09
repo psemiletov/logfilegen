@@ -144,7 +144,7 @@ void CGenCycleRated::loop()
   //
   // @note please follow the metric-naming best-practices:
   // https://prometheus.io/docs/practices/naming/
-  auto& counter = BuildCounter()
+    auto& counter = BuildCounter()
                              .Name("logfilegen")
                              .Help("Internal counters and stats")
                              .Register(*registry);
@@ -152,19 +152,18 @@ void CGenCycleRated::loop()
     auto& c_lines_counter = counter.Add({{"cycle", "rated"}, {"counter", "lines"}});
     auto& c_bytes_counter = counter.Add({{"cycle", "rated"}, {"counter", "bytes"}});
 
-  // add and remember dimensional data, incrementing those is very cheap
- /* auto& tcp_rx_counter =
-      counter.Add({{"protocol", "tcp"}, {"direction", "rx"}});
-  auto& tcp_tx_counter =
-      packet_counter.Add({{"protocol", "tcp"}, {"direction", "tx"}});
-  auto& udp_rx_counter =
-      packet_counter.Add({{"protocol", "udp"}, {"direction", "rx"}});
-  auto& udp_tx_counter =
-      packet_counter.Add({{"protocol", "udp"}, {"direction", "tx"}});
-*/
-  // add a counter whose dimensional data is not known at compile time
-  // nevertheless dimensional values should only occur in low cardinality:
-  // https://prometheus.io/docs/practices/naming/#labels
+
+    auto& gauge = BuildGauge()
+                             .Name("logfilegen")
+                             .Help("Internal counters and stats")
+                             .Register(*registry);
+
+
+    auto g_lines_per_second_gauge = gauge.Add({{"cycle", "rated"}, {"gauge", "lines per second"}});
+
+
+
+ //   https://prometheus.io/docs/practices/naming/#labels
  /* auto& http_requests_counter = BuildCounter()
                                     .Name("http_requests_total")
                                     .Help("Number of HTTP requests")
@@ -176,7 +175,7 @@ void CGenCycleRated::loop()
                            .Register(*registry);
   version_info.Add({{"prometheus", "1.0"}});
   // ask the exposer to scrape the registry on incoming HTTP requests
-  exposer.RegisterCollectable(registry);
+  exposer.RegisterCollectable (registry);
 
 
 #endif
@@ -205,6 +204,18 @@ void CGenCycleRated::loop()
              {
               frame_counter = 0;
               seconds_counter++;
+
+             #ifdef PROM
+
+                auto stop = high_resolution_clock::now();
+               // auto duration = duration_cast<microseconds>(stop - start);
+              auto duration_s = duration_cast<seconds>(stop - start);
+
+               double lines_per_second = (double) lines_counter / duration_s.count();
+               g_lines_per_second_gauge.Set (lines_per_second);
+             #endif
+
+
              }
 
           frame_counter++;
@@ -213,6 +224,7 @@ void CGenCycleRated::loop()
 #ifdef PROM
           c_lines_counter.Increment();
 #endif
+
           if (params->duration != 0) //not endless
           if (params->lines == 0 && seconds_counter == params->duration)
               break;
