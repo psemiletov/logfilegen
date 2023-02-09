@@ -154,12 +154,12 @@ void CGenCycleRated::loop()
 
 
     auto& gauge = BuildGauge()
-                             .Name("logfilegen")
+                             .Name("logfilegen2")
                              .Help("Internal counters and stats")
                              .Register(*registry);
 
 
-    auto g_lines_per_second_gauge = gauge.Add({{"cycle", "rated"}, {"gauge", "lines per second"}});
+    auto& g_lines_per_second_gauge = gauge.Add({{"cycle", "rated"}, {"gauge", "lines per second"}});
 
 
 
