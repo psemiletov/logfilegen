@@ -5,6 +5,22 @@
 #include <fstream>
 #include <csignal>
 
+
+
+#ifdef PROM
+
+#include "prometheus/client_metric.h"
+#include "prometheus/counter.h"
+#include "prometheus/exposer.h"
+#include "prometheus/family.h"
+#include "prometheus/info.h"
+#include "prometheus/registry.h"
+
+using namespace prometheus;
+
+#endif
+
+
 #include "pairfile.h"
 #include "utl.h"
 #include "tpl.h"
@@ -31,6 +47,13 @@ public:
   bool no_free_space;
   size_t test_string_size;
   string fname_template;
+
+  #ifdef PROM
+
+      Exposer *exposer;
+     std::shared_ptr< prometheus::Registry > registry;
+
+#endif
 
   CGenCycle (CParameters *prms, const string &fname);
   bool open_logfile();

@@ -3,20 +3,6 @@
 #include <iostream>
 
 
-#ifdef PROM
-
-#include "prometheus/client_metric.h"
-#include "prometheus/counter.h"
-#include "prometheus/exposer.h"
-#include "prometheus/family.h"
-#include "prometheus/info.h"
-#include "prometheus/registry.h"
-
-using namespace prometheus;
-
-#endif
-
-
 #include "cycle.h"
 
 using namespace std::chrono;
@@ -78,6 +64,14 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
           no_free_space = true;
          }
      }
+
+ #ifdef PROM
+ exposer = new  Exposer("127.0.0.1:8080");
+
+  // exposer = new  Exposer(params->metrics_addr);
+    registry = std::make_shared<Registry>();
+
+#endif
 }
 
 
@@ -85,6 +79,12 @@ CGenCycle::~CGenCycle()
 {
   delete tpl;
   delete logrotator;
+
+
+  #ifdef PROM
+delete exposer;
+
+#endif
 }
 
 
@@ -133,11 +133,11 @@ void CGenCycleRated::loop()
 #ifdef PROM
 
 
-    Exposer exposer{"127.0.0.1:8080"};
+   // Exposer exposer{"127.0.0.1:8080"};
 
   // create a metrics registry
   // @note it's the users responsibility to keep the object alive
-  auto registry = std::make_shared<Registry>();
+ // auto registry = std::make_shared<Registry>();
 
   // add a new counter family to the registry (families combine values with the
   // same name, but distinct label dimensions)
@@ -175,7 +175,7 @@ void CGenCycleRated::loop()
                            .Register(*registry);
   version_info.Add({{"prometheus", "1.0"}});
   // ask the exposer to scrape the registry on incoming HTTP requests
-  exposer.RegisterCollectable (registry);
+  exposer->RegisterCollectable (registry);
 
 
 #endif

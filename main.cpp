@@ -160,7 +160,7 @@ int main (int argc, char *argv[])
    params.stats = opts_config.get_bool ("stats", false);
    params.templatefile = opts_config.get_string ("template", "NOTEMPLATEFILE");
 
-   params.metrics_addr = opts_config.get_string ("addr", "localhost:7777");
+   params.metrics_addr = opts_config.get_string ("addr", "127.0.0.1:7777");
 
 
 
