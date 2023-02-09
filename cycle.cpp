@@ -144,11 +144,11 @@ void CGenCycleRated::loop()
   // @note please follow the metric-naming best-practices:
   // https://prometheus.io/docs/practices/naming/
   auto& counter = BuildCounter()
-                             .Name("observed_packets_total")
-                             .Help("Number of observed packets")
+                             .Name("logfilegen")
+                             .Help("Internal counters and stats")
                              .Register(*registry);
 
-    auto& l_counter =    counter.Add({{"cycle", "rated"}, {"stats", "lines"}});
+    auto& l_counter = counter.Add({{"cycle", "rated"}, {"stats", "lines"}});
 
   // add and remember dimensional data, incrementing those is very cheap
  /* auto& tcp_rx_counter =
