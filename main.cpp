@@ -99,7 +99,7 @@ int main (int argc, char *argv[])
 {
 //  cout << "version: " << VERSION_NUMBER << endl;
 
-  string tdir (std::filesystem::temp_directory_path());
+  string tdir (std::filesystem::temp_directory_path().string());
   string temp_logfile = tdir + "/" + "logfilegen.log";
   string temp_logfile0 = tdir + "/" + "logfilegen.log.0";
 
