@@ -9,6 +9,19 @@
 #include <chrono>
 #include <vector>
 
+
+#ifdef USE_PROM
+#include "prometheus/client_metric.h"
+#include "prometheus/counter.h"
+#include "prometheus/exposer.h"
+#include "prometheus/family.h"
+#include "prometheus/info.h"
+#include "prometheus/registry.h"
+
+
+#endif
+
+
 #include "utl.h"
 #include "macro.h"
 

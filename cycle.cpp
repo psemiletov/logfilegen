@@ -2,6 +2,21 @@
 #include <chrono>
 #include <iostream>
 
+
+#ifdef PROM
+
+#include "prometheus/client_metric.h"
+#include "prometheus/counter.h"
+#include "prometheus/exposer.h"
+#include "prometheus/family.h"
+#include "prometheus/info.h"
+#include "prometheus/registry.h"
+
+using namespace prometheus;
+
+#endif
+
+
 #include "cycle.h"
 
 using namespace std::chrono;
@@ -115,6 +130,55 @@ bool CGenCycle::open_logfile()
 
 void CGenCycleRated::loop()
 {
+
+
+    Exposer exposer{"127.0.0.1:8080"};
+
+  // create a metrics registry
+  // @note it's the users responsibility to keep the object alive
+  auto registry = std::make_shared<Registry>();
+
+  // add a new counter family to the registry (families combine values with the
+  // same name, but distinct label dimensions)
+  //
+  // @note please follow the metric-naming best-practices:
+  // https://prometheus.io/docs/practices/naming/
+  auto& counter = BuildCounter()
+                             .Name("observed_packets_total")
+                             .Help("Number of observed packets")
+                             .Register(*registry);
+
+    auto& l_counter =    counter.Add({{"cycle", "rated"}, {"stats", "lines"}});
+
+  // add and remember dimensional data, incrementing those is very cheap
+ /* auto& tcp_rx_counter =
+      counter.Add({{"protocol", "tcp"}, {"direction", "rx"}});
+  auto& tcp_tx_counter =
+      packet_counter.Add({{"protocol", "tcp"}, {"direction", "tx"}});
+  auto& udp_rx_counter =
+      packet_counter.Add({{"protocol", "udp"}, {"direction", "rx"}});
+  auto& udp_tx_counter =
+      packet_counter.Add({{"protocol", "udp"}, {"direction", "tx"}});
+*/
+  // add a counter whose dimensional data is not known at compile time
+  // nevertheless dimensional values should only occur in low cardinality:
+  // https://prometheus.io/docs/practices/naming/#labels
+ /* auto& http_requests_counter = BuildCounter()
+                                    .Name("http_requests_total")
+                                    .Help("Number of HTTP requests")
+                                    .Register(*registry);
+*/
+  auto& version_info = BuildInfo()
+                           .Name("versions")
+                           .Help("Static info about the library")
+                           .Register(*registry);
+  version_info.Add({{"prometheus", "1.0"}});
+  // ask the exposer to scrape the registry on incoming HTTP requests
+  exposer.RegisterCollectable(registry);
+
+
+
+
    auto start = high_resolution_clock::now();
 
    size_t lines_counter = 0;
@@ -142,6 +206,8 @@ void CGenCycleRated::loop()
 
           frame_counter++;
           lines_counter++;
+
+          l_counter.Increment();
 
           if (params->duration != 0) //not endless
           if (params->lines == 0 && seconds_counter == params->duration)
