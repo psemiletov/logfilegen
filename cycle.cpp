@@ -130,6 +130,7 @@ bool CGenCycle::open_logfile()
 
 void CGenCycleRated::loop()
 {
+#ifdef PROM
 
 
     Exposer exposer{"127.0.0.1:8080"};
@@ -177,6 +178,7 @@ void CGenCycleRated::loop()
   exposer.RegisterCollectable(registry);
 
 
+#endif
 
 
    auto start = high_resolution_clock::now();
@@ -207,8 +209,11 @@ void CGenCycleRated::loop()
           frame_counter++;
           lines_counter++;
 
+#ifdef PROM
+
           l_counter.Increment();
 
+#endif
           if (params->duration != 0) //not endless
           if (params->lines == 0 && seconds_counter == params->duration)
               break;
