@@ -20,6 +20,8 @@ public:
   size_t size;
   string s_size;
 
+  string metrics_addr;
+
   size_t max_log_files;
   string max_log_file_size;
 

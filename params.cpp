@@ -24,6 +24,7 @@ void CParameters::print()
   cout << "stdout: " << bstdout << endl;
   cout << "stats: " << stats << endl;
   cout << "template: " << templatefile << endl;
+  cout << "metrics_addr: " << metrics_addr << endl;
 
   cout << "------------ **************** -------------" << endl;
 }

@@ -149,7 +149,8 @@ void CGenCycleRated::loop()
                              .Help("Internal counters and stats")
                              .Register(*registry);
 
-    auto& l_counter = counter.Add({{"cycle", "rated"}, {"stats", "lines"}});
+    auto& c_lines_counter = counter.Add({{"cycle", "rated"}, {"counter", "lines"}});
+    auto& c_bytes_counter = counter.Add({{"cycle", "rated"}, {"counter", "bytes"}});
 
   // add and remember dimensional data, incrementing those is very cheap
  /* auto& tcp_rx_counter =
@@ -210,9 +211,7 @@ void CGenCycleRated::loop()
           lines_counter++;
 
 #ifdef PROM
-
-          l_counter.Increment();
-
+          c_lines_counter.Increment();
 #endif
           if (params->duration != 0) //not endless
           if (params->lines == 0 && seconds_counter == params->duration)
@@ -232,6 +231,11 @@ void CGenCycleRated::loop()
 
           if (! params->pure)
              {
+              #ifdef PROM
+               c_bytes_counter.Increment(log_string.size());
+              #endif
+
+
               if (params->bstdout)
                   cout << log_string << "\n";
 

@@ -94,74 +94,6 @@ void show_help()
   printf ("\n");
   printf ("logfilegen --duration=60 --rate=1000 --template=nginx.tpl --logfile=access.log\n");
 }
-/*
-
-void init_prom()
-{
- Exposer exposer{"127.0.0.1:8080"};
-
-  // create a metrics registry
-  // @note it's the users responsibility to keep the object alive
-  auto registry = std::make_shared<Registry>();
-
-  // add a new counter family to the registry (families combine values with the
-  // same name, but distinct label dimensions)
-  //
-  // @note please follow the metric-naming best-practices:
-  // https://prometheus.io/docs/practices/naming/
-  auto& packet_counter = BuildCounter()
-                             .Name("observed_packets_total")
-                             .Help("Number of observed packets")
-                             .Register(*registry);
-
-  // add and remember dimensional data, incrementing those is very cheap
-  auto& tcp_rx_counter =
-      packet_counter.Add({{"protocol", "tcp"}, {"direction", "rx"}});
-  auto& tcp_tx_counter =
-      packet_counter.Add({{"protocol", "tcp"}, {"direction", "tx"}});
-  auto& udp_rx_counter =
-      packet_counter.Add({{"protocol", "udp"}, {"direction", "rx"}});
-  auto& udp_tx_counter =
-      packet_counter.Add({{"protocol", "udp"}, {"direction", "tx"}});
-
-  // add a counter whose dimensional data is not known at compile time
-  // nevertheless dimensional values should only occur in low cardinality:
-  // https://prometheus.io/docs/practices/naming/#labels
-  auto& http_requests_counter = BuildCounter()
-                                    .Name("http_requests_total")
-                                    .Help("Number of HTTP requests")
-                                    .Register(*registry);
-
-  auto& version_info = BuildInfo()
-                           .Name("versions")
-                           .Help("Static info about the library")
-                           .Register(*registry);
-  version_info.Add({{"prometheus", "1.0"}});
-  // ask the exposer to scrape the registry on incoming HTTP requests
-  exposer.RegisterCollectable(registry);
-
-
-
-  for (;;) {
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-    const auto random_value = std::rand();
-
-    if (random_value & 1) tcp_rx_counter.Increment();
-    if (random_value & 2) tcp_tx_counter.Increment();
-    if (random_value & 4) udp_rx_counter.Increment();
-    if (random_value & 8) udp_tx_counter.Increment();
-
-    const std::array<std::string, 4> methods = {"GET", "PUT", "POST", "HEAD"};
-    auto method = methods.at(random_value % methods.size());
-    // dynamically calling Family<T>.Add() works but is slow and should be
-    // avoided
-    http_requests_counter.Add({{"method", method}}).Increment();
-  }
-
-
-}
-
-*/
 
 int main (int argc, char *argv[])
 {
@@ -181,7 +113,7 @@ int main (int argc, char *argv[])
                             "LFG_TEMPLATE", "LFG_DEBUG", "LFG_PURE",
                             "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP",
                             "LFG_LINES", "LFG_SIZE", "LFG_RANDOM",
-                            "LFG_BENCHMARK", "LFG_STATS", "LFG_TEST"};
+                            "LFG_BENCHMARK", "LFG_STATS", "LFG_TEST", "LGF_ADDR"};
 
   CParameters params;
   string fname_config;
@@ -227,6 +159,11 @@ int main (int argc, char *argv[])
    params.s_size = opts_config.get_string ("size", "0");
    params.stats = opts_config.get_bool ("stats", false);
    params.templatefile = opts_config.get_string ("template", "NOTEMPLATEFILE");
+
+   params.metrics_addr = opts_config.get_string ("addr", "localhost:7777");
+
+
+
    params.timestamp = opts_config.get_string ("timestamp", "%d/%b/%Y:%H:%M:%S %z");
    params.use_gzip = opts_config.get_bool ("gzip", false);
    params.test = opts_config.get_bool ("test", false);
@@ -256,6 +193,8 @@ int main (int argc, char *argv[])
   params.random = opts_cmdline.get_bool ("random", params.random);
   params.rate = opts_cmdline.get_num ("rate", params.rate);
   params.s_size = opts_cmdline.get_string ("size", params.s_size);
+  params.metrics_addr = opts_cmdline.get_string ("addr", params.metrics_addr);
+
   params.stats = opts_cmdline.get_bool ("stats", params.stats);
   params.templatefile = opts_cmdline.get_string ("template", params.templatefile);
   params.timestamp = opts_cmdline.get_string ("timestamp", params.timestamp);
@@ -303,6 +242,7 @@ int main (int argc, char *argv[])
   params.templatefile = opts_envars.get_string ("template", params.templatefile);
   params.timestamp = opts_envars.get_string ("timestamp", params.timestamp);
   params.use_gzip = opts_envars.get_bool ("gzip", params.use_gzip);
+  params.metrics_addr = opts_envars.get_string ("addr", params.metrics_addr);
 
   if (params.max_log_files < 1)
      params.max_log_files = 1;
