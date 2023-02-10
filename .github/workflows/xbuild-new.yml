@@ -9,13 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
-    - name: Build
-      run: |
-      mkdir b
-      cd b
-      cmake ..
-      make
+      uses: actions/checkout@v2
+    - name: Configure
+      run: cmake -S . -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
+    - name: "Build Project"
+      run: cmake --build build --target all --config Release -- -j4
 
   windows:
     runs-on: windows-latest
