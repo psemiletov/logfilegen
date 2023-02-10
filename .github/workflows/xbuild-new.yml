@@ -11,11 +11,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
     - name: Build
-      run: |
-      mkdir b
-      cd b
-      cmake ..
-      make
+      run: mkdir b
+      run: cd b
+      run: cmake ..
+      run: make
 
   windows:
     runs-on: windows-latest
