@@ -12,9 +12,9 @@ jobs:
       uses: actions/checkout@v1
     - name: Build
       run: mkdir b
-      run: cd b
-      run: cmake ..
-      run: make
+      cd b
+      cmake ..
+      make
 
   windows:
     runs-on: windows-latest
