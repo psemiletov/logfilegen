@@ -1,5 +1,5 @@
 # test
-name: XBUILD
+name: XBUILD-NEW
 
 on: [workflow_dispatch]
 
