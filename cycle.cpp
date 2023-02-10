@@ -66,7 +66,7 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
      }
 
  #ifdef PROM
- exposer = new  Exposer("127.0.0.1:8080");
+ exposer = new  Exposer(params->metrics_addr);
 
   // exposer = new  Exposer(params->metrics_addr);
     registry = std::make_shared<Registry>();
@@ -144,17 +144,26 @@ void CGenCycleRated::loop()
   //
   // @note please follow the metric-naming best-practices:
   // https://prometheus.io/docs/practices/naming/
+    /*auto& *//*prometheus::Family<prometheus::Counter>& */
     auto& counter = BuildCounter()
-                             .Name("logfilegen")
+                             .Name("logfilegen counters")
                              .Help("Internal counters and stats")
                              .Register(*registry);
 
-    auto& c_lines_counter = counter.Add({{"cycle", "rated"}, {"counter", "lines"}});
-    auto& c_bytes_counter = counter.Add({{"cycle", "rated"}, {"counter", "bytes"}});
+/*
+      countera = BuildCounter()
+                             .Name("logfilegen")
+                             .Help("Internal counters and stats")
+                             .Register(*registry);
+*/
+//typename decltype(counter)::_
+
+    auto& c_lines_counter = counter.Add({{"cycle", "rated"}, {"counter", "lines generated"}});
+    auto& c_bytes_counter = counter.Add({{"cycle", "rated"}, {"counter", "bytes generated"}});
 
 
     auto& gauge = BuildGauge()
-                             .Name("logfilegen2")
+                             .Name("logfilegen gauges")
                              .Help("Internal counters and stats")
                              .Register(*registry);
 
@@ -175,6 +184,8 @@ void CGenCycleRated::loop()
                            .Register(*registry);
   version_info.Add({{"prometheus", "1.0"}});
   // ask the exposer to scrape the registry on incoming HTTP requests
+
+  if (params->metrics)
   exposer->RegisterCollectable (registry);
 
 
@@ -206,13 +217,15 @@ void CGenCycleRated::loop()
               seconds_counter++;
 
              #ifdef PROM
-
+              if (params->metrics)
+               {
                 auto stop = high_resolution_clock::now();
                // auto duration = duration_cast<microseconds>(stop - start);
               auto duration_s = duration_cast<seconds>(stop - start);
 
                double lines_per_second = (double) lines_counter / duration_s.count();
                g_lines_per_second_gauge.Set (lines_per_second);
+              }
              #endif
 
 
@@ -222,6 +235,7 @@ void CGenCycleRated::loop()
           lines_counter++;
 
 #ifdef PROM
+            if (params->metrics)
           c_lines_counter.Increment();
 #endif
 
@@ -244,6 +258,8 @@ void CGenCycleRated::loop()
           if (! params->pure)
              {
               #ifdef PROM
+                  if (params->metrics)
+
                c_bytes_counter.Increment(log_string.size());
               #endif
 
@@ -300,7 +316,70 @@ CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname): CGe
 
 void CGenCycleUnrated::loop()
 {
-  auto start = high_resolution_clock::now();
+#ifdef PROM
+
+
+   // Exposer exposer{"127.0.0.1:8080"};
+
+  // create a metrics registry
+  // @note it's the users responsibility to keep the object alive
+ // auto registry = std::make_shared<Registry>();
+
+  // add a new counter family to the registry (families combine values with the
+  // same name, but distinct label dimensions)
+  //
+  // @note please follow the metric-naming best-practices:
+  // https://prometheus.io/docs/practices/naming/
+    /*auto& *//*prometheus::Family<prometheus::Counter>& */
+    auto& counter = BuildCounter()
+                             .Name("logfilegen counters")
+                             .Help("Internal counters and stats")
+                             .Register(*registry);
+
+/*
+      countera = BuildCounter()
+                             .Name("logfilegen")
+                             .Help("Internal counters and stats")
+                             .Register(*registry);
+*/
+//typename decltype(counter)::_
+
+    auto& c_lines_counter = counter.Add({{"cycle", "rated"}, {"counter", "lines generated"}});
+    auto& c_bytes_counter = counter.Add({{"cycle", "rated"}, {"counter", "bytes generated"}});
+
+
+    auto& gauge = BuildGauge()
+                             .Name("logfilegen gauges")
+                             .Help("Internal counters and stats")
+                             .Register(*registry);
+
+
+    auto& g_lines_per_second_gauge = gauge.Add({{"cycle", "rated"}, {"gauge", "lines per second"}});
+
+
+
+ //   https://prometheus.io/docs/practices/naming/#labels
+ /* auto& http_requests_counter = BuildCounter()
+                                    .Name("http_requests_total")
+                                    .Help("Number of HTTP requests")
+                                    .Register(*registry);
+*/
+  auto& version_info = BuildInfo()
+                           .Name("versions")
+                           .Help("Static info about the library")
+                           .Register(*registry);
+  version_info.Add({{"prometheus", "1.0"}});
+  // ask the exposer to scrape the registry on incoming HTTP requests
+
+  if (params->metrics)
+  exposer->RegisterCollectable (registry);
+
+
+#endif
+
+
+
+   auto start = high_resolution_clock::now();
 
   size_t lines_counter = 0;
 
@@ -312,6 +391,13 @@ void CGenCycleUnrated::loop()
              break;
 
          lines_counter++;
+
+
+#ifdef PROM
+            if (params->metrics)
+          c_lines_counter.Increment();
+#endif
+
 
          if (params->lines != 0 && lines_counter > params->lines)
              break;
@@ -326,7 +412,25 @@ void CGenCycleUnrated::loop()
              auto duration_s = duration_cast<seconds>(stop - start);
              if (duration_s >= chrono::seconds(params->duration))
                 break;
+
+
+             #ifdef PROM
+              if (params->metrics)
+               {
+               // auto duration = duration_cast<microseconds>(stop - start);
+
+               double lines_per_second = (double) lines_counter / duration_s.count();
+               g_lines_per_second_gauge.Set (lines_per_second);
+              }
+             #endif
+
+
+
             }
+
+
+
+
 
 //          std::cout << "seconds_counter: " << seconds_counter << endl;
   //        std::cout << "frame_counter: " << frame_counter << endl;
@@ -336,6 +440,13 @@ void CGenCycleUnrated::loop()
 
           if (! params->pure)
              {
+                 #ifdef PROM
+                  if (params->metrics)
+
+               c_bytes_counter.Increment(log_string.size());
+              #endif
+
+
               if (params->bstdout)
                  cout << log_string << "\n";
 

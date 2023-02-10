@@ -52,7 +52,7 @@ public:
 
       Exposer *exposer;
      std::shared_ptr< prometheus::Registry > registry;
-
+//prometheus::Family<prometheus::Counter> &countera;
 #endif
 
   CGenCycle (CParameters *prms, const string &fname);

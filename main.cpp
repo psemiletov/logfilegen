@@ -113,7 +113,8 @@ int main (int argc, char *argv[])
                             "LFG_TEMPLATE", "LFG_DEBUG", "LFG_PURE",
                             "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP",
                             "LFG_LINES", "LFG_SIZE", "LFG_RANDOM",
-                            "LFG_BENCHMARK", "LFG_STATS", "LFG_TEST", "LGF_ADDR"};
+                            "LFG_BENCHMARK", "LFG_STATS", "LFG_TEST",
+                            "LGF_ADDR", "LGF_METRICS"};
 
   CParameters params;
   string fname_config;
@@ -144,6 +145,7 @@ int main (int argc, char *argv[])
 
    //load params from config:
    CPairFile opts_config (fname_config);
+   params.metrics = opts_config.get_bool ("metrics", true);
 
    params.benchmark = opts_config.get_bool ("benchmark", false);
    params.debug = opts_config.get_bool ("debug", false);
@@ -160,7 +162,7 @@ int main (int argc, char *argv[])
    params.stats = opts_config.get_bool ("stats", false);
    params.templatefile = opts_config.get_string ("template", "NOTEMPLATEFILE");
 
-   params.metrics_addr = opts_config.get_string ("addr", "127.0.0.1:7777");
+   params.metrics_addr = opts_config.get_string ("addr", "127.0.0.1:8080");
 
 
 
@@ -181,6 +183,7 @@ int main (int argc, char *argv[])
 
   params.benchmark = opts_cmdline.get_bool ("benchmark", params.benchmark);
   params.test = opts_cmdline.get_bool ("test", params.test);
+  params.metrics = opts_cmdline.get_bool ("metrics", params.metrics);
 
   params.debug = opts_cmdline.get_bool ("debug", params.debug);
   params.duration = opts_cmdline.get_num ("duration", params.duration);
@@ -223,6 +226,7 @@ int main (int argc, char *argv[])
 
 
   CPairFile opts_envars (envars);
+  params.metrics = opts_envars.get_bool ("metrics", params.metrics);
 
   params.test = opts_envars.get_bool ("test", params.test);
   params.benchmark = opts_envars.get_bool ("benchmark", params.benchmark);
