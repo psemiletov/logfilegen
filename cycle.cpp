@@ -369,20 +369,30 @@ void CGenCycleUnrated::loop()
              if (duration_s >= chrono::seconds(params->duration))
                 break;
 
-
+/*
              #ifdef PROM
               if (params->metrics)
                {
                 double lines_per_second = (double) lines_counter / duration_s.count();
                 g_lines_per_second_gauge.Set (lines_per_second); //FIXME: not working
               }
-             #endif
-
-
-
+             #endif */
             }
 
 
+
+
+             #ifdef PROM
+              if (params->metrics)
+               {
+                auto stop = high_resolution_clock::now();
+             auto duration_s = duration_cast<seconds>(stop - start);
+
+
+                double lines_per_second = (double) lines_counter / duration_s.count();
+                g_lines_per_second_gauge.Set (lines_per_second); //FIXME: not working
+              }
+             #endif
 
 
 
