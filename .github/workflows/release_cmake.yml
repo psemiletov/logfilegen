@@ -1,0 +1,98 @@
+name: Release CMake
+
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag
+        required: false
+      prometheus_enable:
+        description: Prometheus support
+        required: true
+        type: boolean
+        default: true
+
+
+env:
+  BUILD_DIR: _build
+  LOGFILEGEN_FILE: logfilegen
+  LOGFILEGEN_BUILD_TYPE: Release
+  PROMETHEUS_ENABLE: true
+  PROMETHEUS_PATH: prometheus
+  PROMETHEUS_REPOSITORY: jupp0r/prometheus-cpp
+  PROMETHEUS_VERSION: v1.1.0
+  PROMETHEUS_BUILD_TYPE: Release
+
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: ${{ github.event.inputs.tag != '' || github.ref_type == 'tag' }}
+    steps:
+      - name: Common - Variables
+        run: |
+          if [[ -z "${{ github.event.inputs.tag }}" ]]; then echo "GITHUB_TAG=${{ github.ref_name }}" >> "${GITHUB_ENV}"; else echo "GITHUB_TAG=${{ github.event.inputs.tag }}" >> "${GITHUB_ENV}"; fi
+          if [[ -z "${{ github.event.inputs.prometheus_enable }}" ]]; then echo "PROMETHEUS_ENABLE=${{ env.PROMETHEUS_ENABLE }}" >> "${GITHUB_ENV}"; else echo "PROMETHEUS_ENABLE=${{ github.event.inputs.prometheus_enable }}" >> "${GITHUB_ENV}"; fi
+
+      - name: Common - Prerequisites
+        run: |
+          sudo apt update
+          sudo apt install git make g++ cmake pkg-config
+
+      - name: Prometheus - Checkout
+        if: ${{ env.PROMETHEUS_ENABLE }}
+        uses: actions/checkout@v3
+        with:
+          path: ${{ env.PROMETHEUS_PATH }}
+          ref: ${{ env.PROMETHEUS_VERSION }}
+          repository: ${{ env.PROMETHEUS_REPOSITORY }}
+          submodules: recursive
+
+      - name: Prometheus - Configure
+        if: ${{ env.PROMETHEUS_ENABLE }}
+        run: cmake -S . -B ${{ env.BUILD_DIR }} -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ env.PROMETHEUS_BUILD_TYPE }} -DENABLE_PUSH=OFF -DENABLE_COMPRESSION=OFF
+        working-directory: ${{ env.PROMETHEUS_PATH }}
+
+      - name: Prometheus - Build
+        if: ${{ env.PROMETHEUS_ENABLE }}
+        run: cmake --build ${{ env.BUILD_DIR }} --parallel 4
+        working-directory: ${{ env.PROMETHEUS_PATH }}
+
+      - name: Prometheus - Test
+        if: ${{ env.PROMETHEUS_ENABLE }}
+        run: ctest --verbose --test-dir ${{ env.BUILD_DIR }}
+        working-directory: ${{ env.PROMETHEUS_PATH }}
+
+      - name: Prometheus - Install
+        if: ${{ env.PROMETHEUS_ENABLE }}
+        run: sudo cmake --install ${{ env.BUILD_DIR }}
+        working-directory: ${{ env.PROMETHEUS_PATH }}
+
+      - name: Logfilegen - Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ env.GITHUB_TAG }}
+
+      - name: Logfilegen - Configure
+        run: cmake -S . -B ${{ env.BUILD_DIR }} -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ env.LOGFILEGEN_BUILD_TYPE }}
+
+      - name: Logfilegen - Build
+        run: cmake --build ${{ env.BUILD_DIR }} --target all --config ${{ env.LOGFILEGEN_BUILD_TYPE }} -- -j4
+
+      - name: Logfilegen - Checksum
+        run: sha256sum ${{ env.BUILD_DIR }}/logfilegen > logfilegen.sha256.txt
+
+      - name: Logfilegen - Release
+        uses: softprops/action-gh-release@v1
+        with:
+          append_body: true
+          tag_name: ${{ env.GITHUB_TAG }}
+          files: |
+            ${{ env.BUILD_DIR }}/logfilegen
+            logfilegen.sha256.txt
