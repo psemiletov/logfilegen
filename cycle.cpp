@@ -146,7 +146,7 @@ void CGenCycleRated::loop()
   // https://prometheus.io/docs/practices/naming/
     /*auto& *//*prometheus::Family<prometheus::Counter>& */
     auto& counter = BuildCounter()
-                             .Name("logfilegen1")
+                             .Name("logfilegen_counters")
                              .Help("Internal counters and stats")
                              .Register(*registry);
 
@@ -163,7 +163,7 @@ void CGenCycleRated::loop()
 
 
     auto& gauge = BuildGauge()
-                             .Name("logfilegen2")
+                             .Name("logfilegen_gauges")
                              .Help("Internal counters and stats")
                              .Register(*registry);
 
@@ -332,7 +332,7 @@ void CGenCycleUnrated::loop()
   // https://prometheus.io/docs/practices/naming/
     /*auto& *//*prometheus::Family<prometheus::Counter>& */
     auto& counter = BuildCounter()
-                             .Name("logfilegen counters")
+                             .Name("logfilegen_counters")
                              .Help("Internal counters and stats")
                              .Register(*registry);
 
@@ -349,7 +349,7 @@ void CGenCycleUnrated::loop()
 
 
     auto& gauge = BuildGauge()
-                             .Name("logfilegen gauges")
+                             .Name("logfilegen_gauges")
                              .Help("Internal counters and stats")
                              .Register(*registry);
 
