@@ -203,7 +203,7 @@ int main (int argc, char *argv[])
   params.timestamp = opts_cmdline.get_string ("timestamp", params.timestamp);
   params.use_gzip = opts_cmdline.get_bool ("gzip", params.use_gzip);
 
-  if (opts_cmdline.get_bool ("help", false))
+  if (opts_cmdline.get_bool ("help", false) || argc == 1)
      {
       show_help();
       return 0;

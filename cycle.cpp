@@ -146,7 +146,7 @@ void CGenCycleRated::loop()
   // https://prometheus.io/docs/practices/naming/
     /*auto& *//*prometheus::Family<prometheus::Counter>& */
     auto& counter = BuildCounter()
-                             .Name("logfilegen counters")
+                             .Name("logfilegen1")
                              .Help("Internal counters and stats")
                              .Register(*registry);
 
@@ -163,7 +163,7 @@ void CGenCycleRated::loop()
 
 
     auto& gauge = BuildGauge()
-                             .Name("logfilegen gauges")
+                             .Name("logfilegen2")
                              .Help("Internal counters and stats")
                              .Register(*registry);
 
