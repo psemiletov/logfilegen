@@ -36,6 +36,7 @@ public:
   bool stats;
   bool test;
   bool metrics;
+  size_t poll;
 
   void print();
 };

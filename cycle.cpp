@@ -189,8 +189,8 @@ void CGenCycleRated::loop()
               seconds_counter++;
 
              #ifdef PROM
-              if (params->metrics)
-               {
+              if (params->metrics && seconds_counter % params->poll)
+              {
                 auto stop = high_resolution_clock::now();
                // auto duration = duration_cast<microseconds>(stop - start);
               auto duration_s = duration_cast<seconds>(stop - start);
@@ -207,7 +207,7 @@ void CGenCycleRated::loop()
           lines_counter++;
 
 #ifdef PROM
-            if (params->metrics)
+            if (params->metrics  && seconds_counter % params->poll)
           c_lines_counter.Increment();
 #endif
 
@@ -230,7 +230,7 @@ void CGenCycleRated::loop()
           if (! params->pure)
              {
               #ifdef PROM
-                  if (params->metrics)
+                  if (params->metrics  && seconds_counter % params->poll)
 
                c_bytes_counter.Increment(log_string.size());
               #endif
@@ -349,13 +349,6 @@ void CGenCycleUnrated::loop()
 
          lines_counter++;
 
-
-#ifdef PROM
-            if (params->metrics)
-          c_lines_counter.Increment();
-#endif
-
-
          if (params->lines != 0 && lines_counter > params->lines)
              break;
 
@@ -368,31 +361,11 @@ void CGenCycleUnrated::loop()
              auto duration_s = duration_cast<seconds>(stop - start);
              if (duration_s >= chrono::seconds(params->duration))
                 break;
-
-/*
-             #ifdef PROM
-              if (params->metrics)
-               {
-                double lines_per_second = (double) lines_counter / duration_s.count();
-                g_lines_per_second_gauge.Set (lines_per_second); //FIXME: not working
-              }
-             #endif */
             }
 
 
 
 
-             #ifdef PROM
-              if (params->metrics)
-               {
-                auto stop = high_resolution_clock::now();
-             auto duration_s = duration_cast<seconds>(stop - start);
-
-
-                double lines_per_second = (double) lines_counter / duration_s.count();
-                g_lines_per_second_gauge.Set (lines_per_second); //FIXME: not working
-              }
-             #endif
 
 
 
@@ -405,10 +378,27 @@ void CGenCycleUnrated::loop()
           if (! params->pure)
              {
                  #ifdef PROM
-                  if (params->metrics)
+              if (params->metrics)
+               {
 
-               c_bytes_counter.Increment(log_string.size());
-              #endif
+
+                auto stop = high_resolution_clock::now();
+             auto duration_s = duration_cast<seconds>(stop - start);
+
+              if (duration_s.count() % params->poll)
+              {           c_lines_counter.Increment();
+
+                c_bytes_counter.Increment(log_string.size());
+
+
+                double lines_per_second = (double) lines_counter / duration_s.count();
+                g_lines_per_second_gauge.Set (lines_per_second);
+              }
+              }
+             #endif
+
+
+
 
 
               if (params->bstdout)
