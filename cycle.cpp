@@ -132,57 +132,29 @@ void CGenCycleRated::loop()
 {
 #ifdef PROM
 
-
-   // Exposer exposer{"127.0.0.1:8080"};
-
-  // create a metrics registry
-  // @note it's the users responsibility to keep the object alive
- // auto registry = std::make_shared<Registry>();
-
-  // add a new counter family to the registry (families combine values with the
-  // same name, but distinct label dimensions)
-  //
-  // @note please follow the metric-naming best-practices:
-  // https://prometheus.io/docs/practices/naming/
-    /*auto& *//*prometheus::Family<prometheus::Counter>& */
-    auto& counter = BuildCounter()
-                             .Name("logfilegen_counters")
+ auto& counter = BuildCounter()
+                             .Name("data_generated_total")
                              .Help("Internal counters and stats")
                              .Register(*registry);
-
-/*
-      countera = BuildCounter()
-                             .Name("logfilegen")
-                             .Help("Internal counters and stats")
-                             .Register(*registry);
-*/
-//typename decltype(counter)::_
 
     auto& c_lines_counter = counter.Add({{"cycle", "rated"}, {"counter", "lines generated"}});
     auto& c_bytes_counter = counter.Add({{"cycle", "rated"}, {"counter", "bytes generated"}});
 
 
     auto& gauge = BuildGauge()
-                             .Name("logfilegen_gauges")
+                             .Name("data_generated_current")
                              .Help("Internal counters and stats")
                              .Register(*registry);
 
 
     auto& g_lines_per_second_gauge = gauge.Add({{"cycle", "rated"}, {"gauge", "lines per second"}});
 
-
-
- //   https://prometheus.io/docs/practices/naming/#labels
- /* auto& http_requests_counter = BuildCounter()
-                                    .Name("http_requests_total")
-                                    .Help("Number of HTTP requests")
-                                    .Register(*registry);
-*/
-  auto& version_info = BuildInfo()
-                           .Name("versions")
-                           .Help("Static info about the library")
+    auto& version_info = BuildInfo()
+                           .Name("logstring_template")
+                           .Help("Shows the logstring template in use")
                            .Register(*registry);
-  version_info.Add({{"prometheus", "1.0"}});
+
+         version_info.Add({{"logstring", tpl->vars["$logstring"]->get_val()}});
   // ask the exposer to scrape the registry on incoming HTTP requests
 
   if (params->metrics)
@@ -332,43 +304,28 @@ void CGenCycleUnrated::loop()
   // https://prometheus.io/docs/practices/naming/
     /*auto& *//*prometheus::Family<prometheus::Counter>& */
     auto& counter = BuildCounter()
-                             .Name("logfilegen_counters")
+                             .Name("data_generated_total")
                              .Help("Internal counters and stats")
                              .Register(*registry);
 
-/*
-      countera = BuildCounter()
-                             .Name("logfilegen")
-                             .Help("Internal counters and stats")
-                             .Register(*registry);
-*/
-//typename decltype(counter)::_
-
-    auto& c_lines_counter = counter.Add({{"cycle", "rated"}, {"counter", "lines generated"}});
-    auto& c_bytes_counter = counter.Add({{"cycle", "rated"}, {"counter", "bytes generated"}});
+    auto& c_lines_counter = counter.Add({{"cycle", "unrated"}, {"counter", "lines generated"}});
+    auto& c_bytes_counter = counter.Add({{"cycle", "unrated"}, {"counter", "bytes generated"}});
 
 
     auto& gauge = BuildGauge()
-                             .Name("logfilegen_gauges")
+                             .Name("data_generated_current")
                              .Help("Internal counters and stats")
                              .Register(*registry);
 
 
-    auto& g_lines_per_second_gauge = gauge.Add({{"cycle", "rated"}, {"gauge", "lines per second"}});
+    auto& g_lines_per_second_gauge = gauge.Add({{"cycle", "unrated"}, {"gauge", "lines per second"}});
 
-
-
- //   https://prometheus.io/docs/practices/naming/#labels
- /* auto& http_requests_counter = BuildCounter()
-                                    .Name("http_requests_total")
-                                    .Help("Number of HTTP requests")
-                                    .Register(*registry);
-*/
-  auto& version_info = BuildInfo()
-                           .Name("versions")
-                           .Help("Static info about the library")
+    auto& version_info = BuildInfo()
+                           .Name("logstring_template")
+                           .Help("Shows the logstring template in use")
                            .Register(*registry);
-  version_info.Add({{"prometheus", "1.0"}});
+
+         version_info.Add({{"logstring", tpl->vars["$logstring"]->get_val()}});
   // ask the exposer to scrape the registry on incoming HTTP requests
 
   if (params->metrics)
@@ -408,7 +365,6 @@ void CGenCycleUnrated::loop()
          if (params->duration != 0)
             {
              auto stop = high_resolution_clock::now();
-             // auto duration = duration_cast<microseconds>(stop - start);
              auto duration_s = duration_cast<seconds>(stop - start);
              if (duration_s >= chrono::seconds(params->duration))
                 break;
@@ -417,10 +373,8 @@ void CGenCycleUnrated::loop()
              #ifdef PROM
               if (params->metrics)
                {
-               // auto duration = duration_cast<microseconds>(stop - start);
-
-               double lines_per_second = (double) lines_counter / duration_s.count();
-               g_lines_per_second_gauge.Set (lines_per_second);
+                double lines_per_second = (double) lines_counter / duration_s.count();
+                g_lines_per_second_gauge.Set (lines_per_second); //FIXME: not working
               }
              #endif
 
