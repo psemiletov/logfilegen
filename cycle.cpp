@@ -1,6 +1,8 @@
 #include <thread>
 #include <chrono>
+
 #include <iostream>
+#include <string.h>
 
 
 #include "cycle.h"
@@ -16,6 +18,7 @@ namespace
 void f_signal_handler (int signal)
 {
   g_signal = signal;
+
   cout << "Exiting by the signal" << endl;
 }
 
@@ -67,16 +70,118 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
 
  #ifdef PROM
  exposer = new  Exposer(params->metrics_addr);
-
   // exposer = new  Exposer(params->metrics_addr);
     registry = std::make_shared<Registry>();
-
 #endif
+
+ //SERV
+
+     sockfd = socket(AF_INET, SOCK_STREAM, 0);
+     if (sockfd < 0)
+        cout << "ERROR opening socket" << endl;
+
+//     bzero((char *) &serv_addr, sizeof(serv_addr));
+
+     memset (&serv_addr, 0, sizeof(serv_addr));
+
+     portno = 8888;
+     serv_addr.sin_family = AF_INET;
+     serv_addr.sin_addr.s_addr = INADDR_ANY;
+     serv_addr.sin_port = htons(portno);
+
+     if (bind(sockfd, (struct sockaddr *) &serv_addr,
+              sizeof(serv_addr)) < 0)
+
+              cout << "ERROR on binding" << endl;
+     listen(sockfd,5);
+
+     server_run = true;
+
+     //f_handle = async(launch::async,&CGenCycle::server_handle,this);
+
+
+
+         response = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: @clen\n\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\r\n<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\r\n<title>logfilegen metrics</title>\r\n</head>\r\n<body>\r\n@body</body>\r\n</html>";
+
+
+   th_srv = new thread (&CGenCycle::server_handle, this);
+   th_srv->detach();
 }
+
+
+void CGenCycle::server_handle()
+{
+ while (server_run)
+ {
+    cout << "void CGenCycle::server_handle()" << endl;
+
+
+   clilen = sizeof(cli_addr);
+
+     newsockfd = accept(sockfd,
+                 (struct sockaddr *) &cli_addr,
+                 &clilen);
+
+     if (newsockfd < 0)
+          cout << ("ERROR on accept");
+
+     bzero(buffer,256);
+
+     int n = read(newsockfd,buffer,255);
+
+     if (n < 0)
+        cout <<  "ERROR reading from socket" << endl;
+
+    printf("Here is the message: %s\n",buffer);
+
+
+    string request (buffer);
+    string rsp;
+    string body ("hello woeld");
+
+    if (request.find ("GET /metrics") != string::npos)
+       {
+        rsp = str_replace (response, "@body", body);
+        rsp = str_replace (response, "@clen", to_string(body.size()));
+        cout << rsp << endl;
+
+       }
+
+
+//     n = write(newsockfd,"I got your message",18);
+
+    string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 16\n\n<h1>testing</h1>";
+
+    n = write(newsockfd,ts.c_str(),ts.size());
+
+
+     //n = write(newsockfd,rsp.c_str(),rsp.size());
+
+
+     if (n < 0)
+        cout << "ERROR writing to socket" << endl;
+
+
+    close(newsockfd);
+
+
+ }
+
+
+
+}
+
 
 
 CGenCycle::~CGenCycle()
 {
+  server_run = false;
+       close(sockfd);
+
+
+delete th_srv;
+
+
   delete tpl;
   delete logrotator;
 
@@ -166,10 +271,6 @@ void CGenCycleRated::loop()
 
    auto start = high_resolution_clock::now();
 
-   size_t lines_counter = 0;
-
-   size_t seconds_counter = 0;
-   size_t frame_counter = 0;
 
    using clock = std::chrono::steady_clock;
 
@@ -195,7 +296,7 @@ void CGenCycleRated::loop()
                // auto duration = duration_cast<microseconds>(stop - start);
               auto duration_s = duration_cast<seconds>(stop - start);
 
-               double lines_per_second = (double) lines_counter / duration_s.count();
+               lines_per_second = (double) lines_counter / duration_s.count();
                g_lines_per_second_gauge.Set (lines_per_second);
               }
              #endif
@@ -208,7 +309,7 @@ void CGenCycleRated::loop()
 
 #ifdef PROM
             if (params->metrics  && seconds_counter % params->poll)
-          c_lines_counter.Increment();
+                c_lines_counter.Increment();
 #endif
 
           if (params->duration != 0) //not endless
@@ -276,6 +377,9 @@ void CGenCycleRated::loop()
      }
 
 
+  server_run = false;
+
+
   file_out.close();
 }
 
@@ -291,18 +395,6 @@ void CGenCycleUnrated::loop()
 #ifdef PROM
 
 
-   // Exposer exposer{"127.0.0.1:8080"};
-
-  // create a metrics registry
-  // @note it's the users responsibility to keep the object alive
- // auto registry = std::make_shared<Registry>();
-
-  // add a new counter family to the registry (families combine values with the
-  // same name, but distinct label dimensions)
-  //
-  // @note please follow the metric-naming best-practices:
-  // https://prometheus.io/docs/practices/naming/
-    /*auto& *//*prometheus::Family<prometheus::Counter>& */
     auto& counter = BuildCounter()
                              .Name("data_generated_total")
                              .Help("Internal counters and stats")
@@ -329,7 +421,7 @@ void CGenCycleUnrated::loop()
   // ask the exposer to scrape the registry on incoming HTTP requests
 
   if (params->metrics)
-  exposer->RegisterCollectable (registry);
+      exposer->RegisterCollectable (registry);
 
 
 #endif
@@ -338,7 +430,7 @@ void CGenCycleUnrated::loop()
 
    auto start = high_resolution_clock::now();
 
-  size_t lines_counter = 0;
+ // size_t lines_counter = 0;
 
   // using clock = std::chrono::steady_clock;
 
@@ -365,10 +457,6 @@ void CGenCycleUnrated::loop()
 
 
 
-
-
-
-
 //          std::cout << "seconds_counter: " << seconds_counter << endl;
   //        std::cout << "frame_counter: " << frame_counter << endl;
 
@@ -377,21 +465,20 @@ void CGenCycleUnrated::loop()
 
           if (! params->pure)
              {
-                 #ifdef PROM
+            #ifdef PROM
               if (params->metrics)
                {
-
-
-                auto stop = high_resolution_clock::now();
-             auto duration_s = duration_cast<seconds>(stop - start);
+               auto stop = high_resolution_clock::now();
+               auto duration_s = duration_cast<seconds>(stop - start);
 
               if (duration_s.count() % params->poll)
-              {           c_lines_counter.Increment();
+               {
+                c_lines_counter.Increment();
 
                 c_bytes_counter.Increment(log_string.size());
 
 
-                double lines_per_second = (double) lines_counter / duration_s.count();
+                lines_per_second = (double) lines_counter / duration_s.count();
                 g_lines_per_second_gauge.Set (lines_per_second);
               }
               }
@@ -436,19 +523,19 @@ void CGenCycleUnrated::loop()
 
   if (params->benchmark)
      {
-      double lines_per_second = (double) lines_counter / duration_s.count();
+      lines_per_second = (double) lines_counter / duration_s.count();
       cout << "Benchmark, lines per seconds: " << lines_per_second << endl;
      }
 
   if (params->test)
      {
-      double lines_per_second = (double) lines_counter / duration_s.count();
+      lines_per_second = (double) lines_counter / duration_s.count();
       cout << "Test, lines per seconds: " << lines_per_second << endl;
      }
 
   if (params->stats)
      {
-      double lines_per_second = (double) lines_counter / duration_s.count();
+      lines_per_second = (double) lines_counter / duration_s.count();
       cout << "Statistics, lines per seconds: " << lines_per_second << endl;
      }
 

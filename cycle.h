@@ -6,6 +6,15 @@
 #include <csignal>
 
 
+//SERV
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <future>
+#include <thread>
+
+
 
 #ifdef PROM
 
@@ -41,12 +50,35 @@ public:
 
   size_t log_current_size; //in bytes
   ofstream file_out;
-  size_t file_size_total;
 
   bool file_out_error;
   bool no_free_space;
   size_t test_string_size;
   string fname_template;
+
+  ///////// stats
+
+    double lines_per_second;
+    size_t file_size_total;
+
+   size_t lines_counter = 0;
+   size_t seconds_counter = 0;
+   size_t frame_counter = 0;
+  //////
+
+
+   ///SERV
+     int sockfd, newsockfd, portno;
+     socklen_t clilen;
+     char buffer[256];
+     struct sockaddr_in serv_addr, cli_addr;
+     bool server_run;
+     std::future<void> f_handle;
+     std::thread *th_srv;
+
+    string response;
+
+
 
   #ifdef PROM
 
@@ -56,6 +88,9 @@ public:
 #endif
 
   CGenCycle (CParameters *prms, const string &fname);
+
+  void server_handle();
+
   bool open_logfile();
 
   ~CGenCycle();
