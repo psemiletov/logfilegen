@@ -16,11 +16,8 @@
 
 #if defined(_WIN32) || defined(_WIN64)
     #include <winsock2.h>
-
-//    typedef int socklen_t;
 //    include <WinSock2.h>
 //include <WinSock.h>
-
 #else
    #include <netinet/in.h>
     #include <sys/socket.h>
@@ -50,7 +47,7 @@ using namespace prometheus;
 
 
 
-using namespace std;
+//using namespace std;
 
 
 class CGenCycle
