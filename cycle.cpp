@@ -156,16 +156,43 @@ void CGenCycle::server_handle()
      if (n < 0)
         std::cout <<  "ERROR reading from socket" << std::endl;
 
-    printf("Here is the message: %s\n",buffer);
+ //   printf("Here is the message: %s\n",buffer);
 
 
     std::string request (buffer);
     std::string rsp;
     std::string body;
+ /*
     body += "<p>";
     body += "seconds_counter:";
     body += std::to_string (seconds_counter);
+    body += "<br>";
+
+
     body += "</p>";
+*/
+/*
+
+        double lines_per_second;
+    size_t file_size_total;
+
+   size_t lines_counter = 0;
+   size_t seconds_counter = 0;
+*/
+
+
+    body += "logstring:";
+    body += tpl->vars["$logstring"]->get_val();
+    body += "\n<br>";
+    body += "file_size_total:";
+    body += std::to_string (file_size_total);
+    body += "\n<br>";
+    body += "seconds_counter:";
+    body += std::to_string (seconds_counter);
+    body += "lines_counter:";
+    body += std::to_string (lines_counter);
+    body += "\n<br>";
+
 
 
     if (request.find ("GET /metrics") != std::string::npos)
@@ -177,7 +204,7 @@ void CGenCycle::server_handle()
 
 
         std::string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length:" + std::to_string(body.size()) + "\n\n" +body;
-          n = write(newsockfd,ts.c_str(),ts.size());
+             n = write(newsockfd,ts.c_str(),ts.size());
 
 
          if (n < 0)

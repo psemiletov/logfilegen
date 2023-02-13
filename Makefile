@@ -21,7 +21,7 @@ CXXFLAGS = -Wall -g -O3 -std=c++17 -pthread -lpthread
 OSFLAG 				:=
 ifeq ($(OS),Windows_NT)
 #	OSFLAG += -D WIN32
-	CXXFLAGS += -DWIN32 -lws2_32
+	CXXFLAGS += -DWIN32
 
 ifeq ($(PROCESSOR_ARCHITECTURE),AMD64)
 		OSFLAG += -D AMD64
