@@ -9,11 +9,21 @@
 //SERV
 #include <unistd.h>
 #include <sys/types.h>
-#include <sys/socket.h>
+//#include <sys/socket.h>
 #include <netinet/in.h>
-//#include <future>
 #include <thread>
+//
 
+
+#if defined(_WIN32) || defined(_WIN64)
+    #include <winsock2.h>
+//    include <WinSock2.h>
+//include <WinSock.h>
+
+#else
+    #include <sys/socket.h>
+//    #include <arpa/inet.h>
+#endif
 
 
 #ifdef PROM

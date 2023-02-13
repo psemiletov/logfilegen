@@ -21,6 +21,7 @@ public:
   string s_size;
 
   string metrics_addr;
+  string port;
 
   size_t max_log_files;
   string max_log_file_size;

@@ -76,6 +76,15 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
 
  //SERV
 
+
+#if defined(_WIN32) || defined(_WIN64)
+    WSADATA wsa;
+    if (WSAStartup(MAKEWORD(2,2),&wsa) != 0) {
+        printf("\nError: Windows socket subsytsem could not be initialized. Error Code: %d. Exiting..\n", WSAGetLastError());
+        //exit(1);
+    }
+#endif
+
      sockfd = socket(AF_INET, SOCK_STREAM, 0);
      if (sockfd < 0)
         cout << "ERROR opening socket" << endl;
@@ -309,7 +318,7 @@ void CGenCycleRated::loop()
               seconds_counter++;
 
              #ifdef PROM
-              if (params->metrics && seconds_counter % params->poll)
+              if (params->metrics && seconds_counter)
               {
                 auto stop = high_resolution_clock::now();
                // auto duration = duration_cast<microseconds>(stop - start);
@@ -327,7 +336,7 @@ void CGenCycleRated::loop()
           lines_counter++;
 
 #ifdef PROM
-            if (params->metrics  && seconds_counter % params->poll)
+            if (params->metrics  && seconds_counter)
                 c_lines_counter.Increment();
 #endif
 
@@ -350,7 +359,7 @@ void CGenCycleRated::loop()
           if (! params->pure)
              {
               #ifdef PROM
-                  if (params->metrics  && seconds_counter % params->poll)
+                  if (params->metrics  && seconds_counter)
 
                c_bytes_counter.Increment(log_string.size());
               #endif
@@ -490,7 +499,7 @@ void CGenCycleUnrated::loop()
                auto stop = high_resolution_clock::now();
                auto duration_s = duration_cast<seconds>(stop - start);
 
-              if (duration_s.count() % params->poll)
+              if (duration_s.count())
                {
                 c_lines_counter.Increment();
 

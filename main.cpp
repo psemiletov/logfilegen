@@ -114,7 +114,7 @@ int main (int argc, char *argv[])
                             "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP",
                             "LFG_LINES", "LFG_SIZE", "LFG_RANDOM",
                             "LFG_BENCHMARK", "LFG_STATS", "LFG_TEST",
-                            "LGF_ADDR", "LGF_METRICS", "LGF_POLL"};
+                            "LGF_ADDR", "LGF_METRICS", "LGF_PORT"};
 
   CParameters params;
   string fname_config;
@@ -150,9 +150,11 @@ int main (int argc, char *argv[])
    params.benchmark = opts_config.get_bool ("benchmark", false);
    params.debug = opts_config.get_bool ("debug", false);
    params.duration = opts_config.get_num ("duration", 0);
-   params.poll = opts_config.get_num ("poll", 15);
+//   params.poll = opts_config.get_num ("poll", 15);
 
    params.lines = opts_config.get_num ("lines", 0);
+   params.port = opts_config.get_string ("port", "8080");
+
    params.logfile = opts_config.get_string ("logfile", "stdout");
    params.max_log_file_size = opts_config.get_string ("logsize", "16m");
    params.max_log_files = opts_config.get_num ("logcount", 5);
@@ -193,6 +195,10 @@ int main (int argc, char *argv[])
 
   params.lines = opts_cmdline.get_num ("lines", params.lines);
   params.logfile = opts_cmdline.get_string ("logfile", params.logfile);
+  params.port = opts_cmdline.get_string ("port", params.port);
+
+
+
   params.max_log_file_size = opts_cmdline.get_string ("logsize", params.max_log_file_size);
   params.max_log_files = opts_cmdline.get_num ("logcount", params.max_log_files);
   params.mode = opts_cmdline.get_string ("mode", params.mode);
@@ -240,6 +246,9 @@ int main (int argc, char *argv[])
 
   params.lines = opts_envars.get_num ("lines", params.lines);
   params.logfile = opts_envars.get_string ("logfile", params.logfile);
+  params.port = opts_envars.get_string ("port", params.port);
+
+
   params.max_log_file_size = opts_envars.get_string ("logsize", params.max_log_file_size);
   params.max_log_files = opts_envars.get_num ("logcount", params.max_log_files);
   params.mode = opts_envars.get_string ("mode", params.mode);
