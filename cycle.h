@@ -49,11 +49,6 @@ using namespace prometheus;
 #include "params.h"
 
 
-#if defined(_WIN32) || defined(_WIN64)
-
- typedef int socklen_t;
-
-#endif
 
 using namespace std;
 
@@ -87,7 +82,20 @@ public:
 
    ///SERV
      int sockfd, newsockfd, portno;
-     socklen_t clilen;
+
+
+     #if defined(_WIN32) || defined(_WIN64)
+
+      int clilen;
+
+#else
+
+      socklen_t clilen;
+
+#endif
+
+
+
      char buffer[256];
      struct sockaddr_in serv_addr, cli_addr;
      bool server_run;
