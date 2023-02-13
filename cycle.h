@@ -17,7 +17,7 @@
 #if defined(_WIN32) || defined(_WIN64)
     #include <winsock2.h>
 
-    typedef int socklen_t;
+//    typedef int socklen_t;
 //    include <WinSock2.h>
 //include <WinSock.h>
 
@@ -48,6 +48,12 @@ using namespace prometheus;
 #include "logrot.h"
 #include "params.h"
 
+
+#if defined(_WIN32) || defined(_WIN64)
+
+ typedef int socklen_t;
+
+#endif
 
 using namespace std;
 
