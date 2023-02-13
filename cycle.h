@@ -62,12 +62,12 @@ public:
   CLogRotator *logrotator;
 
   size_t log_current_size; //in bytes
-  ofstream file_out;
+  std::ofstream file_out;
 
   bool file_out_error;
   bool no_free_space;
   size_t test_string_size;
-  string fname_template;
+  std::string fname_template;
 
   ///////// stats
 
@@ -102,7 +102,7 @@ public:
   //   std::future<void> f_handle;
      std::thread *th_srv;
 
-    string response;
+    std::string response;
 
 
 
@@ -113,7 +113,7 @@ public:
 //prometheus::Family<prometheus::Counter> &countera;
 #endif
 
-  CGenCycle (CParameters *prms, const string &fname);
+  CGenCycle (CParameters *prms, const std::string &fname);
 
   void server_handle();
 
@@ -129,7 +129,7 @@ class CGenCycleRated: public CGenCycle
 {
 public:
 
-  CGenCycleRated (CParameters *prms, const string &fname);
+  CGenCycleRated (CParameters *prms, const std::string &fname);
   void loop();
 
 };
@@ -139,7 +139,7 @@ class CGenCycleUnrated: public CGenCycle
 {
 public:
 
-  CGenCycleUnrated (CParameters *prms, const string &fname);
+  CGenCycleUnrated (CParameters *prms, const std::string &fname);
   void loop();
 
 };

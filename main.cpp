@@ -36,15 +36,15 @@
 #define RESET "\x1B[0m"
 
 
-using namespace std;
+//using namespace std;
 
-string find_config_in_paths (const string &fname)
+std::string find_config_in_paths (const std::string &fname)
 {
   if (is_path_abs (fname))
      if (file_exists (fname))
         return fname;
 
-  string fname_config = current_path() + "/" + fname;
+  std::string fname_config = current_path() + "/" + fname;
 
   if (! file_exists (fname_config))
       fname_config = get_home_dir() + "/.config/logfilegen/" + fname;
@@ -53,7 +53,7 @@ string find_config_in_paths (const string &fname)
       fname_config =  "/etc/logfilegen/"+ fname;
 
   if (! file_exists (fname_config))
-     return string();
+     return std::string();
 
   return fname_config;
 }
@@ -62,7 +62,7 @@ string find_config_in_paths (const string &fname)
 
 void show_version()
 {
-  cout << "logfilegen v." << VERSION_NUMBER << endl;
+  std::cout << "logfilegen v." << VERSION_NUMBER << std::endl;
 }
 
 
@@ -100,9 +100,9 @@ int main (int argc, char *argv[])
 {
 //  cout << "version: " << VERSION_NUMBER << endl;
 
-  string tdir (std::filesystem::temp_directory_path().string());
-  string temp_logfile = tdir + "/" + "logfilegen.log";
-  string temp_logfile0 = tdir + "/" + "logfilegen.log.0";
+  std::string tdir (std::filesystem::temp_directory_path().string());
+  std::string temp_logfile = tdir + "/" + "logfilegen.log";
+  std::string temp_logfile0 = tdir + "/" + "logfilegen.log.0";
 
 
   remove (temp_logfile.c_str());
@@ -110,7 +110,7 @@ int main (int argc, char *argv[])
 
 
 
-  vector <string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE",
+  std::vector <std::string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE",
                             "LFG_TEMPLATE", "LFG_DEBUG", "LFG_PURE",
                             "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP",
                             "LFG_LINES", "LFG_SIZE", "LFG_RANDOM",
@@ -118,19 +118,19 @@ int main (int argc, char *argv[])
                             "LGF_ADDR", "LGF_METRICS", "LGF_PORT"};
 
   CParameters params;
-  string fname_config;
+  std::string fname_config;
 
 
   for (int i = 0; i < argc; i++)
      {
-      string ts = argv[i];
+      std::string ts = argv[i];
       size_t pos =  ts.find ("--config");
-      if (pos != string::npos)
+      if (pos != std::string::npos)
         {
          size_t eql = ts.find ("=");
-         if (eql != string::npos)
+         if (eql != std::string::npos)
             {
-             string fname = ts.substr (eql + 1);
+             std::string fname = ts.substr (eql + 1);
              fname_config = find_config_in_paths (fname);
             }
         }
@@ -181,7 +181,7 @@ int main (int argc, char *argv[])
 // Load params from command line
 
    if (params.debug)
-      cout << "Load params from command line" << endl;
+      std::cout << "Load params from command line" << std::endl;
 
 
   CPairFile opts_cmdline (argc, argv);
@@ -233,7 +233,7 @@ int main (int argc, char *argv[])
 // load params from ENV
 
   if (params.debug)
-     cout << "Load ENV" << endl;
+     std::cout << "Load ENV" << std::endl;
 
 
   CPairFile opts_envars (envars);
@@ -283,7 +283,7 @@ int main (int argc, char *argv[])
 
 //read template
 
-  string fname_template = params.templatefile;
+  std::string fname_template = params.templatefile;
 
   if (params.templatefile != "NOTEMPLATEFILE" && ! params.templatefile.empty())
      if (! is_path_abs (params.templatefile))
@@ -301,7 +301,7 @@ int main (int argc, char *argv[])
 
          if (! file_exists (fname_template))
             {
-             cout << "No template file " << fname_template << " found, exiting" << endl;
+             std::cout << "No template file " << fname_template << " found, exiting" << std::endl;
              return 0;
             }
         }
@@ -309,7 +309,7 @@ int main (int argc, char *argv[])
   if (is_path_abs (params.templatefile))
      if (! file_exists (fname_template))
         {
-         cout << "No template file " << fname_template << " found, exiting" << endl;
+         std::cout << "No template file " << fname_template << " found, exiting" << std::endl;
          return 0;
         }
 
@@ -358,7 +358,7 @@ int main (int argc, char *argv[])
   if (params.test)
      {
       remove (params.logfile.c_str());
-      string t = params.logfile + ".0";
+      std::string t = params.logfile + ".0";
       remove (t.c_str());
      }
 

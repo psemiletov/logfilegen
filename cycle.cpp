@@ -7,7 +7,7 @@
 
 #include "cycle.h"
 
-using namespace std;
+//using namespace std;
 using namespace std::chrono;
 
 namespace
@@ -20,11 +20,11 @@ void f_signal_handler (int signal)
 {
   g_signal = signal;
 
-  cout << "Exiting by the signal" << endl;
+  std::cout << "Exiting by the signal" << std::endl;
 }
 
 
-CGenCycle::CGenCycle (CParameters *prms, const string &fname)
+CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
 {
   params = prms;
   fname_template = fname;
@@ -56,15 +56,15 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
       size_t free_space = get_free_space (get_file_path (params->logfile));
       size_t size_needed = logrotator->max_log_file_size * logrotator->max_log_files;
 
-      string test_string = tpl->prepare_log_string();
+      std::string test_string = tpl->prepare_log_string();
       test_string_size = test_string.size();
 
       if (params->debug)
-          cout << "size_needed, bytes: " << size_needed << endl;
+          std::cout << "size_needed, bytes: " << size_needed << std::endl;
 
       if (size_needed >= free_space)
          {
-          cout << "Output files will not fit to the available disk space with current parameters!" << endl;
+          std::cout << "Output files will not fit to the available disk space with current parameters!" << std::endl;
           no_free_space = true;
          }
      }
@@ -88,14 +88,14 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
 
      sockfd = socket(AF_INET, SOCK_STREAM, 0);
      if (sockfd < 0)
-        cout << "ERROR opening socket" << endl;
+        std::cout << "ERROR opening socket" << std::endl;
 
 //     bzero((char *) &serv_addr, sizeof(serv_addr));
 
      memset (&serv_addr, 0, sizeof(serv_addr));
 
 //     portno = 8888;
-      portno = stoi(params->port.c_str());;
+      portno = std::stoi(params->port.c_str());;
 
 
      serv_addr.sin_family = AF_INET;
@@ -110,7 +110,7 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
         server_run = true;
          }
        else
-          cout << "ERROR on binding" << endl;
+          std::cout << "ERROR on binding" << std::endl;
 
      //f_handle = async(launch::async,&CGenCycle::server_handle,this);
 
@@ -123,7 +123,7 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
 
 
 
-   th_srv = new thread (&CGenCycle::server_handle, this);
+   th_srv = new std::thread (&CGenCycle::server_handle, this);
    th_srv->detach();
 }
 
@@ -143,7 +143,7 @@ void CGenCycle::server_handle()
                  &clilen);
 
      if (newsockfd < 0)
-          cout << ("ERROR on accept");
+          std::cout << "ERROR on accept" << std::endl;
 
      //bzero(buffer,256);
 
@@ -154,21 +154,21 @@ void CGenCycle::server_handle()
      int n = read(newsockfd,buffer,255);
 
      if (n < 0)
-        cout <<  "ERROR reading from socket" << endl;
+        std::cout <<  "ERROR reading from socket" << std::endl;
 
     printf("Here is the message: %s\n",buffer);
 
 
-    string request (buffer);
-    string rsp;
-    string body;
+    std::string request (buffer);
+    std::string rsp;
+    std::string body;
     body += "<p>";
     body += "seconds_counter:";
-    body += to_string (seconds_counter);
+    body += std::to_string (seconds_counter);
     body += "</p>";
 
 
-    if (request.find ("GET /metrics") != string::npos)
+    if (request.find ("GET /metrics") != std::string::npos)
        {
     //    rsp = str_replace (response, "@body", body);
     //    rsp = str_replace (response, "@clen", to_string(body.size()));
@@ -176,12 +176,12 @@ void CGenCycle::server_handle()
       //  n = write(newsockfd,rsp.c_str(),rsp.size());
 
 
-        string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length:" + to_string(body.size()) + "\n\n" +body;
+        std::string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length:" + std::to_string(body.size()) + "\n\n" +body;
           n = write(newsockfd,ts.c_str(),ts.size());
 
 
          if (n < 0)
-           cout << "ERROR writing to socket" << endl;
+           std::cout << "ERROR writing to socket" << std::endl;
 
        }
 
@@ -229,7 +229,7 @@ delete exposer;
 }
 
 
-CGenCycleRated::CGenCycleRated (CParameters *prms, const string &fname): CGenCycle (prms, fname)
+CGenCycleRated::CGenCycleRated (CParameters *prms, const std::string &fname): CGenCycle (prms, fname)
 {
 }
 
@@ -246,7 +246,7 @@ bool CGenCycle::open_logfile()
           log_current_size = get_file_size (params->logfile);
 
           if (params->debug)
-             cout << "log_current_size, bytes: " << log_current_size << endl;
+             std::cout << "log_current_size, bytes: " << log_current_size << std::endl;
          }
 
       file_out.open (params->logfile, std::ios::app);
@@ -255,7 +255,7 @@ bool CGenCycle::open_logfile()
          {
       //  throw std::ios_base::failure(std::strerror(errno));
           file_out_error = true;
-          cout << "cannot create " << params->logfile << "\n";
+          std::cout << "cannot create " << params->logfile << "\n";
           return false;
          }
       else
@@ -362,19 +362,18 @@ void CGenCycleRated::loop()
               break;
 
 
-          string log_string = tpl->prepare_log_string();
+          std::string log_string = tpl->prepare_log_string();
 
           if (! params->pure)
              {
               #ifdef PROM
-                  if (params->metrics  && seconds_counter)
-
-               c_bytes_counter.Increment(log_string.size());
+                  if (params->metrics)
+                      c_bytes_counter.Increment(log_string.size());
               #endif
 
 
               if (params->bstdout)
-                  cout << log_string << "\n";
+                  std::cout << log_string << "\n";
 
               if (! file_out_error && ! no_free_space)
                  {
@@ -391,7 +390,7 @@ void CGenCycleRated::loop()
 
                       if (! open_logfile())
                          {
-                          cout << "cannot re-open: " << params->logfile << endl;
+                          std::cout << "cannot re-open: " << params->logfile << std::endl;
                           break;
                          }
                      }
@@ -408,8 +407,8 @@ void CGenCycleRated::loop()
 
   if (params->debug)
      {
-      cout << "duration.count (microseconds): " << duration.count() << endl;
-      cout << "duration_s.count (seconds): " << duration_s.count() << endl;
+      std::cout << "duration.count (microseconds): " << duration.count() << std::endl;
+      std::cout << "duration_s.count (seconds): " << duration_s.count() << std::endl;
      }
 
 
@@ -420,7 +419,7 @@ void CGenCycleRated::loop()
 }
 
 
-CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const string &fname): CGenCycle (prms, fname)
+CGenCycleUnrated::CGenCycleUnrated (CParameters *prms, const std::string &fname): CGenCycle (prms, fname)
 {
 
 }
@@ -487,7 +486,7 @@ void CGenCycleUnrated::loop()
             {
              auto stop = high_resolution_clock::now();
              auto duration_s = duration_cast<seconds>(stop - start);
-             if (duration_s >= chrono::seconds(params->duration))
+             if (duration_s >= std::chrono::seconds(params->duration))
                 break;
             }
 
@@ -497,7 +496,7 @@ void CGenCycleUnrated::loop()
   //        std::cout << "frame_counter: " << frame_counter << endl;
 
 
-          string log_string = tpl->prepare_log_string();
+          std::string log_string = tpl->prepare_log_string();
 
           if (! params->pure)
              {
@@ -525,7 +524,7 @@ void CGenCycleUnrated::loop()
 
 
               if (params->bstdout)
-                 cout << log_string << "\n";
+                 std::cout << log_string << "\n";
 
               if (! file_out_error && ! no_free_space)
                  {
@@ -543,7 +542,7 @@ void CGenCycleUnrated::loop()
 
                       if (! open_logfile())
                          {
-                          cout << "cannot re-open: " << params->logfile << endl;
+                          std::cout << "cannot re-open: " << params->logfile << std::endl;
                           break;
                          }
                      }
@@ -560,26 +559,26 @@ void CGenCycleUnrated::loop()
   if (params->benchmark)
      {
       lines_per_second = (double) lines_counter / duration_s.count();
-      cout << "Benchmark, lines per seconds: " << lines_per_second << endl;
+      std::cout << "Benchmark, lines per seconds: " << lines_per_second << std::endl;
      }
 
   if (params->test)
      {
       lines_per_second = (double) lines_counter / duration_s.count();
-      cout << "Test, lines per seconds: " << lines_per_second << endl;
+      std::cout << "Test, lines per seconds: " << lines_per_second << std::endl;
      }
 
   if (params->stats)
      {
       lines_per_second = (double) lines_counter / duration_s.count();
-      cout << "Statistics, lines per seconds: " << lines_per_second << endl;
+      std::cout << "Statistics, lines per seconds: " << lines_per_second << std::endl;
      }
 
 
   if (params->debug)
      {
-      cout << "duration.count (microseconds): " << duration.count() << endl;
-      cout << "duration_s.count (seconds): " << duration_s.count() << endl;
+      std::cout << "duration.count (microseconds): " << duration.count() << std::endl;
+      std::cout << "duration_s.count (seconds): " << duration_s.count() << std::endl;
      }
 
   file_out.close();
