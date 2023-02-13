@@ -16,6 +16,8 @@
 
 #if defined(_WIN32) || defined(_WIN64)
     #include <winsock2.h>
+
+    typedef int socklen_t;
 //    include <WinSock2.h>
 //include <WinSock.h>
 
