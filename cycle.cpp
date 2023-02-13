@@ -93,7 +93,10 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
 
      memset (&serv_addr, 0, sizeof(serv_addr));
 
-     portno = 8888;
+//     portno = 8888;
+      portno = stoi(params->port.c_str());;
+
+
      serv_addr.sin_family = AF_INET;
      serv_addr.sin_addr.s_addr = INADDR_ANY;
      serv_addr.sin_port = htons(portno);
