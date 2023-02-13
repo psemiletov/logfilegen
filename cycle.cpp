@@ -89,11 +89,14 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
      serv_addr.sin_addr.s_addr = INADDR_ANY;
      serv_addr.sin_port = htons(portno);
 
-     if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) == 0)
+     int retcode = ::bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
+
+     if ( retcode == 0)
         {
          listen(sockfd,5);
         server_run = true;
          }
+       else
           cout << "ERROR on binding" << endl;
 
      //f_handle = async(launch::async,&CGenCycle::server_handle,this);
