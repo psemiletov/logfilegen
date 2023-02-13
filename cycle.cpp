@@ -7,7 +7,6 @@
 
 #include "cycle.h"
 
-//using namespace std;
 using namespace std::chrono;
 
 namespace
@@ -70,61 +69,50 @@ CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
      }
 
  #ifdef PROM
- exposer = new  Exposer(params->metrics_addr);
-  // exposer = new  Exposer(params->metrics_addr);
-    registry = std::make_shared<Registry>();
+  exposer = new Exposer (params->metrics_addr);
+  registry = std::make_shared<Registry>();
 #endif
 
  //SERV
 
 
+ if (params->metrics)
+ {
 #if defined(_WIN32) || defined(_WIN64)
-    WSADATA wsa;
-    if (WSAStartup(MAKEWORD(2,2),&wsa) != 0) {
-        printf("\nError: Windows socket subsytsem could not be initialized. Error Code: %d. Exiting..\n", WSAGetLastError());
-        //exit(1);
-    }
+  WSADATA wsa;
+  if (WSAStartup (MAKEWORD(2,2),&wsa) != 0)
+     {
+      printf("Error: Windows socket subsystem could not be initialized. Error Code: %d\n", WSAGetLastError());
+     }
 #endif
 
-     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-     if (sockfd < 0)
-        std::cout << "ERROR opening socket" << std::endl;
+  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  if (sockfd < 0)
+     std::cout << "ERROR opening socket" << std::endl;
 
-//     bzero((char *) &serv_addr, sizeof(serv_addr));
+  memset (&serv_addr, 0, sizeof(serv_addr));
 
-     memset (&serv_addr, 0, sizeof(serv_addr));
+  portno = std::stoi(params->port.c_str());;
 
-//     portno = 8888;
-      portno = std::stoi(params->port.c_str());;
+  serv_addr.sin_family = AF_INET;
+  serv_addr.sin_addr.s_addr = INADDR_ANY;
+  serv_addr.sin_port = htons(portno);
 
+  int retcode = ::bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
 
-     serv_addr.sin_family = AF_INET;
-     serv_addr.sin_addr.s_addr = INADDR_ANY;
-     serv_addr.sin_port = htons(portno);
+  if (retcode == 0)
+     {
+      listen(sockfd,5);
+      server_run = true;
+     }
+  else
+      std::cout << "ERROR on binding" << std::endl;
 
-     int retcode = ::bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
-
-     if ( retcode == 0)
-        {
-         listen(sockfd,5);
-        server_run = true;
-         }
-       else
-          std::cout << "ERROR on binding" << std::endl;
-
-     //f_handle = async(launch::async,&CGenCycle::server_handle,this);
-
-
-
-         //response = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: @clen\n\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\r\n<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\r\n<title>logfilegen metrics</title>\r\n</head>\r\n<body>\r\n@body</body>\r\n</html>";
-
-
-     response = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: @clen\n\n<html>\r\n<head>\r\n<title>logfilegen metrics</title>\r\n</head>\r\n<body>\r\n@body</body>\r\n</html>";
-
-
+   // response = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: @clen\n\n<html>\r\n<head>\r\n<title>logfilegen metrics</title>\r\n</head>\r\n<body>\r\n@body</body>\r\n</html>";
 
    th_srv = new std::thread (&CGenCycle::server_handle, this);
    th_srv->detach();
+ }
 }
 
 //http://localhost:8888/metrics
@@ -162,23 +150,6 @@ void CGenCycle::server_handle()
     std::string request (buffer);
     std::string rsp;
     std::string body;
- /*
-    body += "<p>";
-    body += "seconds_counter:";
-    body += std::to_string (seconds_counter);
-    body += "<br>";
-
-
-    body += "</p>";
-*/
-/*
-
-        double lines_per_second;
-    size_t file_size_total;
-
-   size_t lines_counter = 0;
-   size_t seconds_counter = 0;
-*/
 
 
     body += "logstring:";
@@ -188,10 +159,13 @@ void CGenCycle::server_handle()
     body += std::to_string (file_size_total);
     body += "\n<br>";
     body += "seconds_counter:";
-    body += std::to_string (seconds_counter);
+    body += std::to_string (seconds_counter_ev);
+    body += "\n<br>";
     body += "lines_counter:";
     body += std::to_string (lines_counter);
     body += "\n<br>";
+    body += "lines_per_second:";
+    body += std::to_string (lines_per_second);
 
 
 
@@ -213,24 +187,10 @@ void CGenCycle::server_handle()
        }
 
 
-//     n = write(newsockfd,"I got your message",18);
-
-//OK
-//    string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 16\n\n<h1>testing</h1>";
-  //  n = write(newsockfd,ts.c_str(),ts.size());
-
-
-     //n = write(newsockfd,rsp.c_str(),rsp.size());
-
-
-
 
     close(newsockfd);
 
-
  }
-
-
 
 }
 
@@ -238,16 +198,17 @@ void CGenCycle::server_handle()
 
 CGenCycle::~CGenCycle()
 {
+ if (params->metrics)
+ {
+
   server_run = false;
-       close(sockfd);
-
-
-delete th_srv;
+  close(sockfd);
+  delete th_srv;
 
 
   delete tpl;
   delete logrotator;
-
+ }
 
   #ifdef PROM
 delete exposer;
@@ -352,17 +313,19 @@ void CGenCycleRated::loop()
               frame_counter = 0;
               seconds_counter++;
 
-             #ifdef PROM
-              if (params->metrics && seconds_counter)
+            if (params->metrics)
               {
                 auto stop = high_resolution_clock::now();
-               // auto duration = duration_cast<microseconds>(stop - start);
-              auto duration_s = duration_cast<seconds>(stop - start);
+                auto duration_s = duration_cast<seconds>(stop - start);
+                seconds_counter_ev = duration_s.count();
 
-               lines_per_second = (double) lines_counter / duration_s.count();
-               g_lines_per_second_gauge.Set (lines_per_second);
+                if (duration_s.count())
+                   lines_per_second = (double) lines_counter / duration_s.count();
+
+               #ifdef PROM
+                g_lines_per_second_gauge.Set (lines_per_second);
+               #endif
               }
-             #endif
 
 
              }
@@ -371,8 +334,8 @@ void CGenCycleRated::loop()
           lines_counter++;
 
 #ifdef PROM
-            if (params->metrics  && seconds_counter)
-                c_lines_counter.Increment();
+            if (params->metrics)
+               c_lines_counter.Increment();
 #endif
 
           if (params->duration != 0) //not endless
@@ -492,9 +455,7 @@ void CGenCycleUnrated::loop()
 
    auto start = high_resolution_clock::now();
 
- // size_t lines_counter = 0;
-
-  // using clock = std::chrono::steady_clock;
+   // using clock = std::chrono::steady_clock;
 
   while (true)
         {
@@ -517,8 +478,6 @@ void CGenCycleUnrated::loop()
                 break;
             }
 
-
-
 //          std::cout << "seconds_counter: " << seconds_counter << endl;
   //        std::cout << "frame_counter: " << frame_counter << endl;
 
@@ -527,24 +486,28 @@ void CGenCycleUnrated::loop()
 
           if (! params->pure)
              {
-            #ifdef PROM
               if (params->metrics)
                {
-               auto stop = high_resolution_clock::now();
-               auto duration_s = duration_cast<seconds>(stop - start);
+                 auto stop = high_resolution_clock::now();
+                 auto duration_s = duration_cast<seconds>(stop - start);
 
-              if (duration_s.count())
-               {
-                c_lines_counter.Increment();
+                if (duration_s.count())
+                   {
 
-                c_bytes_counter.Increment(log_string.size());
+                   seconds_counter_ev = duration_s.count();
 
+                   lines_per_second = (double) lines_counter / duration_s.count();
+                  #ifdef PROM
 
-                lines_per_second = (double) lines_counter / duration_s.count();
-                g_lines_per_second_gauge.Set (lines_per_second);
-              }
-              }
-             #endif
+                    c_lines_counter.Increment();
+                    c_bytes_counter.Increment(log_string.size());
+
+                   g_lines_per_second_gauge.Set (lines_per_second);
+
+                   #endif
+
+                   }
+               }
 
 
 
