@@ -2,6 +2,7 @@
 
 #include "params.h"
 
+using namespace std;
 
 void CParameters::print()
 {

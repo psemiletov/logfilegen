@@ -12,7 +12,7 @@
 #include "macro.h"
 
 
-using namespace std;
+//using namespace std;
 
 #define VT_NONE 0
 #define VT_SINGLE 1
@@ -43,17 +43,17 @@ public:
   double fa;
   double fb;
 
-  string k; //key
-  vector <string> v; //values
+  std::string k; //key
+  std::vector <std::string> v; //values
 
-  string macroname;
+  std::string macroname;
 
-  CVar (const string &key, const string &val);
+  CVar (const std::string &key, const std::string &val);
   ~CVar();
 
   int get_rnd (int ta, int tb);
-  string gen_msecs();
-  string get_val();
+  std::string gen_msecs();
+  std::string get_val();
 
 };
 

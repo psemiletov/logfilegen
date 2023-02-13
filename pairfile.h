@@ -9,35 +9,35 @@
 #include <vector>
 #include <map>
 
-using namespace std;
+//using namespace std;
 
-typedef std::map <string, string> TSPair;
+typedef std::map <std::string, std::string> TSPair;
 
 class CPairFile
 {
 public:
   
-  string file_name;
+  std::string file_name;
   
   TSPair values;
 
-  bool get_bool (const string &key, bool def_value = false);
-  int get_int (const string &key, int def_value = 0);
-  size_t get_num (const string &key, unsigned long long def_value = 0);
+  bool get_bool (const std::string &key, bool def_value = false);
+  int get_int (const std::string &key, int def_value = 0);
+  size_t get_num (const std::string &key, unsigned long long def_value = 0);
 
-  float get_float (const string &key, float def_value = 0.0f);
-  string get_string (const string &key, const string &def_value = "");
-  size_t get_file_size (const string &key, const string &def_value = "64k"); //return value in bytes
+  float get_float (const std::string &key, float def_value = 0.0f);
+  std::string get_string (const std::string &key, const std::string &def_value = "");
+  size_t get_file_size (const std::string &key, const std::string &def_value = "64k"); //return value in bytes
 
-  void set_string (const string &key, const string &value);
-  void set_int (const string &key, int value);
-  void set_float (const string &key, float value);
+  void set_string (const std::string &key, const std::string &value);
+  void set_int (const std::string &key, int value);
+  void set_float (const std::string &key, float value);
   
   void save();
   
-  CPairFile (const string &fname, bool from_data = false);
+  CPairFile (const std::string &fname, bool from_data = false);
   CPairFile (int argc, char *argv[]);
-  CPairFile (vector <string> envars); //ENV VARS
+  CPairFile (std::vector <std::string> envars); //ENV VARS
 
 };
 

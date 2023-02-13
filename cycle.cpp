@@ -7,6 +7,7 @@
 
 #include "cycle.h"
 
+using namespace std;
 using namespace std::chrono;
 
 namespace

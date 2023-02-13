@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-using namespace std;
+//using namespace std;
 
 
 class CLogRotator
@@ -21,10 +21,10 @@ public:
   size_t max_log_files;
   size_t max_log_file_size;
 
-  string source_filename;
-  vector <string> filenames;
+  std::string source_filename;
+  std::vector <std::string> filenames;
 
-  CLogRotator (const string &fname, size_t maxfiles, size_t maxfilesize);
+  CLogRotator (const std::string &fname, size_t maxfiles, size_t maxfilesize);
   void rotate();
 
 };

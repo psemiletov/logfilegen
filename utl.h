@@ -8,32 +8,32 @@
 #include <string>
 #include <vector>
 
-using namespace std;
+//using namespace std;
 
 //File utils
 
-size_t get_file_size (const string &fname);
-string get_file_ext (const string &fname);
-string replace_file_ext (const string &fname, const string &ext);
-string get_file_path (const string &path);
-string get_home_dir();
-string current_path();
-size_t get_free_space (const string &path);
-bool file_exists (const string &name);
-bool is_program_exists (const string &appname);
-bool is_path_abs (const string &path);
+size_t get_file_size (const std::string &fname);
+std::string get_file_ext (const std::string &fname);
+std::string replace_file_ext (const std::string &fname, const std::string &ext);
+std::string get_file_path (const std::string &path);
+std::string get_home_dir();
+std::string current_path();
+size_t get_free_space (const std::string &path);
+bool file_exists (const std::string &name);
+bool is_program_exists (const std::string &appname);
+bool is_path_abs (const std::string &path);
 
 
 //String utis
 
-string str_replace (string &source, const string &text_to_find, const string &replace_with);
-string string_replace_all (const string &s, const string &from, const string &to);
-vector <string> split_string_to_vector (const string& s, const string& delimeter, const bool keep_empty = true);
-string string_to_lower (const string &s);
-size_t string_to_file_size (const string &val);
-string string_file_load (const string &fname);
-vector <string> vector_file_load (const string &fname);
-string get_macro_name (const string &value);
+std::string str_replace (std::string &source, const std::string &text_to_find, const std::string &replace_with);
+std::string string_replace_all (const std::string &s, const std::string &from, const std::string &to);
+std::vector <std::string> split_string_to_vector (const std::string& s, const std::string& delimeter, const bool keep_empty = true);
+std::string string_to_lower (const std::string &s);
+size_t string_to_file_size (const std::string &val);
+std::string string_file_load (const std::string &fname);
+std::vector <std::string> vector_file_load (const std::string &fname);
+std::string get_macro_name (const std::string &value);
 
 
 #endif

@@ -13,6 +13,8 @@
 #include "utl.h"
 #include "vars.h"
 
+using namespace std;
+
 
 int get_value_nature (const string &s)
 {

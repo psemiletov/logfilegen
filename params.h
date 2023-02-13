@@ -3,30 +3,30 @@
 
 #include <string>
 
-using namespace std;
+//using namespace std;
 
 
 class CParameters
 {
 public:
 
-  string templatefile; //templatefile name from /logfilegen/templates
-  string logfile; //output logfile name with full path
-  string mode;    //"nginx" or "apache"
+  std::string templatefile; //templatefile name from /logfilegen/templates
+  std::string logfile; //output logfile name with full path
+  std::string mode;    //"nginx" or "apache"
 
   size_t duration; //duration of log generation, in seconds
   size_t rate;  //during the log generation, how many lines per second will be written
   size_t lines;
   size_t size;
-  string s_size;
+  std::string s_size;
 
-  string metrics_addr;
-  string port;
+  std::string metrics_addr;
+  std::string port;
 
   size_t max_log_files;
-  string max_log_file_size;
+  std::string max_log_file_size;
 
-  string timestamp;
+  std::string timestamp;
   bool random;
 
   bool use_gzip;

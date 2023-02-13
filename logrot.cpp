@@ -3,7 +3,10 @@
 #include "logrot.h"
 #include "utl.h"
 
-CLogRotator::CLogRotator (const string &fname, size_t maxfiles, size_t maxfilesize)
+
+using namespace std;
+
+CLogRotator::CLogRotator (const std::string &fname, size_t maxfiles, size_t maxfilesize)
 {
   source_filename = fname;
   max_log_files = maxfiles;
@@ -12,7 +15,7 @@ CLogRotator::CLogRotator (const string &fname, size_t maxfiles, size_t maxfilesi
 
   for (size_t i = 0; i < max_log_files; i++)
       {
-       string f = source_filename + "." + std::to_string(i);
+       std::string f = source_filename + "." + std::to_string(i);
        filenames.push_back (f);
       }
 }
@@ -24,8 +27,8 @@ void CLogRotator::rotate()
      {
       for (size_t i = filenames.size() - 1; i > 0; i--)
           {
-           string oldname = filenames[i-1];
-           string newname = filenames[i];
+           std::string oldname = filenames[i-1];
+           std::string newname = filenames[i];
 //        cout << "rename: " << oldname << " to: " << newname << endl;
            rename (oldname.c_str(), newname.c_str());
           }

@@ -14,6 +14,8 @@
 #include "tpl.h"
 #include "utl.h"
 
+using namespace std;
+
 //full nginx vars see at
 //http://nginx.org/en/docs/varindex.html
 //Apache:

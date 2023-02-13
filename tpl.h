@@ -17,16 +17,16 @@ public:
 
   CPairFile *pf;
 
-  map <string, CVar*> vars;
-  map <string, string> logstrings;
+  std::map <std::string, CVar*> vars;
+  std::map <std::string, std::string> logstrings;
 
-  string mode; //nginx, apache, etc
+  std::string mode; //nginx, apache, etc
 
-  CTpl (const string &fname, const string &amode);
+  CTpl (const std::string &fname, const std::string &amode);
   ~CTpl();
 
-  string prepare_log_string();
-  void replace_value_by_key (const string &key, const string &value);
+  std::string prepare_log_string();
+  void replace_value_by_key (const std::string &key, const std::string &value);
 
 };
 
