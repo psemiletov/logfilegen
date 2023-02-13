@@ -2,6 +2,7 @@
  *   this code by Peter Semiletov is Public Domain         *
  **********************************************************/
 
+#undef _HAS_STD_BYTE
 
 #include <cstdint>
 #include <cstdlib>
