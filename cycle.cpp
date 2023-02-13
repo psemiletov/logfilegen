@@ -112,12 +112,13 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
    th_srv->detach();
 }
 
+//http://localhost:8888/metrics
 
 void CGenCycle::server_handle()
 {
  while (server_run)
  {
-    cout << "void CGenCycle::server_handle()" << endl;
+  //  cout << "void CGenCycle::server_handle()" << endl;
 
 
    clilen = sizeof(cli_addr);
@@ -161,7 +162,7 @@ void CGenCycle::server_handle()
 
 
          if (n < 0)
-        cout << "ERROR writing to socket" << endl;
+           cout << "ERROR writing to socket" << endl;
 
        }
 
