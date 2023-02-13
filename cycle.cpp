@@ -101,7 +101,11 @@ CGenCycle::CGenCycle (CParameters *prms, const string &fname)
 
 
 
-         response = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: @clen\n\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\r\n<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\r\n<title>logfilegen metrics</title>\r\n</head>\r\n<body>\r\n@body</body>\r\n</html>";
+         //response = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: @clen\n\n<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\r\n<html>\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\r\n<title>logfilegen metrics</title>\r\n</head>\r\n<body>\r\n@body</body>\r\n</html>";
+
+
+     response = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: @clen\n\n<html>\r\n<head>\r\n<title>logfilegen metrics</title>\r\n</head>\r\n<body>\r\n@body</body>\r\n</html>";
+
 
 
    th_srv = new thread (&CGenCycle::server_handle, this);
@@ -137,29 +141,41 @@ void CGenCycle::server_handle()
 
     string request (buffer);
     string rsp;
-    string body ("hello woeld");
+    string body;
+    body += "<p>";
+    body += "seconds_counter:";
+    body += to_string (seconds_counter);
+    body += "</p>";
+
 
     if (request.find ("GET /metrics") != string::npos)
        {
-        rsp = str_replace (response, "@body", body);
-        rsp = str_replace (response, "@clen", to_string(body.size()));
-        cout << rsp << endl;
+    //    rsp = str_replace (response, "@body", body);
+    //    rsp = str_replace (response, "@clen", to_string(body.size()));
+//        cout << rsp << endl;
+      //  n = write(newsockfd,rsp.c_str(),rsp.size());
+
+
+        string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length:" + to_string(body.size()) + "\n\n" +body;
+          n = write(newsockfd,ts.c_str(),ts.size());
+
+
+         if (n < 0)
+        cout << "ERROR writing to socket" << endl;
 
        }
 
 
 //     n = write(newsockfd,"I got your message",18);
 
-    string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 16\n\n<h1>testing</h1>";
-
-    n = write(newsockfd,ts.c_str(),ts.size());
+//OK
+//    string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: 16\n\n<h1>testing</h1>";
+  //  n = write(newsockfd,ts.c_str(),ts.size());
 
 
      //n = write(newsockfd,rsp.c_str(),rsp.size());
 
 
-     if (n < 0)
-        cout << "ERROR writing to socket" << endl;
 
 
     close(newsockfd);
