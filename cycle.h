@@ -11,7 +11,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <future>
+//#include <future>
 #include <thread>
 
 
@@ -73,7 +73,7 @@ public:
      char buffer[256];
      struct sockaddr_in serv_addr, cli_addr;
      bool server_run;
-     std::future<void> f_handle;
+  //   std::future<void> f_handle;
      std::thread *th_srv;
 
     string response;
