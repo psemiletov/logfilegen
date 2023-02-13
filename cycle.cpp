@@ -144,7 +144,11 @@ void CGenCycle::server_handle()
      if (newsockfd < 0)
           cout << ("ERROR on accept");
 
-     bzero(buffer,256);
+     //bzero(buffer,256);
+
+     memset (&buffer, 0, 256);
+
+
 
      int n = read(newsockfd,buffer,255);
 
