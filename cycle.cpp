@@ -188,7 +188,7 @@ void CGenCycle::server_handle()
 
 
 
-    shutdown(newsockfd, 2);
+//    shutdown(newsockfd, 2);
     close(newsockfd);
 
 
@@ -206,7 +206,7 @@ CGenCycle::~CGenCycle()
   server_run = false;
   //close(sockfd);
 
-  shutdown(sockfd, 2);
+//  shutdown(sockfd, 2);
   close(sockfd);
 
   delete th_srv;
