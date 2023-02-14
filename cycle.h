@@ -5,6 +5,8 @@
 #include <fstream>
 #include <csignal>
 
+#include <future>
+
 
 //SERV
 #include <unistd.h>
@@ -101,7 +103,7 @@ public:
      char buffer[256];
      struct sockaddr_in serv_addr, cli_addr;
      bool server_run;
-  //   std::future<void> f_handle;
+     std::future<void> f_handle;
      std::thread *th_srv;
 
     std::string response;

@@ -1,5 +1,6 @@
 #include <thread>
 #include <chrono>
+#include <future>
 
 #include <iostream>
 #include <string.h>
@@ -110,8 +111,14 @@ CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
 
    // response = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: @clen\n\n<html>\r\n<head>\r\n<title>logfilegen metrics</title>\r\n</head>\r\n<body>\r\n@body</body>\r\n</html>";
 
-   th_srv = new std::thread (&CGenCycle::server_handle, this);
-   th_srv->detach();
+ //  th_srv = new std::thread (&CGenCycle::server_handle, this);
+ //  th_srv->detach();
+
+
+    f_handle = std::async(std::launch::async, &CGenCycle::server_handle, this);
+
+//        auto f = std::async(&CGenCycle::server_handle, this);
+
  }
 }
 
@@ -121,7 +128,7 @@ void CGenCycle::server_handle()
 {
  while (server_run)
  {
-  //  cout << "void CGenCycle::server_handle()" << endl;
+    std::cout << "void CGenCycle::server_handle()" << std::endl;
 
 
    clilen = sizeof(cli_addr);
@@ -131,7 +138,10 @@ void CGenCycle::server_handle()
                  &clilen);
 
      if (newsockfd < 0)
-          std::cout << "ERROR on accept" << std::endl;
+       {
+       // std::cout << "ERROR on accept" << std::endl;
+        return;
+      }
 
      //bzero(buffer,256);
 
@@ -142,7 +152,10 @@ void CGenCycle::server_handle()
      int n = read(newsockfd,buffer,255);
 
      if (n < 0)
-        std::cout <<  "ERROR reading from socket" << std::endl;
+       {
+//        std::cout <<  "ERROR reading from socket" << std::endl;
+        return;
+       }
 
  //   printf("Here is the message: %s\n",buffer);
 
@@ -206,10 +219,10 @@ CGenCycle::~CGenCycle()
   server_run = false;
   //close(sockfd);
 
-//  shutdown(sockfd, 2);
+  shutdown(sockfd, 2);
   close(sockfd);
 
-  delete th_srv;
+  //delete th_srv;
 
 
   delete tpl;
