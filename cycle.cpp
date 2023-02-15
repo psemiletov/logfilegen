@@ -201,7 +201,7 @@ void CGenCycle::server_handle()
 
 
 
-//    shutdown(newsockfd, 2);
+    shutdown(newsockfd, 2);
     close(newsockfd);
 
 
