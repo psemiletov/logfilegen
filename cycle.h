@@ -5,8 +5,11 @@
 #include <fstream>
 #include <csignal>
 
+#ifndef PROM
+
 #include <future>
 
+#endif
 
 //SERV
 #include <unistd.h>
@@ -15,6 +18,8 @@
 #include <thread>
 //
 
+
+#ifndef PROM
 
 #if defined(_WIN32) || defined(_WIN64)
 
@@ -27,6 +32,8 @@
    #include <netinet/in.h>
     #include <sys/socket.h>
 //    #include <arpa/inet.h>
+#endif
+
 #endif
 
 
@@ -85,6 +92,9 @@ public:
 
 
    ///SERV
+
+ #ifndef PROM
+
      int sockfd, newsockfd, portno;
 
 
@@ -99,16 +109,15 @@ public:
 #endif
 
 
-
      char buffer[256];
      struct sockaddr_in serv_addr, cli_addr;
      bool server_run;
      std::future<void> f_handle;
-     std::thread *th_srv;
+   //  std::thread *th_srv;
 
     std::string response;
 
-
+#endif
 
   #ifdef PROM
 
@@ -119,7 +128,11 @@ public:
 
   CGenCycle (CParameters *prms, const std::string &fname);
 
+  #ifndef PROM
+
   void server_handle();
+
+#endif
 
   bool open_logfile();
 

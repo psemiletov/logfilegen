@@ -1,6 +1,6 @@
 #include <thread>
 #include <chrono>
-#include <future>
+//#include <future>
 
 #include <iostream>
 #include <string.h>
@@ -76,6 +76,8 @@ CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
 
  //SERV
 
+  #ifndef PROM
+
 
  if (params->metrics)
  {
@@ -120,9 +122,14 @@ CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
 //        auto f = std::async(&CGenCycle::server_handle, this);
 
  }
+
+#endif
 }
 
 //http://localhost:8888/metrics
+
+#ifndef PROM
+
 
 void CGenCycle::server_handle()
 {
@@ -209,10 +216,14 @@ void CGenCycle::server_handle()
 
 }
 
+#endif
 
 
 CGenCycle::~CGenCycle()
 {
+ #ifndef PROM
+
+
  if (params->metrics)
  {
 
@@ -222,12 +233,13 @@ CGenCycle::~CGenCycle()
   shutdown(sockfd, 2);
   close(sockfd);
 
-  //delete th_srv;
 
 
   delete tpl;
   delete logrotator;
  }
+
+#endif
 
   #ifdef PROM
 delete exposer;
