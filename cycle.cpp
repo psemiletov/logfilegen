@@ -128,7 +128,7 @@ void CGenCycle::server_handle()
 {
  while (server_run)
  {
-    std::cout << "void CGenCycle::server_handle()" << std::endl;
+  //  std::cout << "void CGenCycle::server_handle()" << std::endl;
 
 
    clilen = sizeof(cli_addr);
