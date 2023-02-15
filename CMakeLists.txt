@@ -32,6 +32,9 @@ message("+ static build")
 target_link_libraries(logfilegen -static -static-libstdc++ -static-libgcc)
 endif()
 
+if(WIN32)
+target_link_libraries(logfilegen  -lws2_32)
+endif()
 
 set(ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH}:/usr/local/lib/pkgconfig")
 
