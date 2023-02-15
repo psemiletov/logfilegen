@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.5)
 
 set (CMAKE_CXX_STANDARD 17)
 
+option(USE_PROMCPP "Use prometheus_cpp" OFF)
+option(USE_STATIC "Static build" OFF)
+
+
 project (logfilegen VERSION 1.2.0 LANGUAGES CXX)
 add_definitions(-DVERSION_NUMBER="\\"${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}\\"")
 
@@ -22,7 +26,16 @@ set(SOURCES
 
 add_executable (logfilegen ${SOURCES})
 
+if(USE_STATIC)
+#set(CMAKE_EXE_LINKER_FLAGS "-static -static-libstdc++ -static-libgcc")
+message("+ static build")
+target_link_libraries(logfilegen -static -static-libstdc++ -static-libgcc)
+endif()
+
+
 set(ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH}:/usr/local/lib/pkgconfig")
+
+if(USE_PROMCPP)
 
 find_package(PkgConfig REQUIRED)
 
@@ -37,11 +50,17 @@ endif()
 pkg_check_modules(prometheus-cpp-pull QUIET prometheus-cpp-pull)
 if(prometheus-cpp-core_FOUND)
   add_definitions(-DPROM=1)
-  target_link_libraries(logfilegen ${prometheus-cpp-pull_LIBRARIES})
+  target_link_libraries(logfilegen ${prometheus-cpp-pull_LIBRARIES} )
   include_directories(${prometheus-cpp-pull_INCLUDE_DIRS})
   message("+ prom pull support")
 endif()
 
+else()
+
+ target_link_libraries(logfilegen ${prometheus-cpp-pull_LIBRARIES})
+
+
+endif()
 
 
 #find_package(prometheus-cpp CONFIG)

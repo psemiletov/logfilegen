@@ -1,6 +1,6 @@
 ## Installation
 
-### From the source
+### From the source with plain Make
 
 To compile logfilegen from the source you need GCC/g++ or Clang with C++17 version support. If you did not compiled programs before, install g++ or Clang, and **make** utility to your system.
 
@@ -74,3 +74,30 @@ make --makefile=Makefile.OpenBSD
 make install
 ```
 
+
+### From the source with CMake/Make
+
+
+#### Default
+
+
+```
+mkdir b
+cd b
+cmake ..
+make
+make install
+```
+
+
+
+#### With prometheus_cpp support
+
+
+```
+mkdir b
+cd b
+cmake .. -DUSE_PROM=ON
+make
+make install
+```
