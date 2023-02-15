@@ -89,6 +89,16 @@ make
 make install
 ```
 
+#### Static build
+
+
+```
+mkdir b
+cd b
+cmake -DUSE_STATIC=ON ..
+make
+make install
+
 
 
 #### With prometheus_cpp support
@@ -97,7 +107,7 @@ make install
 ```
 mkdir b
 cd b
-cmake .. -DUSE_PROM=ON
+cmake -DUSE_PROM=ON ..
 make
 make install
 ```
