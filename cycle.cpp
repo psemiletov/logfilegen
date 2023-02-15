@@ -169,7 +169,10 @@ void CGenCycle::server_handle()
 
     std::string request (buffer);
     std::string rsp;
-    std::string body;
+
+    if (request.find ("GET /stats") != std::string::npos)
+       {
+            std::string body;
 
 
     body += "logstring:";
@@ -189,21 +192,58 @@ void CGenCycle::server_handle()
 
 
 
-    if (request.find ("GET /metrics") != std::string::npos)
-       {
-    //    rsp = str_replace (response, "@body", body);
-    //    rsp = str_replace (response, "@clen", to_string(body.size()));
-//        cout << rsp << endl;
-      //  n = write(newsockfd,rsp.c_str(),rsp.size());
-
-
         std::string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length:" + std::to_string(body.size()) + "\n\n" +body;
              n = write(newsockfd,ts.c_str(),ts.size());
 
+         if (n < 0)
+           std::cout << "ERROR writing to socket" << std::endl;
+       }
+
+    if (request.find ("GET /metrics") != std::string::npos)
+       {
+    std::string body;
+/*
+# HELP go_memstats_mcache_inuse_bytes Number of bytes in use by mcache structures.
+# TYPE go_memstats_mcache_inuse_bytes gauge
+go_memstats_mcache_inuse_bytes 9600
+ */
+
+   //  body += "# HELP logstring shows current template log string";
+   //  body += "# TYPE logstring";
+
+  //  body += "logstring ";
+ //   body += tpl->vars["$logstring"]->get_val();
+ //   body += "\n";
+     body += "# HELP seconds_counter shows how many seconds past\n";
+     body += "# TYPE seconds_counter counter\n";
+     body += "seconds_counter ";
+    body += std::to_string (seconds_counter_ev);
+    body += "\n";
+
+
+   // body += "file_size_total ";
+  //  body += std::to_string (file_size_total);
+  //  body += "\n";
+
+   body += "# HELP lines_counter shows how many lines has been generated\n";
+     body += "# TYPE lines_counter counter\n";
+     body += "lines_counter ";
+    body += std::to_string (lines_counter);
+    body += "\n";
+
+       body += "# HELP lines_per_second shows the average lines per second rate\n";
+     body += "# TYPE lines_per_second gauge\n";
+     body += "lines_per_second  ";
+    body += std::to_string (lines_per_second );
+    body += "\n";
+
+
+
+          std::string ts = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length:" + std::to_string(body.size()) + "\n\n" +body;
+             n = write(newsockfd,ts.c_str(),ts.size());
 
          if (n < 0)
            std::cout << "ERROR writing to socket" << std::endl;
-
        }
 
 
