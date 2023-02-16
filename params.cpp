@@ -11,6 +11,8 @@ void CParameters::print()
 
   cout << "benchmark: " << benchmark << endl;
   cout << "test: " << test << endl;
+  cout << "ip: " << ip << endl;
+  cout << "port: " << port << endl;
 
   cout << "debug: " << debug << endl;
   cout << "duration: " << duration << endl;

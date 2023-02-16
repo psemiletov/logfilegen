@@ -6,6 +6,12 @@
 #include <string.h>
 
 
+#ifndef PROM
+
+#include <arpa/inet.h>
+
+#endif
+
 #include "cycle.h"
 
 using namespace std::chrono;
@@ -98,8 +104,14 @@ CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
   portno = std::stoi(params->port.c_str());;
 
   serv_addr.sin_family = AF_INET;
+
   serv_addr.sin_addr.s_addr = INADDR_ANY;
+
+//  inet_pton (AF_INET, params->ip.c_str(), &serv_addr);
+
+
   serv_addr.sin_port = htons(portno);
+
 
   int retcode = ::bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
 

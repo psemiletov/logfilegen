@@ -115,7 +115,7 @@ int main (int argc, char *argv[])
                             "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP",
                             "LFG_LINES", "LFG_SIZE", "LFG_RANDOM",
                             "LFG_BENCHMARK", "LFG_STATS", "LFG_TEST",
-                            "LGF_ADDR", "LGF_METRICS", "LGF_PORT"};
+                            "LGF_ADDR", "LGF_METRICS", "LGF_PORT", "LGF_IP"};
 
   CParameters params;
   std::string fname_config;
@@ -155,6 +155,7 @@ int main (int argc, char *argv[])
 
    params.lines = opts_config.get_num ("lines", 0);
    params.port = opts_config.get_string ("port", "8080");
+   params.ip = opts_config.get_string ("ip", "000.000.000.000");
 
    params.logfile = opts_config.get_string ("logfile", "stdout");
    params.max_log_file_size = opts_config.get_string ("logsize", "16m");
@@ -197,6 +198,7 @@ int main (int argc, char *argv[])
   params.lines = opts_cmdline.get_num ("lines", params.lines);
   params.logfile = opts_cmdline.get_string ("logfile", params.logfile);
   params.port = opts_cmdline.get_string ("port", params.port);
+  params.ip = opts_cmdline.get_string ("ip", params.ip);
 
 
 
@@ -248,6 +250,7 @@ int main (int argc, char *argv[])
   params.lines = opts_envars.get_num ("lines", params.lines);
   params.logfile = opts_envars.get_string ("logfile", params.logfile);
   params.port = opts_envars.get_string ("port", params.port);
+  params.ip = opts_envars.get_string ("ip", params.ip);
 
 
   params.max_log_file_size = opts_envars.get_string ("logsize", params.max_log_file_size);
