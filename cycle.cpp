@@ -99,6 +99,16 @@ CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
   if (sockfd < 0)
      std::cout << "ERROR opening socket" << std::endl;
 
+   int yes=1;
+//char yes='1'; // use this under Solaris
+
+if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
+{
+    perror("setsockopt");
+  //  exit(1);
+}
+
+
   memset (&serv_addr, 0, sizeof(serv_addr));
 
   portno = std::stoi(params->port.c_str());;

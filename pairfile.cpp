@@ -21,6 +21,9 @@ typedef std::map <string, string> TSPair;
 
 void CPairFile::save()
 {
+  if (file_name.empty())
+     return;
+
   ofstream myfile (file_name.c_str());
   if (! myfile.is_open())
       return; 
