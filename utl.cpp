@@ -41,6 +41,9 @@ using namespace std;
 
 size_t get_file_size (const string &fname)
 {
+  if (fname.empty())
+      return 0;
+
   struct stat buf;
   stat (fname.c_str(), &buf);
   return buf.st_size;
@@ -75,7 +78,7 @@ string get_file_path (const string &path)
   if (i != string::npos)
      return path.substr (0, i);
 
-  return("");
+  return string();
 }
 
 
@@ -157,7 +160,7 @@ bool is_path_abs (const string &path)
   if (path[0] == '/')
      return true;
 
- if (path[1] == ':') //windows
+  if (path[1] == ':') //windows
      return true;
 
   return false;
@@ -273,8 +276,12 @@ size_t string_to_file_size (const string &val)
   return result;
 }
 
+
 string string_file_load (const string &fname)
 {
+ if (fname.empty())
+    return string();
+
  std::ifstream t (fname.c_str());
  std::string s ((std::istreambuf_iterator<char>(t)),
                  std::istreambuf_iterator<char>());
@@ -285,8 +292,11 @@ string string_file_load (const string &fname)
 
 vector <string> vector_file_load (const string &fname)
 {
-
   vector <string> v;
+
+  if (fname.empty())
+     return v;
+
 
   ifstream infile (fname.c_str());
 
