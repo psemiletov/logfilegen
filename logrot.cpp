@@ -8,6 +8,9 @@ using namespace std;
 
 CLogRotator::CLogRotator (const std::string &fname, size_t maxfiles, size_t maxfilesize)
 {
+  //if (! file_exists(source_filename))
+    //  return;
+
   source_filename = fname;
   max_log_files = maxfiles;
   max_log_file_size = maxfilesize;

@@ -32,6 +32,7 @@ void f_signal_handler (int signal)
 
 CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
 {
+  crit = false;
   params = prms;
   fname_template = fname;
   log_current_size = 0;
@@ -59,7 +60,17 @@ CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
      {
      //  how many space we occupy with all logfiles?
 
-      size_t free_space = get_free_space (get_file_path (params->logfile));
+      std::string fpath = get_file_path (params->logfile);
+      size_t free_space = 0;
+      if (file_exists(fpath))
+          free_space = get_free_space (fpath);
+      else
+         {
+            std::cout << "error! " << fpath << " is not exists!" << std::endl;
+            crit = true;
+            return;
+         }
+
       size_t size_needed = logrotator->max_log_file_size * logrotator->max_log_files;
 
       std::string test_string = tpl->prepare_log_string();
@@ -286,7 +297,7 @@ CGenCycle::~CGenCycle()
  #ifndef PROM
 
 
- if (params->metrics)
+ if (! crit && params->metrics)
  {
 
   server_run = false;
@@ -317,6 +328,9 @@ CGenCycleRated::CGenCycleRated (CParameters *prms, const std::string &fname): CG
 
 bool CGenCycle::open_logfile()
 {
+  if (crit)
+     return false;
+
   file_out_error = false;
 
   if (! params->bstdout && ! no_free_space)

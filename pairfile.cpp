@@ -177,7 +177,9 @@ CPairFile::CPairFile (const string &fname, bool from_data)
  
 
   file_name = fname;
-  
+  if (! file_exists(file_name))
+     return;
+
   ifstream infile (file_name.c_str());
 
   if (infile.fail())

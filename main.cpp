@@ -281,7 +281,7 @@ int main (int argc, char *argv[])
       params.bstdout = false;
 
    if (! is_path_abs (params.logfile))
-      params.logfile = current_path() + "/" + params.logfile;
+       params.logfile = current_path() + "/" + params.logfile;
 
 
 //read template
