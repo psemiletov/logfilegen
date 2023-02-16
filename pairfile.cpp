@@ -145,12 +145,15 @@ string CPairFile::get_string (const string &key,
 
 CPairFile::CPairFile (const string &fname, bool from_data)
 {
+  if (fname.empty())
+     return;
+
   if (from_data)
-    {
-     stringstream st (fname);
-     string line;
+     {
+      stringstream st (fname);
+      string line;
      
-     while (getline (st, line)) 
+      while (getline (st, line))
            {
             if (line.empty())
                continue;

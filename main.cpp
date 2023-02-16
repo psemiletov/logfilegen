@@ -223,10 +223,10 @@ int main (int argc, char *argv[])
      }
 
   if (opts_cmdline.get_bool ("version", false))
-    {
-     show_version();
-     return 0;
-    }
+     {
+      show_version();
+      return 0;
+     }
 
 
  if (params.debug)
