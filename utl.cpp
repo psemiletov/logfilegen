@@ -15,6 +15,8 @@
 #include <unistd.h>
 #include <stdio.h>  // for FILENAME_MAX
 
+#include <pwd.h>
+
 
 #include "utl.h"
 
@@ -84,7 +86,17 @@ string get_file_path (const string &path)
 
 string get_home_dir()
 {
-  string homedir = getenv ("HOME");
+  string result;
+  const char *homedir = getenv ("HOME");
+
+  if (homedir != NULL)
+     result = homedir;
+  else
+      homedir = getpwuid(getuid())->pw_dir;
+
+  if (homedir != NULL)
+     result = homedir;
+
   return homedir;
 }
 
