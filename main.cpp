@@ -100,14 +100,18 @@ int main (int argc, char *argv[])
 {
 //  cout << "version: " << VERSION_NUMBER << endl;
 
-  std::string tdir (std::filesystem::temp_directory_path().string());
-  std::string temp_logfile = tdir + "/" + "logfilegen.log";
-  std::string temp_logfile0 = tdir + "/" + "logfilegen.log.0";
+  std::string tdir = std::filesystem::temp_directory_path().string();
 
+  std::string temp_logfile;
+  std::string temp_logfile0;
 
-  remove (temp_logfile.c_str());
-  remove (temp_logfile0.c_str());
-
+  if (! tdir.empty())
+     {
+      temp_logfile = tdir + "/" + "logfilegen.log";
+      temp_logfile0 = tdir + "/" + "logfilegen.log.0";
+      remove (temp_logfile.c_str());
+      remove (temp_logfile0.c_str());
+     }
 
 
   std::vector <std::string> envars = {"LFG_DURATION", "LFG_RATE", "LFG_LOGFILE",
@@ -122,25 +126,25 @@ int main (int argc, char *argv[])
 
 
   for (int i = 0; i < argc; i++)
-     {
-      std::string ts = argv[i];
-      size_t pos =  ts.find ("--config");
-      if (pos != std::string::npos)
-        {
-         size_t eql = ts.find ("=");
-         if (eql != std::string::npos)
-            {
-             std::string fname = ts.substr (eql + 1);
-             fname_config = find_config_in_paths (fname);
-            }
-        }
-     }
+      {
+       std::string ts = argv[i];
+       size_t pos =  ts.find ("--config");
+       if (pos != std::string::npos)
+          {
+           size_t eql = ts.find ("=");
+           if (eql != std::string::npos)
+              {
+               std::string fname = ts.substr (eql + 1);
+               fname_config = find_config_in_paths (fname);
+              }
+          }
+      }
 
 
 //Try to load params from config
 
     if (fname_config.empty())
-       fname_config = find_config_in_paths ("logfilegen.conf");
+        fname_config = find_config_in_paths ("logfilegen.conf");
 
 //   cout << "Load parameters from config file: " << fname_config << endl;
 
@@ -365,11 +369,15 @@ int main (int argc, char *argv[])
          cycle.loop();
      }
 
-  if (params.test && ! params.logfile.empty())
+  if (params.test && ! tdir.empty())
      {
-      remove (params.logfile.c_str());
-      std::string t = params.logfile + ".0";
-      remove (t.c_str());
+      remove (temp_logfile.c_str());
+      remove (temp_logfile0.c_str());
+
+
+//      remove (params.logfile.c_str());
+      //std::string t = params.logfile + ".0";
+//      remove (t.c_str());
      }
 
   return 0;
