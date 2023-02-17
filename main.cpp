@@ -365,7 +365,7 @@ int main (int argc, char *argv[])
          cycle.loop();
      }
 
-  if (params.test)
+  if (params.test && ! params.logfile.empty())
      {
       remove (params.logfile.c_str());
       std::string t = params.logfile + ".0";
