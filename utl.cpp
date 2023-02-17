@@ -346,3 +346,12 @@ string get_macro_name (const string &value)
 
   return value.substr (0, pos);
 }
+
+
+void string_save_to_file (const string &fname, const string &s)
+{
+  std::ofstream file (fname);
+  if (file.is_open())
+  file << s;
+  file.close();
+}

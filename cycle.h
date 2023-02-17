@@ -136,6 +136,7 @@ public:
 #endif
 
   bool open_logfile();
+  void write_results();
 
   ~CGenCycle();
   virtual void loop() = 0;

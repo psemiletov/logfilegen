@@ -34,6 +34,7 @@ size_t string_to_file_size (const std::string &val);
 std::string string_file_load (const std::string &fname);
 std::vector <std::string> vector_file_load (const std::string &fname);
 std::string get_macro_name (const std::string &value);
+void string_save_to_file (const std::string &fname, const std::string &s);
 
 
 #endif

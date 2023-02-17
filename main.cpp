@@ -119,7 +119,8 @@ int main (int argc, char *argv[])
                             "LFG_LOGSIZE", "LFG_LOGCOUNT", "LFG_GZIP",
                             "LFG_LINES", "LFG_SIZE", "LFG_RANDOM",
                             "LFG_BENCHMARK", "LFG_STATS", "LFG_TEST",
-                            "LGF_ADDR", "LGF_METRICS", "LGF_PORT", "LGF_IP"};
+                            "LFG_ADDR", "LFG_METRICS", "LFG_PORT",
+                            "LFG_IP", "LFG_RESULTS", "LFG_RESULTS_TEMPLATE"};
 
   CParameters params;
   std::string fname_config;
@@ -160,6 +161,9 @@ int main (int argc, char *argv[])
    params.lines = opts_config.get_num ("lines", 0);
    params.port = opts_config.get_string ("port", "8080");
    params.ip = opts_config.get_string ("ip", "000.000.000.000");
+
+   params.results = opts_config.get_string ("results", "");
+   params.results_template = opts_config.get_string ("results_template", "@date - @duration - @mode/@template - @size-generated - @lines-generated -@performance");
 
    params.logfile = opts_config.get_string ("logfile", "stdout");
    params.max_log_file_size = opts_config.get_string ("logsize", "16m");
@@ -204,6 +208,8 @@ int main (int argc, char *argv[])
   params.port = opts_cmdline.get_string ("port", params.port);
   params.ip = opts_cmdline.get_string ("ip", params.ip);
 
+  params.results = opts_cmdline.get_string ("results", params.results);
+  params.results_template = opts_cmdline.get_string ("results_template", params.results_template);
 
 
   params.max_log_file_size = opts_cmdline.get_string ("logsize", params.max_log_file_size);
@@ -250,6 +256,10 @@ int main (int argc, char *argv[])
   params.debug = opts_envars.get_bool ("debug", params.debug);
   params.duration = opts_envars.get_num ("duration", params.duration);
   params.poll = opts_envars.get_num ("poll", params.poll);
+
+  params.results = opts_envars.get_string ("results", params.results);
+  params.results_template = opts_envars.get_string ("results_template", params.results_template);
+
 
   params.lines = opts_envars.get_num ("lines", params.lines);
   params.logfile = opts_envars.get_string ("logfile", params.logfile);
@@ -357,11 +367,11 @@ int main (int argc, char *argv[])
 
 
   if (params.rate == 0)
-    {
-     CGenCycleUnrated cycle (&params, fname_template);
-     if (cycle.open_logfile())
-        cycle.loop();
-    }
+     {
+      CGenCycleUnrated cycle (&params, fname_template);
+      if (cycle.open_logfile())
+         cycle.loop();
+     }
   else
       {
       CGenCycleRated cycle (&params, fname_template);
@@ -373,7 +383,6 @@ int main (int argc, char *argv[])
      {
       remove (temp_logfile.c_str());
       remove (temp_logfile0.c_str());
-
 
 //      remove (params.logfile.c_str());
       //std::string t = params.logfile + ".0";

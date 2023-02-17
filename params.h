@@ -14,6 +14,10 @@ public:
   std::string logfile; //output logfile name with full path
   std::string mode;    //"nginx" or "apache"
 
+  std::string results;
+  std::string results_template;
+
+
   size_t duration; //duration of log generation, in seconds
   size_t rate;  //during the log generation, how many lines per second will be written
   size_t lines;

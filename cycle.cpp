@@ -444,6 +444,7 @@ void CGenCycleRated::loop()
   auto stop = high_resolution_clock::now();
   auto duration = duration_cast<microseconds>(stop - start);
   auto duration_s = duration_cast<seconds>(stop - start);
+  seconds_counter_ev = duration_s.count();
 
   if (params->debug)
      {
@@ -453,6 +454,10 @@ void CGenCycleRated::loop()
 
 
   server_run = false;
+
+
+  if (! params->results.empty())
+      write_results();
 
 
   file_out.close();
@@ -621,5 +626,48 @@ void CGenCycleUnrated::loop()
       std::cout << "duration_s.count (seconds): " << duration_s.count() << std::endl;
      }
 
+  if (! params->results.empty())
+      write_results();
+
+
   file_out.close();
+}
+
+
+void CGenCycle::write_results()
+{
+//@date - @duration - @mode/@template - @size-generated - @lines-generated - @performance
+
+  time_t rawtime;
+  struct tm * timeinfo;
+
+  time (&rawtime);
+  timeinfo = localtime (&rawtime);
+
+  char datebuffer [128];
+  strftime (datebuffer, 128, "%d/%b/%Y:%H:%M:%S %z", timeinfo);
+
+  lines_per_second = (double) lines_counter / seconds_counter_ev;
+
+
+  std::string fdate = datebuffer;
+  std::string fduration = std::to_string (seconds_counter_ev);
+  std::string fmode = params->mode;
+  std::string ftemplate = tpl->vars["$logstring"]->get_val();
+  std::string fsize_generated = std::to_string (file_size_total);
+  std::string flines_generated = std::to_string (lines_counter);
+  std::string fperformance = std::to_string (lines_per_second);
+
+  std::string st = params->results_template;
+
+  str_replace (st, "@date", fdate);
+  str_replace (st, "@duration", fduration);
+  str_replace (st, "@mode", fmode);
+  str_replace (st, "@template", ftemplate);
+  str_replace (st, "@size_generated", fsize_generated);
+  str_replace (st, "@lines_generated", flines_generated);
+  str_replace (st, "@performance", fperformance);
+
+  std::cout << st << std::endl;
+
 }
