@@ -341,8 +341,15 @@ int main (int argc, char *argv[])
       params.duration = 5;
       params.size = 0;
       params.lines = 0;
-//      params.pure = false;
      }
+
+
+   std::string fpath = get_file_path (params.logfile);
+   if (!params.bstdout && ! file_exists(fpath))
+      {
+       std::cout << "error! " << fpath << " is not exists!" << std::endl;
+       return 0;
+      }
 
 
   if (params.rate == 0)

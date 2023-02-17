@@ -78,7 +78,7 @@ public:
   size_t test_string_size;
   std::string fname_template;
 
-  bool crit;
+//  bool crit;
   ///////// stats
 
     double lines_per_second;

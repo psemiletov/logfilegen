@@ -32,7 +32,6 @@ void f_signal_handler (int signal)
 
 CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
 {
-  crit = false;
   params = prms;
   fname_template = fname;
   log_current_size = 0;
@@ -64,12 +63,6 @@ CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
       size_t free_space = 0;
       if (file_exists(fpath))
           free_space = get_free_space (fpath);
-      else
-         {
-            std::cout << "error! " << fpath << " is not exists!" << std::endl;
-            crit = true;
-            return;
-         }
 
       size_t size_needed = logrotator->max_log_file_size * logrotator->max_log_files;
 
@@ -97,63 +90,51 @@ CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
 
 
  if (params->metrics)
- {
+    {
 #if defined(_WIN32) || defined(_WIN64)
-  WSADATA wsa;
-  if (WSAStartup (MAKEWORD(2,2),&wsa) != 0)
-     {
-      printf("Error: Windows socket subsystem could not be initialized. Error Code: %d\n", WSAGetLastError());
-     }
+     WSADATA wsa;
+     if (WSAStartup (MAKEWORD(2,2),&wsa) != 0)
+        {
+         printf("Error: Windows socket subsystem could not be initialized. Error Code: %d\n", WSAGetLastError());
+        }
 #endif
 
-  sockfd = socket(AF_INET, SOCK_STREAM, 0);
-  if (sockfd < 0)
-     std::cout << "ERROR opening socket" << std::endl;
+     sockfd = socket(AF_INET, SOCK_STREAM, 0);
+     if (sockfd < 0)
+        std::cout << "ERROR opening socket" << std::endl;
 
-   int yes=1;
-//char yes='1'; // use this under Solaris
+     int yes=1;
+     //char yes='1'; // use this under Solaris
 
-if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
-{
-    perror("setsockopt");
-  //  exit(1);
-}
+     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
+        perror("setsockopt");
 
 
-  memset (&serv_addr, 0, sizeof(serv_addr));
 
-  portno = std::stoi(params->port.c_str());;
+     memset (&serv_addr, 0, sizeof(serv_addr));
 
-  serv_addr.sin_family = AF_INET;
+     portno = std::stoi(params->port.c_str());;
+     serv_addr.sin_family = AF_INET;
+     serv_addr.sin_addr.s_addr = INADDR_ANY;
+    //  inet_pton (AF_INET, params->ip.c_str(), &serv_addr);
+     serv_addr.sin_port = htons(portno);
 
-  serv_addr.sin_addr.s_addr = INADDR_ANY;
+     int retcode = ::bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
 
-//  inet_pton (AF_INET, params->ip.c_str(), &serv_addr);
+     if (retcode == 0)
+        {
+         listen(sockfd,5);
+         server_run = true;
+        }
+    else
+        std::cout << "ERROR on binding" << std::endl;
 
 
-  serv_addr.sin_port = htons(portno);
-
-
-  int retcode = ::bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
-
-  if (retcode == 0)
-     {
-      listen(sockfd,5);
-      server_run = true;
-     }
-  else
-      std::cout << "ERROR on binding" << std::endl;
-
-   // response = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length: @clen\n\n<html>\r\n<head>\r\n<title>logfilegen metrics</title>\r\n</head>\r\n<body>\r\n@body</body>\r\n</html>";
-
- //  th_srv = new std::thread (&CGenCycle::server_handle, this);
- //  th_srv->detach();
+    //  th_srv = new std::thread (&CGenCycle::server_handle, this);
+    //  th_srv->detach();
 
 
     f_handle = std::async(std::launch::async, &CGenCycle::server_handle, this);
-
-//        auto f = std::async(&CGenCycle::server_handle, this);
-
  }
 
 #endif
@@ -163,130 +144,94 @@ if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
 
 #ifndef PROM
 
-
 void CGenCycle::server_handle()
 {
- while (server_run)
- {
-  //  std::cout << "void CGenCycle::server_handle()" << std::endl;
+  while (server_run)
+        {
+         //  std::cout << "void CGenCycle::server_handle()" << std::endl;
 
+         clilen = sizeof (cli_addr);
 
-   clilen = sizeof(cli_addr);
+         newsockfd = accept (sockfd, (struct sockaddr *) &cli_addr, &clilen);
 
-     newsockfd = accept(sockfd,
-                 (struct sockaddr *) &cli_addr,
-                 &clilen);
+         if (newsockfd < 0)
+            {
+             std::cout << "ERROR on accept" << std::endl;
+             return;
+            }
 
-     if (newsockfd < 0)
-       {
-       // std::cout << "ERROR on accept" << std::endl;
-        return;
-      }
+         memset (&buffer, 0, 256);
 
-     //bzero(buffer,256);
-
-     memset (&buffer, 0, 256);
-
-
-
-     int n = read(newsockfd,buffer,255);
-
-     if (n < 0)
-       {
-//        std::cout <<  "ERROR reading from socket" << std::endl;
-        return;
-       }
-
- //   printf("Here is the message: %s\n",buffer);
-
-
-    std::string request (buffer);
-    std::string rsp;
-
-    if (request.find ("GET /stats") != std::string::npos)
-       {
-            std::string body;
-
-
-    body += "logstring:";
-    body += tpl->vars["$logstring"]->get_val();
-    body += "\n<br>";
-    body += "file_size_total:";
-    body += std::to_string (file_size_total);
-    body += "\n<br>";
-    body += "seconds_counter:";
-    body += std::to_string (seconds_counter_ev);
-    body += "\n<br>";
-    body += "lines_counter:";
-    body += std::to_string (lines_counter);
-    body += "\n<br>";
-    body += "lines_per_second:";
-    body += std::to_string (lines_per_second);
-
-
-
-        std::string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length:" + std::to_string(body.size()) + "\n\n" +body;
-             n = write(newsockfd,ts.c_str(),ts.size());
+         int n = read (newsockfd, buffer, 255);
 
          if (n < 0)
-           std::cout << "ERROR writing to socket" << std::endl;
-       }
+            {
+             std::cout <<  "ERROR reading from socket" << std::endl;
+             return;
+            }
 
-    if (request.find ("GET /metrics") != std::string::npos)
-       {
-    std::string body;
-/*
-# HELP go_memstats_mcache_inuse_bytes Number of bytes in use by mcache structures.
-# TYPE go_memstats_mcache_inuse_bytes gauge
-go_memstats_mcache_inuse_bytes 9600
- */
+         //   printf("Here is the message: %s\n",buffer);
 
-   //  body += "# HELP logstring shows current template log string";
-   //  body += "# TYPE logstring";
+         std::string request (buffer);
+         std::string rsp;
 
-  //  body += "logstring ";
- //   body += tpl->vars["$logstring"]->get_val();
- //   body += "\n";
-     body += "# HELP seconds_counter shows how many seconds past\n";
-     body += "# TYPE seconds_counter counter\n";
-     body += "seconds_counter ";
-    body += std::to_string (seconds_counter_ev);
-    body += "\n";
-
-
-   // body += "file_size_total ";
-  //  body += std::to_string (file_size_total);
-  //  body += "\n";
-
-   body += "# HELP lines_counter shows how many lines has been generated\n";
-     body += "# TYPE lines_counter counter\n";
-     body += "lines_counter ";
-    body += std::to_string (lines_counter);
-    body += "\n";
-
-       body += "# HELP lines_per_second shows the average lines per second rate\n";
-     body += "# TYPE lines_per_second gauge\n";
-     body += "lines_per_second  ";
-    body += std::to_string (lines_per_second );
-    body += "\n";
+         if (request.find ("GET /stats") != std::string::npos)
+            {
+             std::string body;
+             body += "logstring:";
+             body += tpl->vars["$logstring"]->get_val();
+             body += "\n<br>";
+             body += "file_size_total:";
+             body += std::to_string (file_size_total);
+             body += "\n<br>";
+             body += "seconds_counter:";
+             body += std::to_string (seconds_counter_ev);
+             body += "\n<br>";
+             body += "lines_counter:";
+             body += std::to_string (lines_counter);
+             body += "\n<br>";
+             body += "lines_per_second:";
+             body += std::to_string (lines_per_second);
 
 
+             std::string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length:" + std::to_string(body.size()) + "\n\n" +body;
 
-          std::string ts = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length:" + std::to_string(body.size()) + "\n\n" +body;
-             n = write(newsockfd,ts.c_str(),ts.size());
+             n = write (newsockfd, ts.c_str(), ts.size());
+             if (n < 0)
+                std::cout << "ERROR writing to socket" << std::endl;
+            }
 
-         if (n < 0)
-           std::cout << "ERROR writing to socket" << std::endl;
-       }
+         if (request.find ("GET /metrics") != std::string::npos)
+            {
+             std::string body;
 
+             body += "# HELP seconds_counter shows how many seconds past\n";
+             body += "# TYPE seconds_counter counter\n";
+             body += "seconds_counter ";
+             body += std::to_string (seconds_counter_ev);
+             body += "\n";
 
+             body += "# HELP lines_counter shows how many lines has been generated\n";
+             body += "# TYPE lines_counter counter\n";
+             body += "lines_counter ";
+             body += std::to_string (lines_counter);
+             body += "\n";
+
+             body += "# HELP lines_per_second shows the average lines per second rate\n";
+             body += "# TYPE lines_per_second gauge\n";
+             body += "lines_per_second  ";
+             body += std::to_string (lines_per_second );
+             body += "\n";
+
+             std::string ts = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length:" + std::to_string(body.size()) + "\n\n" +body;
+             n = write (newsockfd, ts.c_str(), ts.size());
+             if (n < 0)
+                 std::cout << "ERROR writing to socket" << std::endl;
+           }
 
     shutdown(newsockfd, 2);
     close(newsockfd);
-
-
- }
-
+   }
 }
 
 #endif
@@ -294,30 +239,23 @@ go_memstats_mcache_inuse_bytes 9600
 
 CGenCycle::~CGenCycle()
 {
- #ifndef PROM
+#ifndef PROM
 
-
- if (! crit && params->metrics)
- {
-
-  server_run = false;
-  //close(sockfd);
-
-  shutdown(sockfd, 2);
-  close(sockfd);
-
-
-
-  delete tpl;
-  delete logrotator;
- }
+ if (params->metrics)
+    {
+     server_run = false;
+     shutdown (sockfd, 2);
+     close (sockfd);
+    }
 
 #endif
 
-  #ifdef PROM
-delete exposer;
-
+#ifdef PROM
+  delete exposer;
 #endif
+
+ delete tpl;
+ delete logrotator;
 }
 
 
@@ -328,8 +266,6 @@ CGenCycleRated::CGenCycleRated (CParameters *prms, const std::string &fname): CG
 
 bool CGenCycle::open_logfile()
 {
-  if (crit)
-     return false;
 
   file_out_error = false;
 
@@ -368,17 +304,17 @@ void CGenCycleRated::loop()
 {
 #ifdef PROM
 
- auto& counter = BuildCounter()
-                             .Name("data_generated_total")
-                             .Help("Internal counters and stats")
-                             .Register(*registry);
+  auto& counter = BuildCounter()
+                 .Name("data_generated_total")
+                 .Help("Internal counters and stats")
+                 .Register(*registry);
 
-    auto& c_lines_counter = counter.Add({{"cycle", "rated"}, {"counter", "lines generated"}});
-    auto& c_bytes_counter = counter.Add({{"cycle", "rated"}, {"counter", "bytes generated"}});
+ auto& c_lines_counter = counter.Add({{"cycle", "rated"}, {"counter", "lines generated"}});
+ auto& c_bytes_counter = counter.Add({{"cycle", "rated"}, {"counter", "bytes generated"}});
 
 
-    auto& gauge = BuildGauge()
-                             .Name("data_generated_current")
+ auto& gauge = BuildGauge()
+                          .Name("data_generated_current")
                              .Help("Internal counters and stats")
                              .Register(*registry);
 
@@ -420,29 +356,28 @@ void CGenCycleRated::loop()
               frame_counter = 0;
               seconds_counter++;
 
-            if (params->metrics)
-              {
-                auto stop = high_resolution_clock::now();
-                auto duration_s = duration_cast<seconds>(stop - start);
-                seconds_counter_ev = duration_s.count();
+          if (params->metrics)
+             {
+              auto stop = high_resolution_clock::now();
+              auto duration_s = duration_cast<seconds>(stop - start);
+              seconds_counter_ev = duration_s.count();
 
-                if (duration_s.count())
-                   lines_per_second = (double) lines_counter / duration_s.count();
+              if (duration_s.count())
+                 lines_per_second = (double) lines_counter / duration_s.count();
 
-               #ifdef PROM
-                g_lines_per_second_gauge.Set (lines_per_second);
-               #endif
+              #ifdef PROM
+              g_lines_per_second_gauge.Set (lines_per_second);
+              #endif
               }
 
+          }
 
-             }
-
-          frame_counter++;
-          lines_counter++;
+         frame_counter++;
+         lines_counter++;
 
 #ifdef PROM
-            if (params->metrics)
-               c_lines_counter.Increment();
+         if (params->metrics)
+           c_lines_counter.Increment();
 #endif
 
           if (params->duration != 0) //not endless
