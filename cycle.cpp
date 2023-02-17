@@ -106,18 +106,13 @@ CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
 
 #if defined(_WIN32) || defined(_WIN64)
 
-
      char yes='1'; // use this under Solaris and WIN
-
      if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
         perror("setsockopt");
-
 
 #else
 
      int yes=1;
-
-
      if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
         perror("setsockopt");
 
@@ -169,7 +164,7 @@ void CGenCycle::server_handle()
 
          if (newsockfd < 0)
             {
-             std::cout << "ERROR on accept" << std::endl;
+//             std::cout << "ERROR on accept" << std::endl;
              return;
             }
 

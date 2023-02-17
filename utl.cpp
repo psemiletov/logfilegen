@@ -91,6 +91,13 @@ string get_home_dir()
 
 string current_path()
 {
+  return std::filesystem::current_path().string();
+}
+
+
+/*
+string current_path()
+{
   char path [FILENAME_MAX];
   string result;
 
@@ -100,7 +107,7 @@ string current_path()
   result = path;
   return result;
 }
-
+*/
 /*
 size_t get_free_space (const string &path)
 {
@@ -160,8 +167,9 @@ bool is_path_abs (const string &path)
   if (path[0] == '/')
      return true;
 
-  if (path[1] == ':') //windows
-     return true;
+  if (path.size() > 1)
+     if (path[1] == ':') //windows
+        return true;
 
   return false;
 }
