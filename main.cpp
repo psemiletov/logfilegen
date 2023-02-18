@@ -163,7 +163,7 @@ int main (int argc, char *argv[])
    params.ip = opts_config.get_string ("ip", "000.000.000.000");
 
    params.results = opts_config.get_string ("results", "");
-   params.results_template = opts_config.get_string ("results_template", "@date - @duration - @mode/@template - @size-generated - @lines-generated -@performance");
+   params.results_template = opts_config.get_string ("results_template", "@date - @duration - @mode/@template - @size_generated - @lines_generated - @performance");
 
    params.logfile = opts_config.get_string ("logfile", "stdout");
    params.max_log_file_size = opts_config.get_string ("logsize", "16m");

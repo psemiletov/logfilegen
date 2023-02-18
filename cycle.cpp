@@ -636,7 +636,6 @@ void CGenCycleUnrated::loop()
 
 void CGenCycle::write_results()
 {
-//@date - @duration - @mode/@template - @size-generated - @lines-generated - @performance
 
   time_t rawtime;
   struct tm * timeinfo;
@@ -660,10 +659,13 @@ void CGenCycle::write_results()
 
   std::string st = params->results_template;
 
+  //@date - @duration - @mode/@template - @size-generated - @lines-generated - @performance
+
+
   str_replace (st, "@date", fdate);
   str_replace (st, "@duration", fduration);
   str_replace (st, "@mode", fmode);
-  str_replace (st, "@template", ftemplate);
+  str_replace (st, "@template", params->templatefile);
   str_replace (st, "@size_generated", fsize_generated);
   str_replace (st, "@lines_generated", flines_generated);
   str_replace (st, "@performance", fperformance);
