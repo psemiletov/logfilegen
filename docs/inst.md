@@ -100,7 +100,7 @@ cd b
 cmake -DUSE_STATIC=ON ..
 make
 make install
-
+```
 
 
 #### With prometheus_cpp support
@@ -113,3 +113,12 @@ cmake -DUSE_PROM=ON ..
 make
 make install
 ```
+
+
+### READ MORE
+
+[Configuration](https://psemiletov.github.io/logfilegen/config.html)
+
+[Using templates](https://psemiletov.github.io/logfilegen/templates.html)
+
+[Using metrics](metrics.md)

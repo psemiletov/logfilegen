@@ -38,3 +38,4 @@ Please read the Manual:
 
 [Using templates](https://psemiletov.github.io/logfilegen/templates.html)
 
+[Using metrics](https://psemiletov.github.io/logfilegen/metrics.html)
