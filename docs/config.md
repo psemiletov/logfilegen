@@ -72,11 +72,11 @@ the absolute (with the full path) or "stdout" (without quotes).
 
 ## logfilegen.conf
 
-The configuration file is called ```logfilegen.conf``` and must be placed to ```/etc/logfilegen/``` or ```$HOME/.config/logfilegen/``` or to current the directory (where logfilegen binary has been runned).
+The configuration file (where the variables can be defined) is called ```logfilegen.conf``` and must be placed to ```/etc/logfilegen/``` or ```$HOME/.config/logfilegen/``` or to current the directory (where logfilegen binary has been runned).
 
 But you can use any config file using ```--config=filename``` option.
 
-logfilegen config file is a simple key=value text file.
+logfilegen config file is a simple variable=value text file.
 
 Example:
 
