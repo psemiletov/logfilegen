@@ -306,3 +306,8 @@ $body_bytes_sent=100..10000
 $time_iso8601=@datetime:%Y-%m-%dT%H:%M:%SZ
 $logstring=$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
 ```
+
+
+## Read next - Metrics
+
+[Using metrics](metrics.md)

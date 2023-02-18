@@ -156,7 +156,11 @@ int main (int argc, char *argv[])
    params.benchmark = opts_config.get_bool ("benchmark", false);
    params.debug = opts_config.get_bool ("debug", false);
    params.duration = opts_config.get_num ("duration", 0);
-//   params.poll = opts_config.get_num ("poll", 15);
+//   params.metrics_http_upd_poll = opts_config.get_num ("metrics_http_upd_poll", 5);
+
+
+
+   params.poll = opts_config.get_num ("poll", 5);
 
    params.lines = opts_config.get_num ("lines", 0);
    params.port = opts_config.get_string ("port", "8080");
@@ -202,6 +206,10 @@ int main (int argc, char *argv[])
   params.debug = opts_cmdline.get_bool ("debug", params.debug);
   params.duration = opts_cmdline.get_num ("duration", params.duration);
   params.poll = opts_cmdline.get_num ("poll", params.poll);
+
+  //params.metrics_http_upd_poll = opts_cmdline.get_num ("metrics_http_upd_poll", params.metrics_http_upd_poll);
+
+
 
   params.lines = opts_cmdline.get_num ("lines", params.lines);
   params.logfile = opts_cmdline.get_string ("logfile", params.logfile);
@@ -265,6 +273,8 @@ int main (int argc, char *argv[])
   params.logfile = opts_envars.get_string ("logfile", params.logfile);
   params.port = opts_envars.get_string ("port", params.port);
   params.ip = opts_envars.get_string ("ip", params.ip);
+
+  //params.metrics_http_upd_poll = opts_envars.get_num ("metrics_http_upd_poll", params.metrics_http_upd_poll);
 
 
   params.max_log_file_size = opts_envars.get_string ("logsize", params.max_log_file_size);

@@ -38,4 +38,7 @@ The **configuration variables** affects how logfilegen works, and **templates** 
 
 [Using templates](templates.md)
 
+[Using metrics](metrics.md)
+
+
 Written by Peter Semiletov, 2023
