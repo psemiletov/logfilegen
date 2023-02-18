@@ -10,3 +10,4 @@ To redefine default port use ```--port=number``` logfilegen option.
 
 To set the self-hosting page auto-update interval use ```--poll=seconds``` option (default: 15, in seconds)
 
+Please note that per-second metrics are average values, calculated by the division of total value and seconds pass.

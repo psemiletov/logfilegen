@@ -15,7 +15,15 @@
 #include <unistd.h>
 #include <stdio.h>  // for FILENAME_MAX
 
+#if !defined(_WIN32) || !defined(_WIN64)
+
 #include <pwd.h>
+
+#else
+
+#include <windows.h>
+#include <Shlobj.h>
+#endif
 
 
 #include "utl.h"
@@ -86,6 +94,9 @@ string get_file_path (const string &path)
 
 string get_home_dir()
 {
+#if !defined(_WIN32) || !defined(_WIN64)
+
+
   string result;
   const char *homedir = getenv ("HOME");
 
@@ -98,6 +109,20 @@ string get_home_dir()
      result = homedir;
 
   return homedir;
+
+#else
+
+  char homeDirStr[MAX_PATH];
+
+if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, homeDirStr)))
+   return string (homeDirStr);
+
+
+
+#endif
+
+
+
 }
 
 
