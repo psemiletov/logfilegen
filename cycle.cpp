@@ -227,9 +227,18 @@ void CGenCycle::server_handle()
 
              body += "# HELP lines_per_second shows the average lines per second rate\n";
              body += "# TYPE lines_per_second gauge\n";
-             body += "lines_per_second  ";
+             body += "lines_per_second ";
              body += std::to_string (lines_per_second );
              body += "\n";
+
+             body += "# HELP bytes_per_second shows the average bytes per second rate\n";
+             body += "# TYPE bytes_per_second gauge\n";
+             body += "bytes_per_second ";
+             body += std::to_string (bytes_per_second );
+             body += "\n";
+
+
+
 
              std::string ts = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length:" + std::to_string(body.size()) + "\n\n" +body;
              n = write (newsockfd, ts.c_str(), ts.size());
@@ -369,6 +378,8 @@ void CGenCycleRated::loop()
               auto stop = high_resolution_clock::now();
               auto duration_s = duration_cast<seconds>(stop - start);
               seconds_counter_ev = duration_s.count();
+              bytes_per_second = (double) file_size_total / seconds_counter_ev;
+
 
               if (duration_s.count())
                  lines_per_second = (double) lines_counter / duration_s.count();
@@ -552,6 +563,9 @@ void CGenCycleUnrated::loop()
                    seconds_counter_ev = duration_s.count();
 
                    lines_per_second = (double) lines_counter / duration_s.count();
+                   bytes_per_second = (double) file_size_total / seconds_counter_ev;
+
+
                   #ifdef PROM
 
                     c_lines_counter.Increment();
@@ -560,8 +574,9 @@ void CGenCycleUnrated::loop()
                    g_lines_per_second_gauge.Set (lines_per_second);
 
                    #endif
-
                    }
+
+
                }
 
 
@@ -655,7 +670,8 @@ void CGenCycle::write_results()
   std::string ftemplate = tpl->vars["$logstring"]->get_val();
   std::string fsize_generated = std::to_string (file_size_total);
   std::string flines_generated = std::to_string (lines_counter);
-  std::string fperformance = std::to_string (lines_per_second);
+  std::string flpsperformance = std::to_string (lines_per_second);
+  std::string fbpsperformance = std::to_string (bytes_per_second);
 
   std::string st = params->results_template;
 
@@ -668,8 +684,13 @@ void CGenCycle::write_results()
   str_replace (st, "@template", params->templatefile);
   str_replace (st, "@size_generated", fsize_generated);
   str_replace (st, "@lines_generated", flines_generated);
-  str_replace (st, "@performance", fperformance);
+  str_replace (st, "@performance_lps", flpsperformance);
+  str_replace (st, "@performance_bps", fbpsperformance);
 
-  std::cout << st << std::endl;
+  if (params->results == "stdout")
+     std::cout << st << std::endl;
+  else
+      if (path_exists (params->results))
+          string_save_to_file (params->results, st);
 
 }

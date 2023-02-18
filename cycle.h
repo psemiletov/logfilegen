@@ -80,6 +80,7 @@ public:
 
 //  bool crit;
   ///////// stats
+    double bytes_per_second;
 
     double lines_per_second;
     size_t file_size_total;

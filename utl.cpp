@@ -355,3 +355,16 @@ void string_save_to_file (const string &fname, const string &s)
   file << s;
   file.close();
 }
+
+
+bool path_exists (const string &fname)
+{
+  if (fname.empty())
+     return false;
+
+  std::string fpath = get_file_path (fname);
+  if (fpath.empty())
+     return false;
+
+  return file_exists(fpath);
+}

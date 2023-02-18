@@ -163,7 +163,7 @@ int main (int argc, char *argv[])
    params.ip = opts_config.get_string ("ip", "000.000.000.000");
 
    params.results = opts_config.get_string ("results", "");
-   params.results_template = opts_config.get_string ("results_template", "@date - @duration - @mode/@template - @size_generated - @lines_generated - @performance");
+   params.results_template = opts_config.get_string ("results_template", "@date - @duration - @mode/@template - @size_generated - @lines_generated - @performance_lps");
 
    params.logfile = opts_config.get_string ("logfile", "stdout");
    params.max_log_file_size = opts_config.get_string ("logsize", "16m");
@@ -359,7 +359,7 @@ int main (int argc, char *argv[])
 
 
    std::string fpath = get_file_path (params.logfile);
-   if (!params.bstdout && ! file_exists(fpath))
+   if (! params.bstdout && ! file_exists(fpath))
       {
        std::cout << "error! " << fpath << " is not exists!" << std::endl;
        return 0;
