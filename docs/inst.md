@@ -4,6 +4,8 @@
 
 To compile logfilegen from the source you need GCC/g++ or Clang with C++17 version support. If you did not compiled programs before, install g++ or Clang, and **make** utility to your system.
 
+logfilegen has support for Prometheus/OpenMetrics format metrics exposion via built-in server code or, as an optional and experimatal feature, via [prometheus-cpp](https://github.com/jupp0r/prometheus-cpp) library. See the CMake section for turning the last one on, but currently the built-in server code works faster.
+
 First of all, download the tarball from [latest release](https://github.com/psemiletov/logfilegen/releases/latest), unpack it, and, if you are already familiar with compilation tools, go to the logfilegen source dir, and, as root or with sudo, run:
 
 ```console
