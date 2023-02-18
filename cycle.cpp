@@ -247,6 +247,90 @@ void CGenCycle::server_handle()
            }
          else
 
+              if (request.find ("GET /") != std::string::npos)
+            {
+             std::string body = "<!doctype html>\r\n<html>\r\n<head>\r\n<meta charset=\"UTF-8\"><meta http-equiv=\"refresh\" content=\"@s\" >\r\n<title>logfilegen</title>\r\n</head>\r\n<body>@b\r\n</body>\r\n</html>";
+
+
+             std::string t;
+
+             t += "<table>\r\n";
+
+             t += "<tr>\r\n";
+
+             t += "<td>logstring:</td>";
+             t += "<td>";
+             t += tpl->vars["$logstring"]->get_val();
+             t += "</td>";
+
+             t += "</tr>\r\n";
+
+             t += "<tr>\r\n";
+
+             t += "<td>file_size_total:</td>";
+             t += "<td>";
+
+             t += std::to_string (file_size_total);
+             t += "</td>";
+             t += "</tr>\r\n";
+
+
+             t += "<tr>\r\n";
+
+             t += "<td>seconds_counter:</td>";
+              t += "<td>";
+
+             t += std::to_string (seconds_counter_ev);
+             t += "</td>";
+
+             t += "</tr>\r\n";
+
+             t += "<tr>\r\n";
+
+             t += "<td>lines_counter:<td>";
+             t += std::to_string (lines_counter);
+             t += "</td>";
+
+             t += "</tr>\r\n";
+
+
+             t += "<tr>\r\n";
+
+             t += "<td>lines_per_second:</td>";
+             t += "<td>";
+
+             t += std::to_string (lines_per_second);
+             t += "</td>";
+
+             t += "</tr>\r\n";
+
+             t += "<tr>\r\n";
+
+
+             t += "<td>bytes_per_second:</td>";
+                 t += "<td>";
+
+             t += std::to_string (bytes_per_second);
+              t += "</td>";
+
+             t += "</tr>\r\n";
+
+
+             t += "</table>\r\n";
+
+
+             str_replace (body, "@b", t);
+             str_replace (body, "@s", std::to_string(params->poll));
+
+
+             std::string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length:" + std::to_string(body.size()) + "\n\n" +body;
+
+             n = write (newsockfd, ts.c_str(), ts.size());
+             if (n < 0)
+                std::cout << "ERROR writing to socket" << std::endl;
+            }
+
+            /*
          if (request.find ("GET /") != std::string::npos)
             {
              std::string body = "<!doctype html>\r\n<html>\r\n<head>\r\n<meta charset=\"UTF-8\"><meta http-equiv=\"refresh\" content=\"@s\" >\r\n<title>logfilegen</title>\r\n</head>\r\n<body>@b\r\n</body>\r\n</html>";
@@ -281,7 +365,7 @@ void CGenCycle::server_handle()
              if (n < 0)
                 std::cout << "ERROR writing to socket" << std::endl;
             }
-
+*/
     shutdown(newsockfd, 2);
     close(newsockfd);
    }
