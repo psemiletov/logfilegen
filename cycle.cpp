@@ -2,6 +2,9 @@
 #include <chrono>
 //#include <future>
 
+#include <cmath>
+
+
 #include <iostream>
 #include <string.h>
 
@@ -184,31 +187,6 @@ void CGenCycle::server_handle()
          std::string rsp;
 
 
-         if (request.find ("GET /stats") != std::string::npos)
-            {
-             std::string body;
-             body += "logstring:";
-             body += tpl->vars["$logstring"]->get_val();
-             body += "\r\n<br>";
-             body += "file_size_total:";
-             body += std::to_string (file_size_total);
-             body += "\r\n<br>";
-             body += "seconds_counter:";
-             body += std::to_string (seconds_counter_ev);
-             body += "\r\n<br>";
-             body += "lines_counter:";
-             body += std::to_string (lines_counter);
-             body += "\r\n<br>";
-             body += "lines_per_second:";
-             body += std::to_string (lines_per_second);
-
-             std::string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length:" + std::to_string(body.size()) + "\n\n" +body;
-
-             n = write (newsockfd, ts.c_str(), ts.size());
-             if (n < 0)
-                std::cout << "ERROR writing to socket" << std::endl;
-            }
-         else
          if (request.find ("GET /metrics") != std::string::npos)
             {
              std::string body;
@@ -228,13 +206,13 @@ void CGenCycle::server_handle()
              body += "# HELP lines_per_second shows the average lines per second rate\n";
              body += "# TYPE lines_per_second gauge\n";
              body += "lines_per_second ";
-             body += std::to_string (lines_per_second );
+             body += std::to_string (round (lines_per_second));
              body += "\n";
 
              body += "# HELP bytes_per_second shows the average bytes per second rate\n";
              body += "# TYPE bytes_per_second gauge\n";
              body += "bytes_per_second ";
-             body += std::to_string (bytes_per_second );
+             body += std::to_string (round (bytes_per_second));
              body += "\n";
 
 
@@ -299,7 +277,7 @@ void CGenCycle::server_handle()
              t += "<td>lines_per_second:</td>";
              t += "<td>";
 
-             t += std::to_string (lines_per_second);
+             t += std::to_string (round (lines_per_second));
              t += "</td>";
 
              t += "</tr>\r\n";
@@ -310,7 +288,7 @@ void CGenCycle::server_handle()
              t += "<td>bytes_per_second:</td>";
                  t += "<td>";
 
-             t += std::to_string (bytes_per_second);
+             t += std::to_string (round (bytes_per_second));
               t += "</td>";
 
              t += "</tr>\r\n";
@@ -330,42 +308,6 @@ void CGenCycle::server_handle()
                 std::cout << "ERROR writing to socket" << std::endl;
             }
 
-            /*
-         if (request.find ("GET /") != std::string::npos)
-            {
-             std::string body = "<!doctype html>\r\n<html>\r\n<head>\r\n<meta charset=\"UTF-8\"><meta http-equiv=\"refresh\" content=\"@s\" >\r\n<title>logfilegen</title>\r\n</head>\r\n<body>@b\r\n</body>\r\n</html>";
-
-
-             std::string t;
-             t += "logstring:";
-             t += tpl->vars["$logstring"]->get_val();
-             t += "\r\n<br>";
-             t += "file_size_total:";
-             t += std::to_string (file_size_total);
-             t += "\r\n<br>";
-             t += "seconds_counter:";
-             t += std::to_string (seconds_counter_ev);
-             t += "\r\n<br>";
-             t += "lines_counter:";
-             t += std::to_string (lines_counter);
-             t += "\r\n<br>";
-             t += "lines_per_second:";
-             t += std::to_string (lines_per_second);
-             t += "\r\n<br>";
-             t += "bytes_per_second:";
-             t += std::to_string (bytes_per_second);
-
-             str_replace (body, "@b", t);
-             str_replace (body, "@s", std::to_string(params->poll));
-
-
-             std::string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length:" + std::to_string(body.size()) + "\n\n" +body;
-
-             n = write (newsockfd, ts.c_str(), ts.size());
-             if (n < 0)
-                std::cout << "ERROR writing to socket" << std::endl;
-            }
-*/
     shutdown(newsockfd, 2);
     close(newsockfd);
    }
@@ -500,7 +442,6 @@ void CGenCycleRated::loop()
               seconds_counter_ev = duration_s.count();
               bytes_per_second = (double) file_size_total / seconds_counter_ev;
 
-
               if (duration_s.count())
                  lines_per_second = (double) lines_counter / duration_s.count();
 
@@ -576,13 +517,6 @@ void CGenCycleRated::loop()
   auto duration = duration_cast<microseconds>(stop - start);
   auto duration_s = duration_cast<seconds>(stop - start);
   seconds_counter_ev = duration_s.count();
-
-  if (params->debug)
-     {
-      std::cout << "duration.count (microseconds): " << duration.count() << std::endl;
-      std::cout << "duration_s.count (seconds): " << duration_s.count() << std::endl;
-     }
-
 
   server_run = false;
 
@@ -680,10 +614,10 @@ void CGenCycleUnrated::loop()
                 if (duration_s.count())
                    {
 
-                   seconds_counter_ev = duration_s.count();
+                    seconds_counter_ev = duration_s.count();
 
-                   lines_per_second = (double) lines_counter / duration_s.count();
-                   bytes_per_second = (double) file_size_total / seconds_counter_ev;
+                    lines_per_second = (double) lines_counter / duration_s.count();
+                    bytes_per_second = (double) file_size_total / seconds_counter_ev;
 
 
                   #ifdef PROM
@@ -691,16 +625,13 @@ void CGenCycleUnrated::loop()
                     c_lines_counter.Increment();
                     c_bytes_counter.Increment(log_string.size());
 
-                   g_lines_per_second_gauge.Set (lines_per_second);
+                    g_lines_per_second_gauge.Set (lines_per_second);
 
                    #endif
                    }
 
 
                }
-
-
-
 
 
               if (params->bstdout)
@@ -748,18 +679,6 @@ void CGenCycleUnrated::loop()
       std::cout << "Test, lines per seconds: " << lines_per_second << std::endl;
      }
 
-  if (params->stats)
-     {
-      lines_per_second = (double) lines_counter / duration_s.count();
-      std::cout << "Statistics, lines per seconds: " << lines_per_second << std::endl;
-     }
-
-
-  if (params->debug)
-     {
-      std::cout << "duration.count (microseconds): " << duration.count() << std::endl;
-      std::cout << "duration_s.count (seconds): " << duration_s.count() << std::endl;
-     }
 
   if (! params->results.empty())
       write_results();
@@ -790,8 +709,8 @@ void CGenCycle::write_results()
   std::string ftemplate = tpl->vars["$logstring"]->get_val();
   std::string fsize_generated = std::to_string (file_size_total);
   std::string flines_generated = std::to_string (lines_counter);
-  std::string flpsperformance = std::to_string (lines_per_second);
-  std::string fbpsperformance = std::to_string (bytes_per_second);
+  std::string flpsperformance = std::to_string (round (lines_per_second));
+  std::string fbpsperformance = std::to_string (round (bytes_per_second));
 
   std::string st = params->results_template;
 
