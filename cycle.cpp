@@ -236,6 +236,17 @@ void CGenCycle::server_handle()
 
              t += "<tr>\r\n";
 
+             t += "<td><b>Metric</td>";
+
+             t += "<td><b>Raw</b></td>";
+
+             t += "<td><b>Adapted</b></td>";
+
+
+             /*
+             t += "<\tr>\r\n";
+
+
              t += "<td>logstring:</td>";
              t += "<td>";
              t += tpl->vars["$logstring"]->get_val();
@@ -243,58 +254,93 @@ void CGenCycle::server_handle()
 
              t += "</tr>\r\n";
 
-             t += "<tr>\r\n";
-
-             t += "<td>file_size_total:</td>";
-             t += "<td>";
-
-             t += std::to_string (file_size_total);
-             t += "</td>";
-             t += "</tr>\r\n";
-
+             */
 
              t += "<tr>\r\n";
 
              t += "<td>seconds_counter:</td>";
-              t += "<td>";
 
+             t += "<td>";
              t += std::to_string (seconds_counter_ev);
              t += "</td>";
 
+              t += "<td>";
+             t += format3 (seconds_counter_ev);
+             t += "</td>";
+
              t += "</tr>\r\n";
+
+
 
              t += "<tr>\r\n";
 
-             t += "<td>lines_counter:<td>";
+             t += "<td>file_size_total</td>";
+
+             t += "<td>";
+             t += bytes_to_file_size (file_size_total);
+             t += "</td>";
+
+             t += "<td>";
+             t += bytes_to_file_size3  (file_size_total);
+             t += "</td>";
+
+
+             t += "</tr>\r\n";
+
+
+
+             t += "<tr>\r\n";
+
+             t += "<td>lines_counter</td>";
+
+
+             t += "<td>";
              t += std::to_string (lines_counter);
              t += "</td>";
 
-             t += "</tr>\r\n";
-
-
-             t += "<tr>\r\n";
-
-             t += "<td>lines_per_second:</td>";
              t += "<td>";
-
-             t += std::to_string (round (lines_per_second));
+             t += format3 (lines_counter);
              t += "</td>";
 
+
+             t += "</tr>\r\n";
+
+
+             t += "<tr>\r\n";
+
+             t += "<td>lines_per_second</td>";
+
+             t += "<td>";
+             t += std::to_string ((int)round (lines_per_second));
+             t += "</td>";
+
+             t += "<td>";
+             t += format3 (lines_per_second);
+             t += "</td>";
+
+
              t += "</tr>\r\n";
 
              t += "<tr>\r\n";
 
-
              t += "<td>bytes_per_second:</td>";
-                 t += "<td>";
 
-             t += std::to_string (round (bytes_per_second));
-              t += "</td>";
+             t += "<td>";
+             t += std::to_string ((int)round (bytes_per_second));
+             t += "</td>";
+
+             t += "<td>";
+             t += format3 (round (bytes_per_second));
+             t += "</td>";
 
              t += "</tr>\r\n";
 
 
              t += "</table>\r\n";
+
+             t += "<v>logstring:</b>";
+             t += tpl->vars["$logstring"]->get_val();
+
 
 
              str_replace (body, "@b", t);

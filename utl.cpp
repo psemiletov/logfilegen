@@ -322,6 +322,40 @@ size_t string_to_file_size (const string &val)
 }
 
 
+
+string bytes_to_file_size (size_t val)
+{
+  if (val >= 1073741824)
+     return std::to_string (val / 1073741824) + " gbytes";
+
+  if (val >= 1048576)
+     return std::to_string (val / 1048576) + " mbytes";
+
+  if (val >= 1024)
+     return std::to_string (val / 1024) + " kbytes";
+
+  return std::to_string (val) + " bytes";;
+}
+
+
+
+string bytes_to_file_size3 (size_t val)
+{
+  if (val >= 1073741824)
+     return format3 (std::to_string (val / 1073741824)) + " gbytes";
+
+  if (val >= 1048576)
+     return format3 (std::to_string (val / 1048576)) + " mbytes";
+
+  if (val >= 1024)
+     return format3 (std::to_string (val / 1024)) + " kbytes";
+
+  return format3 (std::to_string (val)) + " bytes";;
+}
+
+
+
+
 string string_file_load (const string &fname)
 {
  if (fname.empty())
@@ -392,4 +426,27 @@ bool path_exists (const string &fname)
      return false;
 
   return file_exists(fpath);
+}
+
+
+
+std::string format3 (size_t n)
+{
+  std::string number_str = std::to_string(n);
+
+  for (int i = number_str.length() - 3; i > 0; i -= 3)
+      number_str.insert(i, ",");
+
+  return number_str;
+}
+
+
+std::string format3 (const std::string &s)
+{
+  std::string number_str = s;
+
+  for (int i = number_str.length() - 3; i > 0; i -= 3)
+      number_str.insert(i, ",");
+
+  return number_str;
 }

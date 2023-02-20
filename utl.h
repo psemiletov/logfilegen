@@ -22,10 +22,13 @@ size_t get_free_space (const std::string &path);
 bool file_exists (const std::string &name);
 bool is_program_exists (const std::string &appname);
 bool is_path_abs (const std::string &path);
+bool path_exists (const std::string &fname);
 
 
 //String utis
 
+std::string bytes_to_file_size3 (size_t val);
+std::string bytes_to_file_size (size_t val);
 std::string str_replace (std::string &source, const std::string &text_to_find, const std::string &replace_with);
 std::string string_replace_all (const std::string &s, const std::string &from, const std::string &to);
 std::vector <std::string> split_string_to_vector (const std::string& s, const std::string& delimeter, const bool keep_empty = true);
@@ -35,7 +38,9 @@ std::string string_file_load (const std::string &fname);
 std::vector <std::string> vector_file_load (const std::string &fname);
 std::string get_macro_name (const std::string &value);
 void string_save_to_file (const std::string &fname, const std::string &s);
-bool path_exists (const std::string &fname);
+std::string format3 (size_t n);
+std::string format3 (const std::string &s);
+
 
 
 #endif
