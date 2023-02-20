@@ -381,35 +381,31 @@ void CGenCycleRated::loop()
                  .Help("Internal counters and stats")
                  .Register(*registry);
 
- auto& c_lines_counter = counter.Add({{"cycle", "rated"}, {"counter", "lines generated"}});
- auto& c_bytes_counter = counter.Add({{"cycle", "rated"}, {"counter", "bytes generated"}});
+  auto& c_lines_counter = counter.Add({{"cycle", "rated"}, {"counter", "lines generated"}});
+  auto& c_bytes_counter = counter.Add({{"cycle", "rated"}, {"counter", "bytes generated"}});
 
-
- auto& gauge = BuildGauge()
+  auto& gauge = BuildGauge()
                           .Name("data_generated_current")
-                             .Help("Internal counters and stats")
-                             .Register(*registry);
+                          .Help("Internal counters and stats")
+                          .Register(*registry);
 
 
-    auto& g_lines_per_second_gauge = gauge.Add({{"cycle", "rated"}, {"gauge", "lines per second"}});
+  auto& g_lines_per_second_gauge = gauge.Add({{"cycle", "rated"}, {"gauge", "lines per second"}});
 
-    auto& version_info = BuildInfo()
-                           .Name("logstring_template")
-                           .Help("Shows the logstring template in use")
-                           .Register(*registry);
+  auto& version_info = BuildInfo()
+                                .Name("logstring_template")
+                                .Help("Shows the logstring template in use")
+                                .Register(*registry);
 
-         version_info.Add({{"logstring", tpl->vars["$logstring"]->get_val()}});
-  // ask the exposer to scrape the registry on incoming HTTP requests
+  version_info.Add({{"logstring", tpl->vars["$logstring"]->get_val()}});
 
   if (params->metrics)
-  exposer->RegisterCollectable (registry);
-
+     exposer->RegisterCollectable (registry);
 
 #endif
 
 
    auto start = high_resolution_clock::now();
-
 
    using clock = std::chrono::steady_clock;
 
@@ -442,45 +438,44 @@ void CGenCycleRated::loop()
               g_lines_per_second_gauge.Set (lines_per_second);
               #endif
               }
-
-          }
+             }
 
          frame_counter++;
          lines_counter++;
 
 #ifdef PROM
          if (params->metrics)
-           c_lines_counter.Increment();
+             c_lines_counter.Increment();
 #endif
 
-          if (params->duration != 0) //not endless
-          if (params->lines == 0 && seconds_counter == params->duration)
-              break;
+         if (params->duration != 0) //not endless
+         if (params->lines == 0 && seconds_counter == params->duration)
+             break;
 
-          if (params->lines != 0 && lines_counter > params->lines)
-              break;
+         if (params->lines != 0 && lines_counter > params->lines)
+             break;
 
-          if (params->size != 0 && file_size_total > params->size)
-              break;
+         if (params->size != 0 && file_size_total > params->size)
+             break;
 
-          if (g_signal == SIGINT)
-              break;
-
-
-          std::string log_string = tpl->prepare_log_string();
-
-          if (! params->pure)
-             {
-              #ifdef PROM
-                  if (params->metrics)
-                      c_bytes_counter.Increment(log_string.size());
-              #endif
+         if (g_signal == SIGINT)
+             break;
 
 
-              if (params->bstdout)
-                  std::cout << log_string << "\n";
+         std::string log_string = tpl->prepare_log_string();
 
-              if (! file_out_error && ! no_free_space)
+         if (! params->pure)
+            {
+             #ifdef PROM
+             if (params->metrics)
+                c_bytes_counter.Increment(log_string.size());
+             #endif
+
+
+             if (params->bstdout)
+                 std::cout << log_string << "\n";
+
+             if (! file_out_error && ! no_free_space)
                  {
                   file_out << log_string << "\n";
                   log_current_size += log_string.size();
@@ -534,43 +529,41 @@ void CGenCycleUnrated::loop()
 {
 #ifdef PROM
 
+  auto& counter = BuildCounter()
+                              .Name("data_generated_total")
+                              .Help("Internal counters and stats")
+                              .Register(*registry);
 
-    auto& counter = BuildCounter()
-                             .Name("data_generated_total")
-                             .Help("Internal counters and stats")
-                             .Register(*registry);
-
-    auto& c_lines_counter = counter.Add({{"cycle", "unrated"}, {"counter", "lines generated"}});
-    auto& c_bytes_counter = counter.Add({{"cycle", "unrated"}, {"counter", "bytes generated"}});
-
-
-    auto& gauge = BuildGauge()
-                             .Name("data_generated_current")
-                             .Help("Internal counters and stats")
-                             .Register(*registry);
+  auto& c_lines_counter = counter.Add({{"cycle", "unrated"}, {"counter", "lines generated"}});
+  auto& c_bytes_counter = counter.Add({{"cycle", "unrated"}, {"counter", "bytes generated"}});
 
 
-    auto& g_lines_per_second_gauge = gauge.Add({{"cycle", "unrated"}, {"gauge", "lines per second"}});
+  auto& gauge = BuildGauge()
+                          .Name("data_generated_current")
+                          .Help("Internal counters and stats")
+                          .Register(*registry);
 
-    auto& version_info = BuildInfo()
-                           .Name("logstring_template")
-                           .Help("Shows the logstring template in use")
-                           .Register(*registry);
 
-         version_info.Add({{"logstring", tpl->vars["$logstring"]->get_val()}});
+  auto& g_lines_per_second_gauge = gauge.Add({{"cycle", "unrated"}, {"gauge", "lines per second"}});
+
+  auto& version_info = BuildInfo()
+                                .Name("logstring_template")
+                                .Help("Shows the logstring template in use")
+                                .Register(*registry);
+
+  version_info.Add({{"logstring", tpl->vars["$logstring"]->get_val()}});
   // ask the exposer to scrape the registry on incoming HTTP requests
 
   if (params->metrics)
       exposer->RegisterCollectable (registry);
 
-
 #endif
 
 
 
-   auto start = high_resolution_clock::now();
+  auto start = high_resolution_clock::now();
 
-   // using clock = std::chrono::steady_clock;
+  // using clock = std::chrono::steady_clock;
 
   while (true)
         {
@@ -608,24 +601,17 @@ void CGenCycleUnrated::loop()
 
                 if (duration_s.count())
                    {
-
                     seconds_counter_ev = duration_s.count();
 
                     lines_per_second = (double) lines_counter / duration_s.count();
                     bytes_per_second = (double) file_size_total / seconds_counter_ev;
 
-
-                  #ifdef PROM
-
+                    #ifdef PROM
                     c_lines_counter.Increment();
                     c_bytes_counter.Increment(log_string.size());
-
                     g_lines_per_second_gauge.Set (lines_per_second);
-
-                   #endif
+                    #endif
                    }
-
-
                }
 
 
@@ -674,10 +660,8 @@ void CGenCycleUnrated::loop()
       std::cout << "Test, lines per seconds: " << lines_per_second << std::endl;
      }
 
-
   if (! params->results.empty())
       write_results();
-
 
   file_out.close();
 }
@@ -697,7 +681,6 @@ void CGenCycle::write_results()
 
   lines_per_second = (double) lines_counter / seconds_counter_ev;
 
-
   std::string fdate = datebuffer;
   std::string fduration = std::to_string (seconds_counter_ev);
   std::string fmode = params->mode;
@@ -708,9 +691,6 @@ void CGenCycle::write_results()
   std::string fbpsperformance = std::to_string (round (bytes_per_second));
 
   std::string st = params->results_template;
-
-  //@date - @duration - @mode/@template - @size-generated - @lines-generated - @performance
-
 
   str_replace (st, "@date", fdate);
   str_replace (st, "@duration", fduration);

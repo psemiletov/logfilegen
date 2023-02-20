@@ -11,12 +11,9 @@
 
 #endif
 
-//SERV
 #include <unistd.h>
 #include <sys/types.h>
-//#include <sys/socket.h>
 #include <thread>
-//
 
 
 #ifndef PROM
@@ -25,13 +22,14 @@
 
 #undef _HAS_STD_BYTE
 
-    #include <winsock2.h>
-//    include <WinSock2.h>
-//include <WinSock.h>
+#include <winsock2.h>
+//#include <WinSock2.h>
+//#include <WinSock.h>
 #else
-   #include <netinet/in.h>
-    #include <sys/socket.h>
-//    #include <arpa/inet.h>
+
+#include <netinet/in.h>
+#include <sys/socket.h>
+//#include <arpa/inet.h>
 #endif
 
 #endif
@@ -59,8 +57,6 @@ using namespace prometheus;
 
 
 
-//using namespace std;
-
 
 class CGenCycle
 {
@@ -78,62 +74,49 @@ public:
   size_t test_string_size;
   std::string fname_template;
 
-//  bool crit;
   ///////// stats
-    double bytes_per_second;
-
-    double lines_per_second;
-    size_t file_size_total;
-
-   size_t lines_counter = 0;
-   size_t seconds_counter_ev = 0;
-
-   size_t seconds_counter = 0;
-   size_t frame_counter = 0;
+  double bytes_per_second;
+  double lines_per_second;
+  size_t file_size_total;
+  size_t lines_counter = 0;
+  size_t seconds_counter_ev = 0;
+  size_t seconds_counter = 0;
+  size_t frame_counter = 0;
   //////
-
 
    ///SERV
 
- #ifndef PROM
+#ifndef PROM
 
-     int sockfd, newsockfd, portno;
+  int sockfd, newsockfd, portno;
 
-
-     #if defined(_WIN32) || defined(_WIN64)
-
-      int clilen;
-
+  #if defined(_WIN32) || defined(_WIN64)
+  int clilen;
 #else
-
-      socklen_t clilen;
-
+  socklen_t clilen;
 #endif
 
-
-     char buffer[256];
-     struct sockaddr_in serv_addr, cli_addr;
-     bool server_run;
-     std::future<void> f_handle;
+  char buffer[256];
+  struct sockaddr_in serv_addr, cli_addr;
+  bool server_run;
+  std::future<void> f_handle;
    //  std::thread *th_srv;
 
-    std::string response;
+  std::string response;
 
 #endif
 
-  #ifdef PROM
+#ifdef PROM
 
-      Exposer *exposer;
-     std::shared_ptr< prometheus::Registry > registry;
-//prometheus::Family<prometheus::Counter> &countera;
+  Exposer *exposer;
+  std::shared_ptr< prometheus::Registry > registry;
+
 #endif
 
   CGenCycle (CParameters *prms, const std::string &fname);
 
-  #ifndef PROM
-
+#ifndef PROM
   void server_handle();
-
 #endif
 
   bool open_logfile();
