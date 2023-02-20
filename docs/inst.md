@@ -109,7 +109,7 @@ make install
 ```
 mkdir b
 cd b
-cmake -DUSE_PROM=ON ..
+cmake -DUSE_PROMCPP=ON ..
 make
 make install
 ```

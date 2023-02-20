@@ -560,12 +560,14 @@ void CGenCycleRated::loop()
          }
 
   auto stop = high_resolution_clock::now();
-  auto duration = duration_cast<microseconds>(stop - start);
+//  auto duration = duration_cast<microseconds>(stop - start);
   auto duration_s = duration_cast<seconds>(stop - start);
   seconds_counter_ev = duration_s.count();
 
-  server_run = false;
+   #ifndef PROM
 
+  server_run = false;
+#endif
 
   if (! params->results.empty())
       write_results();
