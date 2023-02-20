@@ -1,18 +1,11 @@
 #include <thread>
 #include <chrono>
-//#include <future>
-
 #include <cmath>
-
-
 #include <iostream>
 #include <string.h>
 
-
 #ifndef PROM
-
 //#include <arpa/inet.h>
-
 #endif
 
 #include "cycle.h"
@@ -89,17 +82,14 @@ CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
 
  //SERV
 
-  #ifndef PROM
-
+#ifndef PROM
 
  if (params->metrics)
     {
 #if defined(_WIN32) || defined(_WIN64)
      WSADATA wsa;
      if (WSAStartup (MAKEWORD(2,2),&wsa) != 0)
-        {
          printf("Error: Windows socket subsystem could not be initialized. Error Code: %d\n", WSAGetLastError());
-        }
 #endif
 
      sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -121,7 +111,6 @@ CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
 
 #endif
 
-
      memset (&serv_addr, 0, sizeof(serv_addr));
 
      portno = std::stoi(params->port.c_str());;
@@ -140,12 +129,10 @@ CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
     else
         std::cout << "ERROR on binding" << std::endl;
 
-
     //  th_srv = new std::thread (&CGenCycle::server_handle, this);
     //  th_srv->detach();
 
-
-    f_handle = std::async(std::launch::async, &CGenCycle::server_handle, this);
+    f_handle = std::async (std::launch::async, &CGenCycle::server_handle, this);
  }
 
 #endif
@@ -181,11 +168,9 @@ void CGenCycle::server_handle()
              return;
             }
 
-         //   printf("Here is the message: %s\n",buffer);
 
          std::string request (buffer);
          std::string rsp;
-
 
          if (request.find ("GET /metrics") != std::string::npos)
             {
@@ -215,144 +200,106 @@ void CGenCycle::server_handle()
              body += std::to_string (round (bytes_per_second));
              body += "\n";
 
-
-
-
              std::string ts = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length:" + std::to_string(body.size()) + "\n\n" +body;
              n = write (newsockfd, ts.c_str(), ts.size());
              if (n < 0)
                  std::cout << "ERROR writing to socket" << std::endl;
-           }
-         else
-
-              if (request.find ("GET /") != std::string::npos)
-            {
-             std::string body = "<!doctype html>\r\n<html>\r\n<head>\r\n<meta charset=\"UTF-8\"><meta http-equiv=\"refresh\" content=\"@s\" >\r\n<title>logfilegen</title>\r\n</head>\r\n<body>@b\r\n</body>\r\n</html>";
-
-
-             std::string t;
-
-             t += "<table>\r\n";
-
-             t += "<tr>\r\n";
-
-             t += "<td><b>Metric</td>";
-
-             t += "<td><b>Raw</b></td>";
-
-             t += "<td><b>Adapted</b></td>";
-
-
-             /*
-             t += "<\tr>\r\n";
-
-
-             t += "<td>logstring:</td>";
-             t += "<td>";
-             t += tpl->vars["$logstring"]->get_val();
-             t += "</td>";
-
-             t += "</tr>\r\n";
-
-             */
-
-             t += "<tr>\r\n";
-
-             t += "<td>seconds_counter:</td>";
-
-             t += "<td>";
-             t += std::to_string (seconds_counter_ev);
-             t += "</td>";
-
-              t += "<td>";
-             t += format3 (seconds_counter_ev);
-             t += "</td>";
-
-             t += "</tr>\r\n";
-
-
-
-             t += "<tr>\r\n";
-
-             t += "<td>file_size_total</td>";
-
-             t += "<td>";
-             t += bytes_to_file_size (file_size_total);
-             t += "</td>";
-
-             t += "<td>";
-             t += bytes_to_file_size3  (file_size_total);
-             t += "</td>";
-
-
-             t += "</tr>\r\n";
-
-
-
-             t += "<tr>\r\n";
-
-             t += "<td>lines_counter</td>";
-
-
-             t += "<td>";
-             t += std::to_string (lines_counter);
-             t += "</td>";
-
-             t += "<td>";
-             t += format3 (lines_counter);
-             t += "</td>";
-
-
-             t += "</tr>\r\n";
-
-
-             t += "<tr>\r\n";
-
-             t += "<td>lines_per_second</td>";
-
-             t += "<td>";
-             t += std::to_string ((int)round (lines_per_second));
-             t += "</td>";
-
-             t += "<td>";
-             t += format3 (lines_per_second);
-             t += "</td>";
-
-
-             t += "</tr>\r\n";
-
-             t += "<tr>\r\n";
-
-             t += "<td>bytes_per_second:</td>";
-
-             t += "<td>";
-             t += std::to_string ((int)round (bytes_per_second));
-             t += "</td>";
-
-             t += "<td>";
-             t += format3 (round (bytes_per_second));
-             t += "</td>";
-
-             t += "</tr>\r\n";
-
-
-             t += "</table>\r\n";
-
-             t += "<v>logstring:</b>";
-             t += tpl->vars["$logstring"]->get_val();
-
-
-
-             str_replace (body, "@b", t);
-             str_replace (body, "@s", std::to_string(params->poll));
-
-
-             std::string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length:" + std::to_string(body.size()) + "\n\n" +body;
-
-             n = write (newsockfd, ts.c_str(), ts.size());
-             if (n < 0)
-                std::cout << "ERROR writing to socket" << std::endl;
             }
+         else
+             if (request.find ("GET /") != std::string::npos)
+                {
+                 std::string body = "<!doctype html>\r\n<html>\r\n<head>\r\n<meta charset=\"UTF-8\"><meta http-equiv=\"refresh\" content=\"@s\" >\r\n<title>logfilegen</title>\r\n</head>\r\n<body>@b\r\n</body>\r\n</html>";
+
+
+                 std::string t;
+
+                 t += "<table>\r\n";
+
+                 t += "<tr>\r\n";
+                 t += "<td><b>Metric</td>";
+                 t += "<td><b>Raw</b></td>";
+                 t += "<td><b>Adapted</b></td>";
+                 t += "</tr>\r\n";
+
+
+                 t += "<tr>\r\n";
+
+                 t += "<td>seconds_counter:</td>";
+                 t += "<td>";
+                 t += std::to_string (seconds_counter_ev);
+                 t += "</td>";
+                 t += "<td>";
+                 t += format3 (seconds_counter_ev);
+                 t += "</td>";
+
+                 t += "</tr>\r\n";
+
+
+                 t += "<tr>\r\n";
+
+                 t += "<td>file_size_total</td>";
+                 t += "<td>";
+                 t += bytes_to_file_size (file_size_total);
+                 t += "</td>";
+                 t += "<td>";
+                 t += bytes_to_file_size3  (file_size_total);
+                 t += "</td>";
+
+                 t += "</tr>\r\n";
+
+
+                 t += "<tr>\r\n";
+
+                 t += "<td>lines_counter</td>";
+                 t += "<td>";
+                 t += std::to_string (lines_counter);
+                 t += "</td>";
+                 t += "<td>";
+                 t += format3 (lines_counter);
+                 t += "</td>";
+
+                 t += "</tr>\r\n";
+
+
+                 t += "<tr>\r\n";
+
+                 t += "<td>lines_per_second</td>";
+                 t += "<td>";
+                 t += std::to_string ((int)round (lines_per_second));
+                 t += "</td>";
+                 t += "<td>";
+                 t += format3 (lines_per_second);
+                 t += "</td>";
+
+                 t += "</tr>\r\n";
+
+                 t += "<tr>\r\n";
+
+                 t += "<td>bytes_per_second:</td>";
+                 t += "<td>";
+                 t += std::to_string ((int)round (bytes_per_second));
+                 t += "</td>";
+                 t += "<td>";
+                 t += format3 (round (bytes_per_second));
+                 t += "</td>";
+
+                 t += "</tr>\r\n";
+
+                 t += "</table>\r\n";
+
+                 t += "<v>logstring:</b>";
+                 t += tpl->vars["$logstring"]->get_val();
+
+
+                 str_replace (body, "@b", t);
+                 str_replace (body, "@s", std::to_string(params->poll));
+
+                 std::string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length:" + std::to_string(body.size()) + "\n\n" +body;
+
+                 n = write (newsockfd, ts.c_str(), ts.size());
+                 if (n < 0)
+                     std::cout << "ERROR writing to socket" << std::endl;
+                }
 
     shutdown(newsockfd, 2);
     close(newsockfd);
