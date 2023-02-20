@@ -3,8 +3,6 @@
 
 #include <string>
 
-//using namespace std;
-
 
 class CParameters
 {
@@ -27,9 +25,6 @@ public:
   std::string metrics_addr;
   std::string port;
   std::string ip; //public ip
-
-  //size_t metrics_http_upd_poll; //secs
-
 
   size_t max_log_files;
   std::string max_log_file_size;
