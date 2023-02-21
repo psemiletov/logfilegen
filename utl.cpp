@@ -96,7 +96,6 @@ string get_home_dir()
 {
 #if !defined(_WIN32) || !defined(_WIN64)
 
-
   string result;
   const char *homedir = getenv ("HOME");
 
@@ -118,9 +117,7 @@ if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, homeDirStr)))
    return string (homeDirStr);
 
 
-
 #endif
-
 
 
 }

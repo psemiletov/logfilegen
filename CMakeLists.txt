@@ -4,6 +4,14 @@ set (CMAKE_CXX_STANDARD 17)
 
 option(USE_PROMCPP "Use prometheus_cpp" OFF)
 option(USE_STATIC "Static build" OFF)
+option(USE_CLANG "Build with Clang" OFF)
+
+
+if(USE_CLANG)
+  set(CMAKE_CXX_COMPILER clang++)
+  set(CMAKE_C_COMPILER clang)
+  message("+ Build with Clang++")
+endif(USE_CLANG)
 
 
 project (logfilegen VERSION 1.2.0 LANGUAGES CXX)
