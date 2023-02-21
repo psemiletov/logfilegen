@@ -94,9 +94,10 @@ string get_file_path (const string &path)
 
 string get_home_dir()
 {
+  string result;
+
 #if !defined(_WIN32) || !defined(_WIN64)
 
-  string result;
   const char *homedir = getenv ("HOME");
 
   if (homedir != NULL)
@@ -113,8 +114,8 @@ string get_home_dir()
 
   char homeDirStr[MAX_PATH];
 
-if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, homeDirStr)))
-   return string (homeDirStr);
+ if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, homeDirStr)))
+   result = homeDirStr;
 
 
 #endif
