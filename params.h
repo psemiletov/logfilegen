@@ -37,7 +37,7 @@ public:
   bool bstdout;
   bool debug;
   bool benchmark;
-  bool stats;
+  //bool stats;
   bool test;
   bool metrics;
   size_t poll;

@@ -177,7 +177,7 @@ int main (int argc, char *argv[])
    params.random = opts_config.get_bool ("random", false);
    params.rate = opts_config.get_int ("rate", 0);
    params.s_size = opts_config.get_string ("size", "0");
-   params.stats = opts_config.get_bool ("stats", false);
+ //  params.stats = opts_config.get_bool ("stats", false);
    params.templatefile = opts_config.get_string ("template", "NOTEMPLATEFILE");
 
    params.metrics_addr = opts_config.get_string ("addr", "127.0.0.1:8080");
@@ -229,7 +229,7 @@ int main (int argc, char *argv[])
   params.s_size = opts_cmdline.get_string ("size", params.s_size);
   params.metrics_addr = opts_cmdline.get_string ("addr", params.metrics_addr);
 
-  params.stats = opts_cmdline.get_bool ("stats", params.stats);
+ // params.stats = opts_cmdline.get_bool ("stats", params.stats);
   params.templatefile = opts_cmdline.get_string ("template", params.templatefile);
   params.timestamp = opts_cmdline.get_string ("timestamp", params.timestamp);
   params.use_gzip = opts_cmdline.get_bool ("gzip", params.use_gzip);
@@ -285,7 +285,7 @@ int main (int argc, char *argv[])
   params.rate = opts_envars.get_num ("rate", params.rate);
   params.s_size = opts_envars.get_string ("size", params.s_size);
   params.size = string_to_file_size (params.s_size);
-  params.stats = opts_envars.get_bool ("stats", params.stats);
+//  params.stats = opts_envars.get_bool ("stats", params.stats);
   params.templatefile = opts_envars.get_string ("template", params.templatefile);
   params.timestamp = opts_envars.get_string ("timestamp", params.timestamp);
   params.use_gzip = opts_envars.get_bool ("gzip", params.use_gzip);

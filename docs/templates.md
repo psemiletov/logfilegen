@@ -262,6 +262,9 @@ Skinny Puppy
 
 When processed, the ```@file:/home/test/testsource.txt``` directive will load ```/home/test/testsource.txt```, transform it to ```|```-separated values and choose one of them randomly.
 
+Please note, the file name after ```@file``` must be an absolute file path, or, in other case, the file must be placed to the working directory where logfilegen is running.
+
+
 #### @seq
 
 Works like **sequence** variable values. Each value is separated by ```:```.

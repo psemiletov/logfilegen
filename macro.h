@@ -7,10 +7,6 @@
 #include <map>
 
 
-//using namespace std;
-
-
-//class CMacrosPoolMeta;
 
 class CMacro
 {
