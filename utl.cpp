@@ -15,11 +15,11 @@
 #include <unistd.h>
 #include <stdio.h>  // for FILENAME_MAX
 
-#if !defined(_WIN32) || !defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64)
 
-#include <pwd.h>
+//#include <pwd.h>
 
-#else
+//#else
 
 #include <windows.h>
 #include <Shlobj.h>
@@ -101,13 +101,13 @@ string get_home_dir()
 
   if (homedir != NULL)
      result = homedir;
-  else
+  /*else
       homedir = getpwuid(getuid())->pw_dir;
 
   if (homedir != NULL)
      result = homedir;
-
-  return homedir;
+*/
+//  return result;
 
 #else
 
@@ -118,6 +118,8 @@ if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, homeDirStr)))
 
 
 #endif
+
+  return result;
 
 
 }

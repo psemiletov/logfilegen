@@ -35,14 +35,21 @@ set(SOURCES
 add_executable (logfilegen ${SOURCES})
 
 if(USE_STATIC)
-#set(CMAKE_EXE_LINKER_FLAGS "-static -static-libstdc++ -static-libgcc")
-message("+ static build")
-target_link_libraries(logfilegen -static -static-libstdc++ -static-libgcc)
+  message("+ static build")
+
+if(!USE_CLANG)
+  target_link_libraries(logfilegen -static -static-libstdc++ -static-libgcc)
+else()
+  set(CMAKE_EXE_LINKER_FLAGS "-static")
+#  target_link_libraries(logfilegen -static -static-libc++)
+endif()
 endif()
 
+
 if(WIN32)
-target_link_libraries(logfilegen  -lws2_32)
+  target_link_libraries(logfilegen  -lws2_32)
 endif()
+
 
 set(ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH}:/usr/local/lib/pkgconfig")
 
