@@ -7,7 +7,6 @@
 #include <map>
 
 
-
 class CMacro
 {
 public:

@@ -2,7 +2,6 @@
 #define CYCLE_H
 
 #include <fstream>
-//#include <sys/types.h>
 
 #ifndef PROM
 
@@ -15,7 +14,7 @@
 
 #if defined(_WIN32) || defined(_WIN64)
 
-#undef _HAS_STD_BYTE
+//#undef _HAS_STD_BYTE
 
 #include <winsock2.h>
 //#include <WinSock2.h>
@@ -25,6 +24,8 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 //#include <arpa/inet.h>
+//#endif
+
 #endif
 
 #endif
