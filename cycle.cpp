@@ -3,6 +3,9 @@
 #include <cmath>
 #include <iostream>
 #include <string.h>
+#include <csignal>
+#include <fstream>
+
 
 #ifndef PROM
 //#include <arpa/inet.h>

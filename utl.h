@@ -42,5 +42,4 @@ std::string format3 (size_t n);
 std::string format3 (const std::string &s);
 
 
-
 #endif

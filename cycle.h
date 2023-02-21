@@ -1,19 +1,14 @@
 #ifndef CYCLE_H
 #define CYCLE_H
 
-#include <cstdlib>
 #include <fstream>
-#include <csignal>
+//#include <sys/types.h>
 
 #ifndef PROM
 
 #include <future>
 
 #endif
-
-#include <unistd.h>
-#include <sys/types.h>
-#include <thread>
 
 
 #ifndef PROM

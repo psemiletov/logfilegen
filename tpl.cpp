@@ -1,15 +1,4 @@
-#include <fstream>
 #include <iostream>
-#include <sstream>
-#include <stdlib.h>
-#include <cstring>
-#include <algorithm>
-#include <iomanip>
-#include <ctime>
-#include <chrono>
-
-#include <vector>
-#include <sys/time.h>
 
 #include "tpl.h"
 #include "utl.h"
@@ -145,7 +134,6 @@ string CTpl::prepare_log_string()
          {
           i = logstring.find (variable);
           if (i != string::npos)
-//             logstring = logstring.replace (i, variable.length(), it->second->get_val());
               logstring.replace (i, variable.length(), it->second->get_val());
          }
        while (i != string::npos);
