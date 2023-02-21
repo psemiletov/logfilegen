@@ -6,6 +6,7 @@
 #include <csignal>
 #include <fstream>
 
+#include <unistd.h>
 
 #ifndef PROM
 //#include <arpa/inet.h>
