@@ -13,15 +13,18 @@ on:
       prometheus_enable:
         description: Prometheus support
         required: true
-        type: boolean
-        default: true
+        default: false
+        type: choice
+        options:
+        - true
+        - false
 
 
 env:
   BUILD_DIR: _build
   LOGFILEGEN_FILE: logfilegen
   LOGFILEGEN_BUILD_TYPE: Release
-  PROMETHEUS_ENABLE: true
+  PROMETHEUS_ENABLE: false
   PROMETHEUS_PATH: prometheus
   PROMETHEUS_REPOSITORY: jupp0r/prometheus-cpp
   PROMETHEUS_VERSION: v1.1.0
@@ -38,7 +41,7 @@ jobs:
       - name: Common - Variables
         run: |
           if [[ -z "${{ github.event.inputs.tag }}" ]]; then echo "GITHUB_TAG=${{ github.ref_name }}" >> "${GITHUB_ENV}"; else echo "GITHUB_TAG=${{ github.event.inputs.tag }}" >> "${GITHUB_ENV}"; fi
-          if [[ -z "${{ github.event.inputs.prometheus_enable }}" ]]; then echo "PROMETHEUS_ENABLE=${{ env.PROMETHEUS_ENABLE }}" >> "${GITHUB_ENV}"; else echo "PROMETHEUS_ENABLE=${{ github.event.inputs.prometheus_enable }}" >> "${GITHUB_ENV}"; fi
+          if [[ "${{ github.event_name }}"  == "workflow_dispatch" ]]; then echo "PROMETHEUS_ENABLE=${{ github.event.inputs.prometheus_enable }}" >> "${GITHUB_ENV}"; else echo "PROMETHEUS_ENABLE=${{ env.PROMETHEUS_ENABLE }}" >> "${GITHUB_ENV}"; fi
 
       - name: Common - Prerequisites
         run: |
@@ -46,7 +49,7 @@ jobs:
           sudo apt install git make g++ cmake pkg-config
 
       - name: Prometheus - Checkout
-        if: ${{ env.PROMETHEUS_ENABLE }}
+        if: ${{ env.PROMETHEUS_ENABLE == 'true' }}
         uses: actions/checkout@v3
         with:
           path: ${{ env.PROMETHEUS_PATH }}
@@ -55,22 +58,22 @@ jobs:
           submodules: recursive
 
       - name: Prometheus - Configure
-        if: ${{ env.PROMETHEUS_ENABLE }}
+        if: ${{ env.PROMETHEUS_ENABLE == 'true' }}
         run: cmake -S . -B ${{ env.BUILD_DIR }} -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ env.PROMETHEUS_BUILD_TYPE }} -DENABLE_PUSH=OFF -DENABLE_COMPRESSION=OFF
         working-directory: ${{ env.PROMETHEUS_PATH }}
 
       - name: Prometheus - Build
-        if: ${{ env.PROMETHEUS_ENABLE }}
+        if: ${{ env.PROMETHEUS_ENABLE == 'true' }}
         run: cmake --build ${{ env.BUILD_DIR }} --parallel 4
         working-directory: ${{ env.PROMETHEUS_PATH }}
 
       - name: Prometheus - Test
-        if: ${{ env.PROMETHEUS_ENABLE }}
+        if: ${{ env.PROMETHEUS_ENABLE == 'true' }}
         run: ctest --verbose --test-dir ${{ env.BUILD_DIR }}
         working-directory: ${{ env.PROMETHEUS_PATH }}
 
       - name: Prometheus - Install
-        if: ${{ env.PROMETHEUS_ENABLE }}
+        if: ${{ env.PROMETHEUS_ENABLE == 'true' }}
         run: sudo cmake --install ${{ env.BUILD_DIR }}
         working-directory: ${{ env.PROMETHEUS_PATH }}
 
