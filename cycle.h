@@ -81,7 +81,7 @@ public:
 
 #ifndef PROM
 
-  int sockfd, newsockfd, portno;
+  int /*sockfd, */newsockfd, portno;
 
   #if defined(_WIN32) || defined(_WIN64)
   int clilen;

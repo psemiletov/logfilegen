@@ -19,12 +19,17 @@ using namespace std::chrono;
 namespace
 {
   volatile std::sig_atomic_t g_signal;
+  volatile int sockfd;
 }
+
 
 
 void f_signal_handler (int signal)
 {
   g_signal = signal;
+
+  shutdown (sockfd, 2);
+  close (sockfd);
 
   std::cout << "Exiting by the signal" << std::endl;
 }
@@ -115,7 +120,7 @@ CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
 
 #endif
 
-     memset (&serv_addr, 0, sizeof(serv_addr));
+     memset (&serv_addr, 0, sizeof (serv_addr));
 
      portno = std::stoi(params->port.c_str());;
      serv_addr.sin_family = AF_INET;
@@ -123,11 +128,11 @@ CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
     //  inet_pton (AF_INET, params->ip.c_str(), &serv_addr);
      serv_addr.sin_port = htons(portno);
 
-     int retcode = ::bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr));
+     int retcode = ::bind (sockfd, (struct sockaddr *) &serv_addr, sizeof (serv_addr));
 
      if (retcode == 0)
         {
-         listen(sockfd,5);
+         listen (sockfd, 5);
          server_run = true;
         }
     else
@@ -246,7 +251,7 @@ void CGenCycle::server_handle()
                  t += bytes_to_file_size (file_size_total);
                  t += "</td>";
                  t += "<td>";
-                 t += bytes_to_file_size3  (file_size_total);
+                 t += bytes_to_file_size3 (file_size_total);
                  t += "</td>";
 
                  t += "</tr>\r\n";
@@ -296,17 +301,17 @@ void CGenCycle::server_handle()
 
 
                  str_replace (body, "@b", t);
-                 str_replace (body, "@s", std::to_string(params->poll));
+                 str_replace (body, "@s", std::to_string (params->poll));
 
-                 std::string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length:" + std::to_string(body.size()) + "\n\n" +body;
+                 std::string ts = "HTTP/1.1 200 OK\nContent-Type:text/html\nContent-Length:" + std::to_string (body.size()) + "\n\n" +body;
 
                  n = write (newsockfd, ts.c_str(), ts.size());
                  if (n < 0)
                      std::cout << "ERROR writing to socket" << std::endl;
                 }
 
-    shutdown(newsockfd, 2);
-    close(newsockfd);
+    shutdown (newsockfd, 2);
+    close (newsockfd);
    }
 }
 
