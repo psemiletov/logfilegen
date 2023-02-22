@@ -1,5 +1,5 @@
 + Metrics support. logfilegen can expose metrics, turned on by default. Get the metrics in Prometheus format at localhost:8080/metrics, and see the self-hosted statistics page at localhost:8080 (via http).
 + Results support. logfilegen can write final statistics to the file or stdout (--results=filename), in a given format (--resuilts_string=format string).
-* Cmake support impovements (Clang, static buildm etc).
+* Cmake support improvements (Clang, static buildm etc).
 * A lot of fixes.
 * Documentation update.
