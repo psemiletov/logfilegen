@@ -1,3 +1,7 @@
++ --metrics
++ --results
++ --results_template
+* misc fixes
 + --test
 * params.max_log_files < 1  fix
 
