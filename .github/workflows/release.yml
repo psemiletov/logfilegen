@@ -6,11 +6,11 @@ on: [workflow_dispatch]
 #  push:
     #tags:
 #      - '*'
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: Release tag
-        required: false
+  # workflow_dispatch:
+  #   inputs:
+  #     tag:
+  #       description: Release tag
+  #       required: false
 
 
 jobs:
