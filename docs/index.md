@@ -13,12 +13,18 @@ Logfilegen is a fast and highly customizable tool to generate common server (ngi
 
 ## NEWS
 
-***08 february 2023, 1.2.0*** - This release adds a new, simplifier version of the benchmark: --test
+***22 february 2023, 2.0.0***
 
-A some sort of quick benchmark at full speed, using the default template for the current mode (nginx by default), one step of the log rotation; output to the temporary file at system's temporary directory (the output log will be deleted after all is done). Result, in lines per second, may vary depended on the randomizer engine work and use of gzip.
-Useful to run on the clean installation, when we have no configs and templates yet.
++ Metrics support. logfilegen can expose metrics, turned on by default. Get the metrics in Prometheus format at localhost:8080/metrics, and see the self-hosted statistics page at localhost:8080 (via http).
 
-Fixes: log rotation queue minimal length is 1 now, i.e. one log file + at least one rotation file, if needed.
++ Results support. logfilegen can write final statistics to the file or stdout (--results=filename), in a given format (--resuilts_string=format string).
+
+* Cmake support improvements (Clang, static build, etc).
+
+* A lot of fixes.
+
+* Documentation update.
+
 
 ## MANUAL
 
