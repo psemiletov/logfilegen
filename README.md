@@ -2,7 +2,7 @@
 
 The server log file generator
 
-[![Release](../../actions/workflows/release.yml/badge.svg)](../../actions/workflows/release.yml)
+[![Release](../../actions/workflows/release_cmake.yml/badge.svg)](../../actions/workflows/release_cmake.yml)
 [![Tests](../../actions/workflows/tests.yml/badge.svg)](../../actions/workflows/tests.yml)
 
 [![Docker](../../actions/workflows/docker.yml/badge.svg)](../../actions/workflows/docker.yml)
