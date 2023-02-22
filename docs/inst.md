@@ -80,13 +80,24 @@ make install
 ### From the source with CMake/Make
 
 
-#### Default
+#### Default, build with GCC
 
 
 ```
 mkdir b
 cd b
 cmake ..
+make
+make install
+```
+
+#### Default, build with Clang++
+
+
+```
+mkdir b
+cd b
+cmake -DUSE_CLANG ..
 make
 make install
 ```

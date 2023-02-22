@@ -64,7 +64,7 @@ jobs:
 
       - name: Prometheus - Build
         if: ${{ env.PROMETHEUS_ENABLE == 'true' }}
-        run: cmake --build ${{ env.BUILD_DIR }} --parallel 4
+        run: cmake --build ${{ env.BUILD_DIR }}
         working-directory: ${{ env.PROMETHEUS_PATH }}
 
       - name: Prometheus - Test
@@ -83,7 +83,7 @@ jobs:
           ref: ${{ env.GITHUB_TAG }}
 
       - name: Logfilegen - Configure
-        run: cmake -S . -B ${{ env.BUILD_DIR }} -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{ env.LOGFILEGEN_BUILD_TYPE }}
+        run: cmake -S . -B ${{ env.BUILD_DIR }} -G "Unix Makefiles" -DUSE_STATIC=ON -DCMAKE_BUILD_TYPE=${{ env.LOGFILEGEN_BUILD_TYPE }}
 
       - name: Logfilegen - Build
         run: cmake --build ${{ env.BUILD_DIR }} --target all --config ${{ env.LOGFILEGEN_BUILD_TYPE }} -- -j4
