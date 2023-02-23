@@ -9,7 +9,19 @@
 #include <vector>
 #include <iostream>
 #include <iomanip>
-#include <filesystem>
+//#include <filesystem>
+
+#ifndef __has_include
+  static_assert(false, "__has_include not supported");
+#else
+#  if __cplusplus >= 201703L && __has_include(<filesystem>)
+#    include <filesystem>
+     namespace fs = std::filesystem;
+#  elif __has_include(<experimental/filesystem>)
+#    include <experimental/filesystem>
+     namespace fs = std::experimental::filesystem;
+#  endif
+#endif
 
 
 
@@ -100,7 +112,7 @@ int main (int argc, char *argv[])
 {
 //  cout << "version: " << VERSION_NUMBER << endl;
 
-  std::string tdir = std::filesystem::temp_directory_path().string();
+  std::string tdir = fs::temp_directory_path().string();
 
   std::string temp_logfile;
   std::string temp_logfile0;

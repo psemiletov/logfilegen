@@ -6,7 +6,28 @@
 //#include <sys/statvfs.h>
 #include <sys/stat.h>
 #include <algorithm>
+
+/*
+#ifndef USE_OPENSUSE
 #include <filesystem>
+#else
+#include <experimental/filesystem>
+#endif
+*/
+
+#ifndef __has_include
+  static_assert(false, "__has_include not supported");
+#else
+#  if __cplusplus >= 201703L && __has_include(<filesystem>)
+#    include <filesystem>
+     namespace fs = std::filesystem;
+#  elif __has_include(<experimental/filesystem>)
+#    include <experimental/filesystem>
+     namespace fs = std::experimental::filesystem;
+#  endif
+#endif
+
+
 #include <cstdint>
 #include <cstdlib>
 #include <vector>
@@ -128,7 +149,7 @@ string get_home_dir()
 
 string current_path()
 {
-  return std::filesystem::current_path().string();
+  return fs::current_path().string();
 }
 
 
@@ -167,8 +188,8 @@ size_t get_free_space (const string &path)
   if (path.empty())
      return 0;
 
-  std::filesystem::path p (path);
-  const std::filesystem::space_info i = std::filesystem::space (p);
+  fs::path p (path);
+  const fs::space_info i = fs::space (p);
   return i.available;
 }
 

@@ -5,6 +5,7 @@ set (CMAKE_CXX_STANDARD 17)
 option(USE_PROMCPP "Use prometheus_cpp" OFF)
 option(USE_STATIC "Static build" OFF)
 option(USE_CLANG "Build with Clang" OFF)
+option(USE_OPENSUSE "Build with OpenSUSE" OFF)
 
 
 if(USE_CLANG)
@@ -12,6 +13,7 @@ if(USE_CLANG)
   set(CMAKE_C_COMPILER clang)
   message("+ Build with Clang++")
 endif(USE_CLANG)
+
 
 
 project (logfilegen VERSION 2.0.0 LANGUAGES CXX)
@@ -36,6 +38,14 @@ add_executable (logfilegen ${SOURCES})
 
 #set(CMAKE_EXE_LINKER_FLAGS "-pthread -lpthread")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+
+
+
+if(USE_OPENSUSE)
+  target_link_libraries(logfilegen -lstdc++fs)
+   add_definitions(-DUSE_OPENSUSE=1)
+endif(USE_OPENSUSE)
+
 
 
 if(USE_STATIC)

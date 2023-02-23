@@ -1,3 +1,4 @@
++ OpenSUSE 15.15 compat (cmake -DUSE_OPENSUSE=ON)
 + --metrics
 + --results
 + --results_template

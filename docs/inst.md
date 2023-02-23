@@ -22,6 +22,22 @@ make uninstall
 There are some ready-to-use examples below to build logfilegen on some systems or distros:
 
 
+#### OpenSUSE 15.15
+
+- Download and unpack the tarball. Go to the unpacked source directory.
+
+- Install dependencies.
+
+- Build and install:
+
+```console
+mkdir b
+cd b
+cmake -DUSE_SUSE=ON
+make
+make install
+```
+
 #### Ubuntu 22.04
 
 - Download and unpack the tarball. Go to the unpacked source directory.
