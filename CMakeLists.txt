@@ -34,7 +34,8 @@ set(SOURCES
 
 add_executable (logfilegen ${SOURCES})
 
-set(CMAKE_EXE_LINKER_FLAGS "-pthread -lpthread")
+#set(CMAKE_EXE_LINKER_FLAGS "-pthread -lpthread")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
 
 if(USE_STATIC)
