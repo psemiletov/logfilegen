@@ -34,6 +34,9 @@ set(SOURCES
 
 add_executable (logfilegen ${SOURCES})
 
+set(CMAKE_EXE_LINKER_FLAGS "-pthread -lpthread")
+
+
 if(USE_STATIC)
   message("+ static build")
 
