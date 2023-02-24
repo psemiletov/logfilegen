@@ -13,17 +13,16 @@ Logfilegen is a fast and highly customizable tool to generate common server (ngi
 
 ## NEWS
 
-***22 february 2023, 2.0.0***
+***24 february 2023, 2.1.0***
 
-+ Metrics support. logfilegen can expose metrics, turned on by default. Get the metrics in Prometheus format at localhost:8080/metrics, and see the self-hosted statistics page at localhost:8080 (via http).
++ outdated GCC (< 9.1.0) support (CMake)
 
-+ Results support. logfilegen can write final statistics to the file or stdout (--results=filename), in a given format (--resuilts_string=format string).
+* console possibly overflow fixes
 
-* Cmake support improvements (Clang, static build, etc).
+* ENV variables now in the UPPER CASE only
 
-* A lot of fixes.
+* CMake is preferrable way to build logfilegen
 
-* Documentation update.
 
 
 ## MANUAL

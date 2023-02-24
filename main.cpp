@@ -2,7 +2,7 @@
  *   this code by Peter Semiletov is Public Domain         *
  **********************************************************/
 
-#undef _HAS_STD_BYTE
+//#undef _HAS_STD_BYTE
 
 #include <cstdint>
 #include <cstdlib>
@@ -33,7 +33,7 @@
 
 
 #ifndef VERSION_NUMBER
-#define VERSION_NUMBER "2.0.0"
+#define VERSION_NUMBER "2.1.0"
 #endif
 
 

@@ -1,12 +1,69 @@
 ## Installation
 
+To compile logfilegen from the source you need GCC/g++ or Clang with C++17 version support. If you did not compiled programs before, install GCC/g++ or Clang, **cmake** and **make** utility to your system.
+
+Use the tarball with the [latest release](https://github.com/psemiletov/logfilegen/releases/latest), it is always stable. Altough logfilegen has several manually written makefiles, the prefered way to compile logfilegen is CMake/make pair. For example, with CMake you can compile logfilegen with outdated GCC versions, or easily use Clang instead of GCC.
+
+
+### Build the source with CMake/Make
+
+Unpack the source, go to the logfilegen source dir, and, as root or with sudo, run:
+
+
+#### Default, build with GCC
+
+
+```
+mkdir b
+cd b
+cmake ..
+make
+make install
+```
+
+#### Default, build with Clang++
+
+
+```
+mkdir b
+cd b
+cmake -DUSE_CLANG ..
+make
+make install
+```
+
+#### Static build
+
+
+```
+mkdir b
+cd b
+cmake -DUSE_STATIC=ON ..
+make
+make install
+```
+
+
+#### With prometheus_cpp support
+
+logfilegen has support for Prometheus/OpenMetrics format metrics exposion via built-in server code or, as an optional and experimatal feature, via [prometheus-cpp](https://github.com/jupp0r/prometheus-cpp) library. Currently, the built-in server code works faster. But if you want to play around with prometheus_cpp:
+
+
+```
+mkdir b
+cd b
+cmake -DUSE_PROMCPP=ON ..
+make
+make install
+```
+
+
+
 ### From the source with plain Make
 
-To compile logfilegen from the source you need GCC/g++ or Clang with C++17 version support. If you did not compiled programs before, install g++ or Clang, and **make** utility to your system.
 
-logfilegen has support for Prometheus/OpenMetrics format metrics exposion via built-in server code or, as an optional and experimatal feature, via [prometheus-cpp](https://github.com/jupp0r/prometheus-cpp) library. See the CMake section for turning the last one on, but currently the built-in server code works faster.
+More simple, but less powerful and less flexlible way to compile logfilegen, is the use on manual written Makefiles:
 
-First of all, download the tarball from [latest release](https://github.com/psemiletov/logfilegen/releases/latest), unpack it, and, if you are already familiar with compilation tools, go to the logfilegen source dir, and, as root or with sudo, run:
 
 ```console
 make
@@ -19,24 +76,9 @@ And to uninstall:
 make uninstall
 ```
 
-There are some ready-to-use examples below to build logfilegen on some systems or distros:
+There are some ready-to-use examples below to build logfilegen with Makefiles on some systems or distros:
 
 
-#### OpenSUSE 15.15
-
-- Download and unpack the tarball. Go to the unpacked source directory.
-
-- Install dependencies.
-
-- Build and install:
-
-```console
-mkdir b
-cd b
-cmake -DUSE_SUSE=ON
-make
-make install
-```
 
 #### Ubuntu 22.04
 
@@ -92,54 +134,6 @@ make --makefile=Makefile.OpenBSD
 make install
 ```
 
-
-### From the source with CMake/Make
-
-
-#### Default, build with GCC
-
-
-```
-mkdir b
-cd b
-cmake ..
-make
-make install
-```
-
-#### Default, build with Clang++
-
-
-```
-mkdir b
-cd b
-cmake -DUSE_CLANG ..
-make
-make install
-```
-
-#### Static build
-
-
-```
-mkdir b
-cd b
-cmake -DUSE_STATIC=ON ..
-make
-make install
-```
-
-
-#### With prometheus_cpp support
-
-
-```
-mkdir b
-cd b
-cmake -DUSE_PROMCPP=ON ..
-make
-make install
-```
 
 
 ### READ MORE

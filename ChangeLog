@@ -1,4 +1,8 @@
-+ OpenSUSE 15.15 compat (cmake -DUSE_OPENSUSE=ON)
++ outdated GCC (< 9.1.0) support
+* console possibly overflow fixes
+* ENV variables now in the UPPER CASE only
+
+
 + --metrics
 + --results
 + --results_template

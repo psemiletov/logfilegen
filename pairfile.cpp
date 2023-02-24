@@ -274,7 +274,7 @@ CPairFile::CPairFile (vector <string> envars)
 
            values[param] = value;
 
-           std::cout << "param: " << param << " value: " << value << endl;
+          // std::cout << "param: " << param << " value: " << value << endl;
          }
      }
 /*

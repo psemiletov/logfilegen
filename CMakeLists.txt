@@ -5,14 +5,8 @@ set (CMAKE_CXX_STANDARD 17)
 option(USE_PROMCPP "Use prometheus_cpp" OFF)
 option(USE_STATIC "Static build" OFF)
 option(USE_CLANG "Build with Clang" OFF)
-option(USE_OPENSUSE "Build with OpenSUSE" OFF)
+#option(USE_OPENSUSE "Build with OpenSUSE" OFF)
 
-
-function( set_required_build_settings_for_GCC8 )
-    # Always link with libstdc++fs.a when using GCC 8.
-    # Note: This command makes sure that this option comes pretty late on the cmdline.
-    link_libraries( "$<$<AND:$<CXX_COMPILER_ID:GNU>,$<VERSION_LESS:$<CXX_COMPILER_VERSION>,9.0>>:-lstdc++fs>" )
-endfunction()
 
 
 if(USE_CLANG)
@@ -23,7 +17,7 @@ endif(USE_CLANG)
 
 
 
-project (logfilegen VERSION 2.0.0 LANGUAGES CXX)
+project (logfilegen VERSION 2.1.0 LANGUAGES CXX)
 add_definitions(-DVERSION_NUMBER="\\"${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}\\"")
 
 
