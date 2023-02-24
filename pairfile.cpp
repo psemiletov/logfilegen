@@ -251,7 +251,7 @@ CPairFile::CPairFile (int argc, char *argv[])
 
 CPairFile::CPairFile (vector <string> envars)
 {
-  stringstream st;
+//  stringstream st;
 
   for (size_t i = 0; i < envars.size(); i++)
       {
@@ -270,10 +270,14 @@ CPairFile::CPairFile (vector <string> envars)
 
            string value = env_p;
 
-           st << param << "=" << value << endl;
+           //st << param << "=" << value << endl;
+
+           values[param] = value;
+
+           std::cout << "param: " << param << " value: " << value << endl;
          }
      }
-
+/*
   string line;
 
   while (getline (st, line))
@@ -294,7 +298,7 @@ CPairFile::CPairFile (vector <string> envars)
          string b = line.substr (pos + 1, line.size() - pos);
          values[a] = b;
         }
-
+*/
 }
 
 

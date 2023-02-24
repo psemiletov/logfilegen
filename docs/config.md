@@ -110,9 +110,9 @@ But, in the case of the configuration file or environment variable, you need to 
 
 ## Environment variables
 
-All variables can be also set via enviromnent variables using ```export KEY=VALUE```
+All variables can be also set via enviromnent variables using ```export KEY=VALUE```, with the UPPER-CASED key name.
 
-In thos case, the usual variable name must be prefixed with ```LFG``` (shortened from logfilegen), for example **LFG_DURATION** or **lfg_duration** to set **duration**.
+The usual variable name must be prefixed with ```LFG_``` (shortened from logfilegen), for example **LFG_DURATION** sets **duration** variable.
 
 Example:
 
