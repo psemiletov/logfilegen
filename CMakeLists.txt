@@ -8,6 +8,13 @@ option(USE_CLANG "Build with Clang" OFF)
 option(USE_OPENSUSE "Build with OpenSUSE" OFF)
 
 
+function( set_required_build_settings_for_GCC8 )
+    # Always link with libstdc++fs.a when using GCC 8.
+    # Note: This command makes sure that this option comes pretty late on the cmdline.
+    link_libraries( "$<$<AND:$<CXX_COMPILER_ID:GNU>,$<VERSION_LESS:$<CXX_COMPILER_VERSION>,9.0>>:-lstdc++fs>" )
+endfunction()
+
+
 if(USE_CLANG)
   set(CMAKE_CXX_COMPILER clang++)
   set(CMAKE_C_COMPILER clang)
