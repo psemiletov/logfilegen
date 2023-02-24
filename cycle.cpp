@@ -5,8 +5,15 @@
 #include <string.h>
 #include <csignal>
 #include <fstream>
-
 #include <unistd.h>
+
+
+#ifdef _WIN32
+#include <conio.h>
+#else
+#include <stdio.h>
+#define clrscr() printf("\e[1;1H\e[2J")
+#endif
 
 #ifndef PROM
 //#include <arpa/inet.h>
@@ -482,7 +489,14 @@ void CGenCycleRated::loop()
 
 
              if (params->bstdout)
+                {
+                 if (lines_counter % 24 == 0)
+                   //system ("clear");
+                    clrscr();
+
                  std::cout << log_string << "\n";
+
+                }
 
              if (! file_out_error && ! no_free_space)
                  {
@@ -625,7 +639,14 @@ void CGenCycleUnrated::loop()
 
 
               if (params->bstdout)
-                 std::cout << log_string << "\n";
+                 {
+                  if (lines_counter % 24 == 0)
+                  //   system ("clear");
+                     clrscr();
+
+                  std::cout << log_string << "\n";
+                 }
+
 
               if (! file_out_error && ! no_free_space)
                  {
