@@ -23,6 +23,7 @@ bool file_exists (const std::string &name);
 bool is_program_exists (const std::string &appname);
 bool is_path_abs (const std::string &path);
 bool path_exists (const std::string &fname);
+std::string get_tmp_dir();
 
 
 //String utis

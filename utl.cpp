@@ -153,6 +153,44 @@ string current_path()
 }
 
 
+string get_tmp_dir()
+{
+  std::string result;
+
+#if defined(_WIN32) || defined(_WIN64)
+
+
+  TCHAR szPath[MAX_PATH + 1];
+  DWORD d = GetTempPath(MAX_PATH + 1, szPath);
+  if (d != ERROR_SUCCESS)
+     result = "/tmp";
+   else
+        result = szPath;
+
+ #else
+
+
+  char const *d = getenv ("TMPDIR");
+  if (d)
+     result = d;
+  else
+      result = "/tmp";
+
+#endif
+
+  return result;
+}
+
+
+
+
+
+}
+
+
+
+
+
 /*
 string current_path()
 {
