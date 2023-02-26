@@ -3,7 +3,6 @@
  **********************************************************/
 
 
-//#include <sys/statvfs.h>
 #include <sys/stat.h>
 #include <algorithm>
 
@@ -15,6 +14,7 @@
 #endif
 */
 
+/*
 #ifndef __has_include
   static_assert(false, "__has_include not supported");
 #else
@@ -26,6 +26,7 @@
      namespace fs = std::experimental::filesystem;
 #  endif
 #endif
+*/
 
 
 #include <cstdint>
@@ -35,35 +36,36 @@
 #include <fstream>
 #include <unistd.h>
 #include <stdio.h>  // for FILENAME_MAX
+#include <limits>
+#include <unistd.h>
 
 #if defined(_WIN32) || defined(_WIN64)
 
 //#include <pwd.h>
 
-//#else
-
 #include <windows.h>
 #include <Shlobj.h>
+
+
+#define GetCurrentDir _getcwd
+#define DIR_SEPARATOR '\\'
+
+#else
+
+#include <sys/statvfs.h>
+
+
+#define DIR_SEPARATOR '/'
+
+//#define GetCurrentDir getcwd
+
+
 #endif
 
 
 #include "utl.h"
 
 
-#ifdef WINDOWS
-#include <direct.h>
-#define get_cur_dir _getcwd
-#else
-#include <unistd.h>
-#define get_cur_dir getcwd
-#endif
-
-
-#ifdef WINDOWS
-#define DIR_SEPARATOR '\\'
-#else
-#define DIR_SEPARATOR '/'
-#endif
 
 
 
@@ -143,14 +145,40 @@ string get_home_dir()
 
   return result;
 
-
 }
 
-
+/*
 string current_path()
 {
   return fs::current_path().string();
 }
+*/
+
+
+string current_path()
+{
+ std::string result;
+
+ char buff[FILENAME_MAX];
+
+#if defined(_WIN32) || defined(_WIN64)
+
+  if (_getcwd (buff, FILENAME_MAX))
+    result = buff;
+
+
+#else
+
+ if (getcwd (buff, FILENAME_MAX))
+    result = buff;
+
+#endif
+
+ return result;
+
+
+}
+
 
 
 string get_tmp_dir()
@@ -185,12 +213,6 @@ string get_tmp_dir()
 
 
 
-
-
-
-
-
-
 /*
 string current_path()
 {
@@ -203,24 +225,38 @@ string current_path()
   result = path;
   return result;
 }
+
 */
-/*
+
 size_t get_free_space (const string &path)
 {
+  if (path.empty())
+     return 0;
 
+  size_t result = 0;
+
+#if defined(_WIN32) || defined(_WIN64)
+
+
+#else
 
   struct statvfs buf;
 
   int r = statvfs (path.c_str(), &buf);
 
   if (r < 0)
-     return -1;
+     result = 0;
+  else
+  result = buf.f_bavail * buf.f_bsize;
 
-  return buf.f_bavail * buf.f_bsize;
+#endif
+
+  return result;
+
 }
-*/
 
 
+/*
 size_t get_free_space (const string &path)
 {
   if (path.empty())
@@ -230,7 +266,7 @@ size_t get_free_space (const string &path)
   const fs::space_info i = fs::space (p);
   return i.available;
 }
-
+*/
 
 bool file_exists (const string &name)
 {

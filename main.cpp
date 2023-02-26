@@ -10,7 +10,7 @@
 #include <iostream>
 #include <iomanip>
 //#include <filesystem>
-
+/*
 #ifndef __has_include
   static_assert(false, "__has_include not supported");
 #else
@@ -22,7 +22,7 @@
      namespace fs = std::experimental::filesystem;
 #  endif
 #endif
-
+*/
 
 
 #include "pairfile.h"
@@ -112,7 +112,10 @@ int main (int argc, char *argv[])
 {
 //  cout << "version: " << VERSION_NUMBER << endl;
 
-  std::string tdir = fs::temp_directory_path().string();
+//  std::string tdir = fs::temp_directory_path().string();
+
+   std::string tdir = get_tmp_dir();
+
 
   std::string temp_logfile;
   std::string temp_logfile0;
