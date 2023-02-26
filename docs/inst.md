@@ -2,7 +2,7 @@
 
 To compile logfilegen from the source you need GCC/g++ or Clang with C++17 version support. If you did not compiled programs before, install GCC/g++ or Clang, **cmake** and **make** utility to your system.
 
-Use the tarball with the [latest release](https://github.com/psemiletov/logfilegen/releases/latest), it is always stable. Altough logfilegen has several manually written makefiles, the prefered way to compile logfilegen is CMake/make pair. For example, with CMake you can compile logfilegen with outdated GCC versions, or easily use Clang instead of GCC.
+Use the tarball with the [latest release](https://github.com/psemiletov/logfilegen/releases/latest), it is always stable. Altough logfilegen has several manually written makefiles, the prefered way to compile logfilegen is CMake/make pair.
 
 
 ### Build the source with CMake/Make
