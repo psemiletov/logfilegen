@@ -3,7 +3,7 @@ prefix=/usr
 .endif
 
 CXX = clang++
-CXXFLAGS = -Wall -g -O3 -std=c++17
+CXXFLAGS = -Wall -g -O3 -std=c++11
 
 all: main.cpp
 	$(CXX) $(CXXFLAGS) -o logfilegen utl.cpp params.cpp macro.cpp vars.cpp tpl.cpp pairfile.cpp logrot.cpp cycle.cpp main.cpp

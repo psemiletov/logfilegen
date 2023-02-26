@@ -675,7 +675,7 @@ void CGenCycleUnrated::loop()
 
 
   auto stop = high_resolution_clock::now();
-  auto duration = duration_cast<microseconds>(stop - start);
+  //auto duration = duration_cast<microseconds>(stop - start);
   auto duration_s = duration_cast<seconds>(stop - start);
 
   if (params->benchmark)

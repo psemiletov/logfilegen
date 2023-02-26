@@ -4,7 +4,7 @@ endif
 
 CXX = g++
 #CXXFLAGS = -Wall -g -O3 -fopenmp
-CXXFLAGS = -Wall -g -O3 -std=c++11 -pthread -lpthread
+CXXFLAGS = -Wall -g -Og -std=c++11 -pthread -lpthread
 #LDFLAGS= -pthread  -lpthread
 
 #add for -lpthread

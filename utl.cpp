@@ -238,6 +238,28 @@ size_t get_free_space (const string &path)
 #if defined(_WIN32) || defined(_WIN64)
 
 
+     BOOL  fResult;
+      unsigned __int64 i64FreeBytesToCaller,
+                       i64TotalBytes,
+                       i64FreeBytes;
+         fResult = GetDiskFreeSpaceEx (path.c_str(),
+                                 (PULARGE_INTEGER)&i64FreeBytesToCaller,
+                                 (PULARGE_INTEGER)&i64TotalBytes,
+                                 (PULARGE_INTEGER)&i64FreeBytes);
+         if (fResult)
+         {
+            result = i64FreeBytesToCaller;
+            /*printf ("\n\nGetDiskFreeSpaceEx reports\n\n");
+            printf ("Available space to caller = %I64u MB\n",
+                    i64FreeBytesToCaller / (1024*1024));
+            printf ("Total space               = %I64u MB\n",
+                    i64TotalBytes / (1024*1024));
+            printf ("Free space on drive       = %I64u MB\n",
+                    i64FreeBytes / (1024*1024));*/
+         }
+   }
+
+
 #else
 
   struct statvfs buf;

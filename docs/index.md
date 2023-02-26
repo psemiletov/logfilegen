@@ -13,15 +13,9 @@ Logfilegen is a fast and highly customizable tool to generate common server (ngi
 
 ## NEWS
 
-***24 february 2023, 2.1.0***
+***26 february 2023, 2.1.0***
 
-+ outdated GCC (< 9.1.0) support (CMake)
-
-* console possibly overflow fixes
-
-* ENV variables now in the UPPER CASE only
-
-* CMake is preferrable way to build logfilegen
+This release makes logfilegen possible to build on old compiler versions. Now logfilegen needs C++11 instead of C++17.
 
 
 

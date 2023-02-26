@@ -1,3 +1,5 @@
++ Min C++ ver is 11 instead of 17
+
 + outdated GCC (< 9.1.0) support
 * console possibly overflow fixes
 * ENV variables now in the UPPER CASE only

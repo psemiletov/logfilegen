@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD 11)
 
 option(USE_PROMCPP "Use prometheus_cpp" OFF)
 option(USE_STATIC "Static build" OFF)
@@ -17,7 +17,7 @@ endif(USE_CLANG)
 
 
 
-project (logfilegen VERSION 2.1.0 LANGUAGES CXX)
+project (logfilegen VERSION 2.2.0 LANGUAGES CXX)
 add_definitions(-DVERSION_NUMBER="\\"${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}\\"")
 
 
@@ -42,15 +42,10 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
 
 
-#if(USE_OPENSUSE)
+
+#if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.1.0)
 #  target_link_libraries(logfilegen -lstdc++fs)
-#   add_definitions(-DUSE_OPENSUSE=1)
-#endif(USE_OPENSUSE)
-
-
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.1.0)
-  target_link_libraries(logfilegen -lstdc++fs)
-endif()
+#endif()
 
 
 
@@ -100,23 +95,6 @@ else()
 
 endif()
 
-
-#find_package(prometheus-cpp CONFIG)
-
-#if(prometheus-cpp_FOUND)
-
- # message("+ prometheus-cpp support")
-
- # add_definitions(-DUSE_PROM=1)
-
-
- # target_link_libraries(logfilegen PRIVATE prometheus-cpp::pull)
- # target_link_libraries(logfilegen ${prometheus-cpp-core_LIBRARIES} )
- # include_directories(${prometheus-cpp-core_INCLUDE_DIRS})
-
-  # target_link_libraries(logfilegen PRIVATE prometheus-cpp::pull)
-
-#endif()
 
 
 install (TARGETS logfilegen DESTINATION bin)
