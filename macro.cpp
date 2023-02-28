@@ -43,14 +43,14 @@ std::mt19937 &mt()
 char arr_nums [] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
 
-int get_rnd (std::mt19937 *rnd_generator, int ta, int tb)
+int get_rnd (int ta, int tb)
 {
   std::uniform_int_distribution <> distrib (ta, tb);
-  return distrib (*rnd_generator);
+  return distrib (mt());
 }
 
 
-string gen_string (std::mt19937 *rnd_generator, size_t len)
+string gen_string (size_t len)
 {
   string result;
   result.reserve (128);
@@ -59,7 +59,7 @@ string gen_string (std::mt19937 *rnd_generator, size_t len)
 
   for (size_t i = 0; i < len; i++)
       {
-       int g = distrib (*rnd_generator);
+       int g = distrib (mt());
        char d = static_cast<char> (g + 'a');
        result += d;
       }
@@ -68,18 +68,18 @@ string gen_string (std::mt19937 *rnd_generator, size_t len)
 }
 
 
-string gen_string (std::mt19937 *rnd_generator, size_t min, size_t max)
+string gen_string (size_t min, size_t max)
 {
   string result;
   result.reserve (128);
 
   std::uniform_int_distribution<> distrib (0, 25);
   std::uniform_int_distribution<> dminmax (min, max);
-  size_t len = dminmax (*rnd_generator);
+  size_t len = dminmax (mt());
 
   for (size_t i = 0; i < len; i++)
       {
-       int g = distrib (*rnd_generator);
+       int g = distrib (mt());
        char d = static_cast<char> (g + 'a');
        result += d;
       }
@@ -88,26 +88,26 @@ string gen_string (std::mt19937 *rnd_generator, size_t min, size_t max)
 }
 
 
-string gen_rnd_path (std::mt19937 *rnd_generator, size_t min, size_t max, size_t deep)
+string gen_rnd_path (size_t min, size_t max, size_t deep)
 {
   string result;
   result.reserve (256);
 
-  size_t deep_max = get_rnd (rnd_generator, 1, deep);
+  size_t deep_max = get_rnd (1, deep);
 
   for (size_t d = 0; d < deep_max; d++)
       {
        result += "/";
-       int len = get_rnd (rnd_generator, min, max);
+       int len = get_rnd (min, max);
 
-       result += gen_string (rnd_generator, len);
+       result += gen_string (len);
       }
 
   return result;
 }
 
 
-string gen_number (std::mt19937 *rnd_generator, size_t len)
+string gen_number (size_t len)
 {
   std::uniform_int_distribution<> distrib (0, 9);
 
@@ -116,32 +116,32 @@ string gen_number (std::mt19937 *rnd_generator, size_t len)
 
   for (size_t i = 0; i < len; i++)
       {
-       result += arr_nums[distrib (*rnd_generator)];
+       result += arr_nums[distrib (mt())];
       }
 
   return result;
 }
 
 
-string gen_number (std::mt19937 *rnd_generator, size_t min, size_t max)
+string gen_number (size_t min, size_t max)
 {
   std::uniform_int_distribution<> distrib (0, 9);
   std::uniform_int_distribution<> dminmax (min, max);
-  size_t len = dminmax (*rnd_generator);
+  size_t len = dminmax (mt());
 
   string result;
   result.reserve (len);
 
   for (size_t i = 0; i < len; i++)
       {
-       result += arr_nums[distrib (*rnd_generator)];
+       result += arr_nums[distrib (mt())];
       }
 
   return result;
 }
 
 
-string gen_hex_number (std::mt19937 *rnd_generator, size_t len)
+string gen_hex_number (size_t len)
 {
   std::uniform_int_distribution<> distrib (0, 15);
 
@@ -150,25 +150,25 @@ string gen_hex_number (std::mt19937 *rnd_generator, size_t len)
 
   for (size_t i = 0; i < len; i++)
       {
-       result += arr_nums[distrib (*rnd_generator)];
+       result += arr_nums[distrib (mt())];
       }
 
   return result;
 }
 
 
-string gen_hex_number (std::mt19937 *rnd_generator, size_t min, size_t max)
+string gen_hex_number (size_t min, size_t max)
 {
   std::uniform_int_distribution<> distrib (0, 15);
   std::uniform_int_distribution<> dminmax (min, max);
-  size_t len = dminmax (*rnd_generator);
+  size_t len = dminmax (mt());
 
   string result;
   result.reserve (len);
 
   for (size_t i = 0; i < len; i++)
       {
-       result += arr_nums[distrib (*rnd_generator)];
+       result += arr_nums[distrib (mt())];
       }
 
   return result;
@@ -177,7 +177,7 @@ string gen_hex_number (std::mt19937 *rnd_generator, size_t min, size_t max)
 
 CMacro::CMacro()
 {
-  rnd_generator = new std::mt19937 (rnd_dev());
+ // rnd_generator = new std::mt19937 (rnd_dev());
 
   len_min = 0;
   len_max = 0;
@@ -187,7 +187,7 @@ CMacro::CMacro()
 
 CMacro::~CMacro()
 {
-  delete rnd_generator;
+  //delete rnd_generator;
 }
 
 
@@ -249,16 +249,16 @@ string CMacroIPRandom::process()
   string result;
   result.reserve (16);
 
-  result += to_string (distrib (*rnd_generator));
+  result += to_string (distrib (mt()));
   result += ".";
 
-  result += to_string (distrib (*rnd_generator));
+  result += to_string (distrib (mt()));
   result += ".";
 
-  result += to_string (distrib (*rnd_generator));
+  result += to_string (distrib (mt()));
   result += ".";
 
-  result += to_string (distrib (*rnd_generator));
+  result += to_string (distrib (mt()));
 
   return result;
 }
@@ -294,9 +294,9 @@ void CMacroStrRandom::parse (const string &s)
 string CMacroStrRandom::process()
 {
   if (len_max == 0)
-     return gen_string (rnd_generator, length);
+     return gen_string (length);
 
-  return gen_string (rnd_generator, len_min, len_max);
+  return gen_string (len_min, len_max);
 }
 
 
@@ -330,9 +330,9 @@ void CMacroIntRandom::parse (const string &s)
 string CMacroIntRandom::process()
 {
   if (len_max == 0)
-     return gen_number (rnd_generator, length);
+     return gen_number (length);
 
-  return gen_number (rnd_generator, len_min, len_max);
+  return gen_number (len_min, len_max);
 }
 
 
@@ -366,9 +366,9 @@ void CMacroHexRandom::parse (const string &s)
 string CMacroHexRandom::process()
 {
   if (len_max == 0)
-     return gen_hex_number (rnd_generator, length);
+     return gen_hex_number (length);
 
-  return gen_hex_number (rnd_generator, len_min, len_max);
+  return gen_hex_number (len_min, len_max);
 }
 
 
@@ -443,7 +443,7 @@ void CMacroPathRandom::parse (const string &s)
 
 string CMacroPathRandom::process()
 {
-   return gen_rnd_path (rnd_generator, len_min, len_max, length);
+   return gen_rnd_path (len_min, len_max, length);
 }
 
 
@@ -505,7 +505,7 @@ void CMacroSeq::parse (const string &s)
 
 string CMacroSeq::process()
 {
-   size_t i = get_rnd (rnd_generator, 1, vt.size() - 1);
+   size_t i = get_rnd (1, vt.size() - 1);
 
    return vt[i];
 }
@@ -538,7 +538,7 @@ void CMacroFileSource::parse (const string &s)
 string CMacroFileSource::process()
 {
   if (vt.size() != 0)
-     text = vt[get_rnd (rnd_generator, 0, vt.size()-1)];
+     text = vt[get_rnd (0, vt.size()-1)];
 
   return text;
 }
