@@ -18,5 +18,3 @@ jobs:
       with:
        name: logfilegen-macos-arm64-binary
        path: logfilegen
-    - name: Test
-      run: ./logfilegen --lines=2
