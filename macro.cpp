@@ -25,6 +25,21 @@
 using namespace std;
 
 
+std::mt19937 &mt()
+{
+  // initialize once per thread
+  //thread_local static std::random_device srd;
+  //thread_local static std::mt19937 smt(srd());
+
+
+  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  thread_local static std::mt19937 smt(seed);
+
+  return smt;
+}
+
+
+
 char arr_nums [] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
 
@@ -71,6 +86,7 @@ string gen_string (std::mt19937 *rnd_generator, size_t min, size_t max)
 
   return result;
 }
+
 
 string gen_rnd_path (std::mt19937 *rnd_generator, size_t min, size_t max, size_t deep)
 {
