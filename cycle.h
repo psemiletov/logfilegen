@@ -18,7 +18,7 @@
 
 #ifdef __HAIKU__
 //
-#include <kit/net/socket.h
+#include <Socket.h>
 #endif
 
 
