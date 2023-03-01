@@ -41,7 +41,10 @@ CVar::CVar (const string &key, const string &val)
   rnd_length = 8;
   precision = 3;
 
-  rnd_generator = new std::mt19937 (rnd_dev());
+//  rnd_generator = new std::mt19937 (rnd_dev());
+
+  rnd_generator = new std::mt19937 (std::chrono::system_clock::now().time_since_epoch().count());
+
   vartype = get_value_nature (val);
 
   //если макрос и не SEQ
@@ -126,9 +129,9 @@ string CVar::gen_msecs()
 {
   std::uniform_real_distribution <> distrib (fa, fb);
 
-  std::string s;
+//  std::string s;
   std::stringstream sstream;
-  sstream.setf(std::ios::fixed);
+  sstream.setf (std::ios::fixed);
   sstream.precision (precision);
   sstream << distrib (*rnd_generator);
 

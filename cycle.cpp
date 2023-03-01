@@ -23,6 +23,7 @@
 
 using namespace std::chrono;
 
+
 namespace
 {
   volatile std::sig_atomic_t g_signal;

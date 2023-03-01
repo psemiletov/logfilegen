@@ -4,28 +4,32 @@
 #include <fstream>
 
 #ifndef PROM
-
 #include <future>
-
 #endif
 
 
 #ifndef PROM
 
 #if defined(_WIN32) || defined(_WIN64)
-
-#include <winsock2.h>
 //#include <WinSock2.h>
 //#include <WinSock.h>
-#else
+#include <winsock2.h>
+#endif
 
+#ifdef __HAIKU__
+//
+#include <kit/net/socket.h
+#endif
+
+
+#ifdef __unix__
 #include <netinet/in.h>
 #include <sys/socket.h>
 //#include <arpa/inet.h>
-
 #endif
 
 #endif
+
 
 
 #ifdef PROM
