@@ -28,8 +28,8 @@ class CVar
 {
 public:
 
-  std::mt19937 *rnd_generator;
-  std::random_device rnd_dev;
+  //std::mt19937 *rnd_generator;
+  //std::random_device rnd_dev;
 
   CMacrosPool pool;
   CMacrosCache cache;

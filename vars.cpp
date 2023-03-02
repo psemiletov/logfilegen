@@ -16,6 +16,21 @@
 using namespace std;
 
 
+std::mt19937 &vmt()
+{
+  // initialize once per thread
+  //thread_local static std::random_device srd;
+  //thread_local static std::mt19937 smt(srd());
+
+
+  unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+  thread_local static std::mt19937 smt(seed);
+
+  return smt;
+}
+
+
+
 int get_value_nature (const string &s)
 {
   if (s.empty())
@@ -43,7 +58,7 @@ CVar::CVar (const string &key, const string &val)
 
 //  rnd_generator = new std::mt19937 (rnd_dev());
 
-  rnd_generator = new std::mt19937 (std::chrono::system_clock::now().time_since_epoch().count());
+  //rnd_generator = new std::mt19937 (std::chrono::system_clock::now().time_since_epoch().count());
 
   vartype = get_value_nature (val);
 
@@ -114,14 +129,14 @@ CVar::CVar (const string &key, const string &val)
 
 CVar::~CVar()
 {
-  delete rnd_generator;
+  //delete rnd_generator;
 }
 
 
 int CVar::get_rnd (int ta, int tb)
 {
    std::uniform_int_distribution <> distrib (ta, tb);
-   return distrib (*rnd_generator);
+   return distrib (vmt());
 }
 
 
@@ -133,7 +148,7 @@ string CVar::gen_msecs()
   std::stringstream sstream;
   sstream.setf (std::ios::fixed);
   sstream.precision (precision);
-  sstream << distrib (*rnd_generator);
+  sstream << distrib (vmt());
 
   return sstream.str();
 }
