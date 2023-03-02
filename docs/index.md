@@ -13,9 +13,16 @@ Logfilegen is a fast and highly customizable tool to generate common server (ngi
 
 ## NEWS
 
-***26 february 2023, 2.1.0***
+***02 March 2023, 2.3.0***
 
-This release makes logfilegen possible to build on old compiler versions. Now logfilegen needs C++11 instead of C++17.
++ CMake support optimization
+
++ HaikuOS support (compile with make --makefile=Makefile.Haiku
+
++ Mac ARM support (compile with make --makefile=Makefile.macarm
+
+* randomization engine take less resources
+
 
 
 
