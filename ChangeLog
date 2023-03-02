@@ -1,3 +1,4 @@
++ CMake support optimization
 + HaikuOS support (compile with make --makefile=Makefile.Haiku
 + Mac ARM support (compile with make --makefile=Makefile.macarm
 

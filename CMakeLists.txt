@@ -5,8 +5,6 @@ set (CMAKE_CXX_STANDARD 11)
 option(USE_PROMCPP "Use prometheus_cpp" OFF)
 option(USE_STATIC "Static build" OFF)
 option(USE_CLANG "Build with Clang" OFF)
-#option(USE_OPENSUSE "Build with OpenSUSE" OFF)
-
 
 
 if(USE_CLANG)
@@ -16,10 +14,8 @@ if(USE_CLANG)
 endif(USE_CLANG)
 
 
-
-project (logfilegen VERSION 2.2.0 LANGUAGES CXX)
+project (logfilegen VERSION 2.3.0 LANGUAGES CXX)
 add_definitions(-DVERSION_NUMBER="\\"${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}\\"")
-
 
 
 set(SOURCES
@@ -39,14 +35,12 @@ add_executable (logfilegen ${SOURCES})
 
 #set(CMAKE_EXE_LINKER_FLAGS "-pthread -lpthread")
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-
-
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -g -O3 ")
 
 
 #if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 9.1.0)
 #  target_link_libraries(logfilegen -lstdc++fs)
 #endif()
-
 
 
 if(USE_STATIC)
@@ -66,9 +60,10 @@ if(WIN32)
 endif()
 
 
-set(ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH}:/usr/local/lib/pkgconfig")
 
 if(USE_PROMCPP)
+
+set(ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH}:/usr/local/lib/pkgconfig")
 
 find_package(PkgConfig REQUIRED)
 
@@ -91,7 +86,6 @@ endif()
 else()
 
  target_link_libraries(logfilegen ${prometheus-cpp-pull_LIBRARIES})
-
 
 endif()
 

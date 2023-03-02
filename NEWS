@@ -1,1 +1,4 @@
-This release makes logfilegen possible to build on old compiler versions. Now logfilegen needs C++11 instead of C++17.
++ CMake support optimization
++ HaikuOS support (compile with make --makefile=Makefile.Haiku
++ Mac ARM support (compile with make --makefile=Makefile.macarm
+* randomization engine take less resources
