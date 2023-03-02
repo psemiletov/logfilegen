@@ -56,7 +56,7 @@ all: main.cpp
 else
 #	@echo $(OSFLAG)
 all: main.cpp
-	$(CXX) $(CXXFLAGS) -o logfilegen utl.cpp params.cpp macro.cpp vars.cpp tpl.cpp pairfile.cpp cycle.cpp logrot.cpp main.cpp  -llibnet
+	$(CXX) $(CXXFLAGS) -o logfilegen utl.cpp params.cpp macro.cpp vars.cpp tpl.cpp pairfile.cpp cycle.cpp logrot.cpp main.cpp  -lnetwork
 
 endif
 
