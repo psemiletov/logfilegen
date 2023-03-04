@@ -1,0 +1,273 @@
+name: Benchmark
+
+
+on:
+  workflow_dispatch:
+    inputs:
+      instance_architecture:
+        description: Instance architecture
+        required: true
+        default: x86_64
+        type: choice
+        options:
+        - x86_64
+        - arm64
+      instance_type:
+        description: Instance type
+        required: true
+        default: t3.micro
+        type: choice
+        options:
+        # x86_64 - EBS
+        - t3.micro
+        - t3.nano t3.micro t3.small t3.medium t3.large
+        - t3a.nano t3a.micro t3a.small t3a.medium t3a.large
+        # arm64 - EBS
+        - t4g.nano t4g.micro t4g.small t4g.medium t4g.large
+        # x86_64 - EBS
+        - m6i.large m6a.large c6i.large c6a.large r6i.large r6a.large
+        # x86_64 - SSD
+        - m6id.large c6id.large r6id.large i3.large i4i.large
+        # arm64 - EBS (m7g instances aren't accessible in Frankfurt)
+        # - m6g.medium m6g.large m7g.medium m7g.large c6g.medium c6g.large c7g.medium c7g.large r6g.medium r6g.large r7g.medium r7g.large
+        - m6g.medium m6g.large c6g.medium c6g.large r6g.medium r6g.large
+        # arm64 - SSD
+        - m6gd.medium m6gd.large c6gd.medium c6gd.large r6gd.medium r6gd.large
+      data_volume_size:
+        description: Data volume size
+        required: false
+        default: 50
+        type: choice
+        options:
+        - "null"
+        - 50
+        - 100
+      data_volume_type:
+        description: Data volume type
+        required: false
+        default: gp3
+        type: choice
+        options:
+        - "null"
+        - sc1
+        - st1
+        - gp2
+        - gp3
+        - io1
+        - io2
+      data_volume_iops:
+        description: Data volume IOPS
+        required: false
+        default: 3000
+        type: choice
+        options:
+        - "null"
+        - 3000
+        - 16000
+      data_volume_throughput:
+        description: Data volume throughput
+        required: false
+        default: 125
+        type: choice
+        options:
+        - "null"
+        - 125
+        - 1000
+      max_parallel:
+        description: Maximum parallel benchmarks
+        required: true
+        type: number
+        default: 1
+      benchmark_count:
+        description: Benchmark count
+        required: true
+        default: 3
+        type: choice
+        options:
+        - 1
+        - 3
+        - 5
+      benchmark_duration:
+        description: Benchmark duration
+        required: true
+        default: 300
+        type: choice
+        options:
+        - 30
+        - 60
+        - 180
+        - 300
+      just_cleanup_failed:
+        description: Just cleanup failed resources
+        required: true
+        type: boolean
+        default: false
+
+
+env:
+  NAME: logfilegen-benchmark
+  TERRAFORM_DIR: benchmark/aws
+  TERRAFORM_VERSION: 1.3.9
+  AWAITING_TIME: 300
+  LOGFILEGEN_VERSION: main
+  AZ: ""
+
+
+jobs:
+  # Build the matrix
+  matrix:
+    name: Instances
+    runs-on: ubuntu-latest
+    outputs:
+      list: ${{ steps.compute.outputs.matrix }}
+    steps:
+      - name: Compute instances matrix
+        id: compute
+        run: echo "matrix=$(jq -Rc 'split(" ")' <<< "${{ github.event.inputs.instance_type }}")" >> $GITHUB_OUTPUT
+
+  # Performance benchmarking
+  benchmark:
+    name: ${{ matrix.instance_type }}
+    needs: matrix
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      max-parallel: ${{ fromJSON(github.event.inputs.max_parallel) }}
+      matrix:
+        instance_type: ${{fromJSON(needs.matrix.outputs.list)}}
+    runs-on: ubuntu-latest
+    env:
+      TF_VAR_region: ${{ secrets.AWS_REGION }}
+      TF_VAR_instance_architecture: ${{ github.event.inputs.instance_architecture }}
+      TF_VAR_instance_type: ${{ matrix.instance_type }}
+      TF_VAR_allow_ssh: false
+      TF_VAR_data_volume_size: ${{ github.event.inputs.data_volume_size }}
+      TF_VAR_data_volume_type: ${{ github.event.inputs.data_volume_type }}
+      TF_VAR_data_volume_iops: ${{ github.event.inputs.data_volume_iops }}
+      TF_VAR_data_volume_throughput: ${{ github.event.inputs.data_volume_throughput }}
+      TF_VAR_enable_benchmark: true
+      TF_VAR_benchmark_count: ${{ github.event.inputs.benchmark_count }}
+      TF_VAR_benchmark_duration: ${{ github.event.inputs.benchmark_duration }}
+      TF_VAR_benchmark_auto: true
+      TF_VAR_results_bucket: ${{ secrets.RESULTS_BUCKET }}
+      TF_VAR_results_bucket_key: ${{ secrets.RESULTS_BUCKET_KEY }}
+    steps:
+      - name: Variables
+        run: |
+          [[ ${{ env.TF_VAR_data_volume_size }} == "null" ]] && echo "TF_VAR_data_volume_size=0" >> $GITHUB_ENV
+          [[ ${{ env.TF_VAR_data_volume_type }} == "null" ]] && echo "TF_VAR_data_volume_type=" >> $GITHUB_ENV
+          [[ ${{ env.TF_VAR_data_volume_iops }} == "null" ]] && echo "TF_VAR_data_volume_iops=0" >> $GITHUB_ENV
+          [[ ${{ env.TF_VAR_data_volume_throughput }} == "null" ]] && echo "TF_VAR_data_volume_throughput=0" >> $GITHUB_ENV
+          echo "TF_VAR_name=${{ env.NAME }}" >> $GITHUB_ENV
+          echo "TF_VAR_az=${{ env.AZ }}" >> $GITHUB_ENV
+          echo "TF_VAR_logfilegen_version=${{ env.LOGFILEGEN_VERSION }}" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Terraform - Setup
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ env.TERAFORM_VERSION }}
+
+      - name: Terraform - Format
+        run: terraform fmt -check -diff -recursive
+        working-directory: ${{ env.TERRAFORM_DIR }}
+
+      - name: Terraform - Init
+        run: |
+          mv backend.tf_ backend.tf
+          terraform init -backend-config="bucket=${{ env.BUCKET }}" -backend-config="key=${{ env.KEY }}" -backend-config="region=${{ env.REGION }}"
+        working-directory: ${{ env.TERRAFORM_DIR }}
+        env:
+          BUCKET: ${{ secrets.RESULTS_BUCKET }}
+          KEY: ${{ format('{0}/{1}.{2}', 'terraform', matrix.instance_type, 'tfstate') }}
+          REGION: ${{ secrets.RESULTS_BUCKET_REGION }}
+
+      - name: Terraform - Validate
+        run: terraform validate -no-color
+        working-directory: ${{ env.TERRAFORM_DIR }}
+
+      - name: Terraform - Plan
+        run: terraform plan -no-color -input=false
+        working-directory: ${{ env.TERRAFORM_DIR }}
+
+      - name: Terraform - Apply
+        if: ${{ github.event.inputs.just_cleanup_failed == 'false' }}
+        run: terraform apply -auto-approve
+        working-directory: ${{ env.TERRAFORM_DIR }}
+
+      - name: Terraform - Wait
+        if: ${{ github.event.inputs.just_cleanup_failed == 'false' }}
+        run: |
+          # Instance ID
+          instance_id=$(terraform-bin output instance_id | xargs)
+
+          WAIT=$(((${{ env.TF_VAR_benchmark_count }} * ${{ env.TF_VAR_benchmark_duration }}) + ${{ env.AWAITING_TIME }}))
+          echo "Running ${{ env.TF_VAR_benchmark_count }} test for ${{ env.TF_VAR_benchmark_duration }} seconds"
+          echo "Awaiting time is ${{ env.AWAITING_TIME }} seconds"
+          echo "Waiting for $WAIT seconds"
+          SECONDS=0
+          while (( SECONDS < WAIT )); do
+            # State
+            state=$(aws ec2 describe-instances --filters Name=instance-id,Values=$instance_id --query 'Reservations[*].Instances[*].{Instance:State.Name}' --output text)
+
+            # Show
+            echo "`date` - $instance_id is $state - $SECONDS/$(($WAIT-$SECONDS))/$WAIT"
+            [[ "$state" == "terminated" ]] && { echo "`date` - Test was finished and $instance_id is $state - $SECONDS/$(($WAIT-$SECONDS))/$WAIT"; exit 0; }
+
+            # Wait
+            sleep 10
+          done
+          echo "`date` - Waiting time elapsed, go next"
+        working-directory: ${{ env.TERRAFORM_DIR }}
+
+      - name: Terraform - Destroy
+        run: terraform destroy -auto-approve
+        working-directory: ${{ env.TERRAFORM_DIR }}
+
+
+  # Compute report
+  report:
+    name: Report
+    needs: benchmark
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.just_cleanup_failed == 'false' && !cancelled() && success() }}
+    env:
+      results_bucket: ${{ secrets.RESULTS_BUCKET }}
+      results_bucket_key: ${{ secrets.RESULTS_BUCKET_KEY }}
+    steps:
+      - name: AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Get data
+        run: aws s3 cp --recursive s3://$results_bucket/$results_bucket_key $results_bucket_key
+
+      - name: Raw data
+        run: |
+          while read report; do
+            echo
+            echo $report
+            cat $report
+          done <<< "$(ls $results_bucket_key/*.txt)"
+
+      - name: Report
+        run: |
+          while read report; do
+            instance=$(awk -F ' - ' 'NR==1{print $1}' $report)
+            num=$(cat $report | wc -l)
+            rate=$(awk -F ' - ' '{n += $NF}; END{print int (n / '$num')}' $report)
+            throughput=$(awk -F ' - ' '{n += $(NF-1)}; END{print int (n / '$num' / 1024 / 1024)}' $report)
+            echo "$instance - $rate - $throughput"
+          done <<< "$(ls $results_bucket_key/*.txt)"

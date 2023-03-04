@@ -1,0 +1,8 @@
+# AWS S3
+terraform {
+  backend "s3" {
+    # bucket = "bucket-name"
+    # key    = "terraform/terraform.tfstate"
+    # region = "eu-west-1"
+  }
+}
