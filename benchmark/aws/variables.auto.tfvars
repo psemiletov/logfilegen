@@ -1,0 +1,17 @@
+# create                  = true            # false
+# region                  = "eu-west-1"     # eu-central-1
+# name                    = "logfilegen"    # elasticseatch
+# subnet_id               = null            # subnet-5c0b5127
+# vpc_security_group_ids  = []              # ["sg-0108803de75f166da", "sg-02b737c9f2f159071"]
+# allow_ssh               = true            # false
+# allow_tcp_ports         = []              # [5601, 8080]
+# os_name                 = "ubuntu"        # amazon
+# instance_architecture   = "x86_64"        # arm64
+# instance_type           = "t3.micro"      # t4g.micro
+# key_name                = null            # AWS Key
+# public_key              = null            # ssh-rsa AAAAB3N...
+# data_volume_size        = 10              # up to 16384, for io2 up to 65536
+# data_volume_type        = ""              # sc1, st1, gp2, gp3, io1, io2
+# data_volume_iops        = 3000            # only for gp3, io1, io2 | gp3 up to 16000, io1/io2 up to 64000
+# data_volume_throughput  = 125             # only for gp3, up to 1000
+# logfilegen_version      = "main"          # 2.0.0
