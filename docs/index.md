@@ -46,5 +46,9 @@ The **configuration variables** affects how logfilegen works, and **templates** 
 
 [Using metrics](metrics.md)
 
+[Benchmarking](https://github.com/psemiletov/logfilegen/tree/main/benchmark) (by air3ijai)
+
+
+
 
 Written by Peter Semiletov, 2023
