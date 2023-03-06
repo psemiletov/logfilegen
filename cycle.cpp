@@ -441,20 +441,20 @@ void CGenCycleRated::loop()
               frame_counter = 0;
               seconds_counter++;
 
-          if (params->metrics)
-             {
-              auto stop = high_resolution_clock::now();
-              auto duration_s = duration_cast<seconds>(stop - start);
-              seconds_counter_ev = duration_s.count();
-              bytes_per_second = (double) file_size_total / seconds_counter_ev;
+              if (params->metrics)
+                 {
+                  auto stop = high_resolution_clock::now();
+                  auto duration_s = duration_cast<seconds>(stop - start);
+                  seconds_counter_ev = duration_s.count();
+                  bytes_per_second = (double) file_size_total / seconds_counter_ev;
 
-              if (duration_s.count())
-                 lines_per_second = (double) lines_counter / duration_s.count();
+                  if (duration_s.count())
+                     lines_per_second = (double) lines_counter / duration_s.count();
 
-              #ifdef PROM
-              g_lines_per_second_gauge.Set (lines_per_second);
-              #endif
-              }
+                  #ifdef PROM
+                  g_lines_per_second_gauge.Set (lines_per_second);
+                  #endif
+                 }
              }
 
          frame_counter++;

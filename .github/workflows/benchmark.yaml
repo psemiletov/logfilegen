@@ -19,6 +19,7 @@ on:
         type: choice
         options:
         # x86_64 - EBS
+        - t2.micro
         - t3.micro
         - t3.nano t3.micro t3.small t3.medium t3.large
         - t3a.nano t3a.micro t3a.small t3a.medium t3a.large
