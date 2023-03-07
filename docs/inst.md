@@ -59,7 +59,7 @@ make install
 
 
 
-### From the source with plain Make
+### From the source with plain Make and default compiler (usually GCC)
 
 
 More simple, but less powerful and less flexlible way to compile logfilegen, is the use on manual written Makefiles:
@@ -74,6 +74,12 @@ And to uninstall:
 
 ```console
 make uninstall
+```
+
+### From the source with plain Make and Clang
+
+```console
+make CXX=clang++
 ```
 
 There are some ready-to-use examples below to build logfilegen with Makefiles on some systems or distros:
