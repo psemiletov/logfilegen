@@ -15,3 +15,4 @@
 # data_volume_iops        = 3000            # only for gp3, io1, io2 | gp3 up to 16000, io1/io2 up to 64000
 # data_volume_throughput  = 125             # only for gp3, up to 1000
 # logfilegen_version      = "main"          # 2.0.0
+# logfilegen_compiler     = "gcc"           # clang

@@ -4,12 +4,17 @@
 base_dir="/opt"
 logfilegen_dir="logfilegen"
 logfilegen_version="${logfilegen_version}"
+logfilegen_compiler="${logfilegen_compiler}"
 
 # Get sources
 git clone -b "$logfilegen_version" https://github.com/psemiletov/logfilegen.git "$base_dir/$logfilegen_dir"
 
 # Compile
-make -C "$base_dir/$logfilegen_dir"
+if [[ "$logfilegen_compiler" == "clang" ]]; then
+  make -C "$base_dir/$logfilegen_dir" CXX=clang++
+else
+  make -C "$base_dir/$logfilegen_dir"
+fi
 
 # Install
 make -C "$base_dir/$logfilegen_dir" install

@@ -83,7 +83,8 @@ data "cloudinit_config" "this" {
       filename     = "03-logfilegen.sh"
       content_type = "text/x-shellscript"
       content = templatefile("${path.module}/files/03-logfilegen.sh", {
-        logfilegen_version = var.logfilegen_version
+        logfilegen_version  = var.logfilegen_version,
+        logfilegen_compiler = var.logfilegen_compiler
       })
     }
   }

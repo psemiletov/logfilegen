@@ -22,10 +22,10 @@ fi
 # Install packages
 case "$os" in
   ubuntu) apt update
-          apt install -y git make g++ cmake pkg-config systemd-coredump unzip jq
+          apt install -y git make g++ clang cmake pkg-config systemd-coredump unzip jq
           ;;
 
-  amazon) yum -y git make gcc-c++ systemd-coredump unzip jq
+  amazon) yum install -y git make gcc-c++ clang systemd-coredump unzip jq
           ;;
 
        *) echo "Unknown OS"

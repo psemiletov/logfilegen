@@ -111,6 +111,7 @@ env:
   TERRAFORM_VERSION: 1.3.9
   AWAITING_TIME: 300
   LOGFILEGEN_VERSION: main
+  LOGFILEGEN_COMPILER: gcc
   AZ: ""
 
 
@@ -155,13 +156,14 @@ jobs:
     steps:
       - name: Variables
         run: |
-          [[ ${{ env.TF_VAR_data_volume_size }} == "null" ]] && echo "TF_VAR_data_volume_size=0" >> $GITHUB_ENV
-          [[ ${{ env.TF_VAR_data_volume_type }} == "null" ]] && echo "TF_VAR_data_volume_type=" >> $GITHUB_ENV
-          [[ ${{ env.TF_VAR_data_volume_iops }} == "null" ]] && echo "TF_VAR_data_volume_iops=0" >> $GITHUB_ENV
-          [[ ${{ env.TF_VAR_data_volume_throughput }} == "null" ]] && echo "TF_VAR_data_volume_throughput=0" >> $GITHUB_ENV
-          echo "TF_VAR_name=${{ env.NAME }}" >> $GITHUB_ENV
-          echo "TF_VAR_az=${{ env.AZ }}" >> $GITHUB_ENV
-          echo "TF_VAR_logfilegen_version=${{ env.LOGFILEGEN_VERSION }}" >> $GITHUB_ENV
+          [[ "${{ env.TF_VAR_data_volume_size }}" == "null" ]] && echo "TF_VAR_data_volume_size=0" >> $GITHUB_ENV
+          [[ "${{ env.TF_VAR_data_volume_type }}" == "null" ]] && echo "TF_VAR_data_volume_type=" >> $GITHUB_ENV
+          [[ "${{ env.TF_VAR_data_volume_iops }}" == "null" ]] && echo "TF_VAR_data_volume_iops=0" >> $GITHUB_ENV
+          [[ "${{ env.TF_VAR_data_volume_throughput }}" == "null" ]] && echo "TF_VAR_data_volume_throughput=0" >> $GITHUB_ENV
+          [[ -n "${{ vars.NAME }}" ]] && echo "TF_VAR_name=${{ vars.NAME }}" >> $GITHUB_ENV || echo "TF_VAR_name=${{ env.NAME }}" >> $GITHUB_ENV
+          [[ -n "${{ vars.AZ }}" ]] && echo "TF_VAR_az=${{ vars.AZ }}" >> $GITHUB_ENV || echo "TF_VAR_az=${{ env.AZ }}" >> $GITHUB_ENV
+          [[ -n "${{ vars.LOGFILEGEN_VERSION }}" ]] && echo "TF_VAR_logfilegen_version=${{ vars.LOGFILEGEN_VERSION }}" >> $GITHUB_ENV || echo "TF_VAR_logfilegen_version=${{ env.LOGFILEGEN_VERSION }}" >> $GITHUB_ENV
+          [[ -n "${{ vars.LOGFILEGEN_COMPILER }}" ]] && echo "TF_VAR_logfilegen_compiler=${{ vars.LOGFILEGEN_COMPILER }}" >> $GITHUB_ENV || echo "TF_VAR_logfilegen_compiler=${{ env.LOGFILEGEN_COMPILER }}" >> $GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v3
