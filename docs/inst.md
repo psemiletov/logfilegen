@@ -59,7 +59,7 @@ make install
 
 
 
-### From the source with plain Make and default compiler (usually GCC)
+### From the source with plain Make and GCC
 
 
 More simple, but less powerful and less flexlible way to compile logfilegen, is the use on manual written Makefiles:
