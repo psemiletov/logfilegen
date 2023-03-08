@@ -627,7 +627,7 @@ void CGenCycleUnrated::loop()
                     {
                      seconds_counter_ev = duration_s.count();
 
-                     lines_per_second = (double) lines_counter / duration_s.count();
+                     lines_per_second = (double) lines_counter / seconds_counter_ev;
                      bytes_per_second = (double) file_size_total / seconds_counter_ev;
 
                      #ifdef PROM
