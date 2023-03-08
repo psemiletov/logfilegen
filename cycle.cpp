@@ -619,30 +619,29 @@ void CGenCycleUnrated::loop()
           if (! params->pure)
              {
               if (params->metrics)
-               {
-                 auto stop = high_resolution_clock::now();
-                 auto duration_s = duration_cast<seconds>(stop - start);
+                 {
+                  auto stop = high_resolution_clock::now();
+                  auto duration_s = duration_cast<seconds>(stop - start);
 
-                if (duration_s.count())
-                   {
-                    seconds_counter_ev = duration_s.count();
+                 if (duration_s.count())
+                    {
+                     seconds_counter_ev = duration_s.count();
 
-                    lines_per_second = (double) lines_counter / duration_s.count();
-                    bytes_per_second = (double) file_size_total / seconds_counter_ev;
+                     lines_per_second = (double) lines_counter / duration_s.count();
+                     bytes_per_second = (double) file_size_total / seconds_counter_ev;
 
-                    #ifdef PROM
-                    c_lines_counter.Increment();
-                    c_bytes_counter.Increment(log_string.size());
-                    g_lines_per_second_gauge.Set (lines_per_second);
-                    #endif
-                   }
-               }
+                     #ifdef PROM
+                     c_lines_counter.Increment();
+                     c_bytes_counter.Increment(log_string.size());
+                     g_lines_per_second_gauge.Set (lines_per_second);
+                     #endif
+                    }
+                  }
 
 
               if (params->bstdout)
                  {
                   if (lines_counter % 24 == 0)
-                  //   system ("clear");
                      clrscr();
 
                   std::cout << log_string << "\n";
@@ -710,7 +709,12 @@ void CGenCycle::write_results()
   char datebuffer [128];
   strftime (datebuffer, 128, "%d/%b/%Y:%H:%M:%S %z", timeinfo);
 
-  lines_per_second = (double) lines_counter / seconds_counter_ev;
+  lines_per_second = 0;
+
+  if (seconds_counter_ev > 0)
+     lines_per_second = (double) lines_counter / seconds_counter_ev;
+  else
+      std::cout << "cannot divide by zero and evaluate lines_per_second\n";
 
   std::string fdate = datebuffer;
   std::string fduration = std::to_string (seconds_counter_ev);
