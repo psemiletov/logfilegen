@@ -25,6 +25,7 @@ module "instance-01" {
   enable_logfilegen       = var.enable_logfilegen
   enable_benchmark        = var.enable_benchmark
   enable_docker           = var.enable_docker
+  logfilegen_compiler     = var.logfilegen_compiler
   logfilegen_version      = var.logfilegen_version
   benchmark_count         = var.benchmark_count
   benchmark_duration      = var.benchmark_duration

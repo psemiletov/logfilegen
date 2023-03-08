@@ -140,6 +140,12 @@ variable "enable_docker" {
   default     = false
 }
 
+variable "logfilegen_compiler" {
+  description = "Compiler to use for logfilegen build."
+  type        = string
+  default     = "gcc"
+}
+
 variable "logfilegen_version" {
   description = "Logfilegen version to install from GitHub sources."
   type        = string
