@@ -430,6 +430,9 @@ void CGenCycleRated::loop()
 
    while (true)
          {
+          if (g_signal == SIGINT)
+             break;
+
           next_frame += std::chrono::nanoseconds (1000000000 / params->rate);
           //next_frame += std::chrono::microseconds (1000000 / params->rate);
 
@@ -446,19 +449,35 @@ void CGenCycleRated::loop()
                   auto stop = high_resolution_clock::now();
                   auto duration_s = duration_cast<seconds>(stop - start);
                   seconds_counter_ev = duration_s.count();
-                  bytes_per_second = (double) file_size_total / seconds_counter_ev;
 
-                  if (duration_s.count())
-                     lines_per_second = (double) lines_counter / duration_s.count();
+                  if (seconds_counter)
+                     {
+                      bytes_per_second = (double) file_size_total / seconds_counter_ev;
+                      lines_per_second = (double) lines_counter / duration_s.count();
 
-                  #ifdef PROM
-                  g_lines_per_second_gauge.Set (lines_per_second);
-                  #endif
+                      #ifdef PROM
+                      g_lines_per_second_gauge.Set (lines_per_second);
+                      #endif
+                     }
+
                  }
              }
 
          frame_counter++;
          lines_counter++;
+/*
+         if (lines_counter_last > lines_counter)
+            {
+             //integer overflow
+             lines_counter_last = 0;
+             start = high_resolution_clock::now();
+             using clock = std::chrono::steady_clock;
+             next_frame = clock::now();
+
+             //handle file_size_total
+
+            }
+*/
 
 #ifdef PROM
          if (params->metrics)
@@ -475,9 +494,6 @@ void CGenCycleRated::loop()
          if (params->size != 0 && file_size_total > params->size)
              break;
 
-         if (g_signal == SIGINT)
-             break;
-
 
          std::string log_string = tpl->prepare_log_string();
 
@@ -492,11 +508,9 @@ void CGenCycleRated::loop()
              if (params->bstdout)
                 {
                  if (lines_counter % 24 == 0)
-                   //system ("clear");
                     clrscr();
 
                  std::cout << log_string << "\n";
-
                 }
 
              if (! file_out_error && ! no_free_space)
@@ -530,14 +544,12 @@ void CGenCycleRated::loop()
   auto duration_s = duration_cast<seconds>(stop - start);
   seconds_counter_ev = duration_s.count();
 
-   #ifndef PROM
-
+  #ifndef PROM
   server_run = false;
-#endif
+  #endif
 
   if (! params->results.empty())
       write_results();
-
 
   file_out.close();
 }
@@ -677,16 +689,17 @@ void CGenCycleUnrated::loop()
   auto stop = high_resolution_clock::now();
   //auto duration = duration_cast<microseconds>(stop - start);
   auto duration_s = duration_cast<seconds>(stop - start);
+  auto d = duration_s.count();
 
-  if (params->benchmark)
+  if (params->benchmark && d)
      {
-      lines_per_second = (double) lines_counter / duration_s.count();
+      lines_per_second = (double) lines_counter / d;
       std::cout << "Benchmark, lines per seconds: " << lines_per_second << std::endl;
      }
 
-  if (params->test)
+  if (params->test && d)
      {
-      lines_per_second = (double) lines_counter / duration_s.count();
+      lines_per_second = (double) lines_counter / d;
       std::cout << "Test, lines per seconds: " << lines_per_second << std::endl;
      }
 

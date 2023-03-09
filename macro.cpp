@@ -8,13 +8,13 @@
 
 
 #ifdef USE_PROM
+
 #include "prometheus/client_metric.h"
 #include "prometheus/counter.h"
 #include "prometheus/exposer.h"
 #include "prometheus/family.h"
 #include "prometheus/info.h"
 #include "prometheus/registry.h"
-
 
 #endif
 
@@ -24,6 +24,8 @@
 
 using namespace std;
 
+char arr_nums [] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
 
 std::mt19937 &mt()
 {
@@ -31,16 +33,11 @@ std::mt19937 &mt()
   //thread_local static std::random_device srd;
   //thread_local static std::mt19937 smt(srd());
 
-
   unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
   thread_local static std::mt19937 smt(seed);
 
   return smt;
 }
-
-
-
-char arr_nums [] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
 
 int get_rnd (int ta, int tb)
@@ -178,7 +175,6 @@ string gen_hex_number (size_t min, size_t max)
 CMacro::CMacro()
 {
  // rnd_generator = new std::mt19937 (rnd_dev());
-
   len_min = 0;
   len_max = 0;
   length = 0;

@@ -113,32 +113,32 @@
 | t3a.small       | `137,146` | `12`             |                  |              | 2    | 2.0         |                            |
 | t3a.medium      | `136,304` | `12`             |                  |              | 2    | 4.0         |                            |
 | t3a.large       | `137,981` | `12`             |                  |              | 2    | 8.0         |                            |
-| **t4g.nano**    |           |                  |                  | arm64        |      |             |                            |
-| t4g.micro       |           |                  |                  |              |      |             |                            |
-| t4g.small       |           |                  |                  |              |      |             |                            |
-| t4g.medium      |           |                  |                  |              |      |             |                            |
-| t4g.large       |           |                  |                  |              |      |             |                            |
-| **m6i.large**   |           |                  |                  | x86_64 Intel |      |             |                            |
+| **t4g.nano**    | `168,350` | `15`             |                  | arm64        |      |             |                            |
+| t4g.micro       | `167,728` | `15`             |                  |              |      |             |                            |
+| t4g.small       | `170,334` | `15`             |                  |              |      |             |                            |
+| t4g.medium      | `170,847` | `15`             |                  |              |      |             |                            |
+| t4g.large       | `168,118` | `15`             |                  |              |      |             |                            |
+| **m6i.large**   | `323,132` | `30`             |                  | x86_64 Intel |      |             |                            |
 | m6id.large      |           |                  |                  |              |      |             | 118 NVMe SSD / 16,771      |
-| m6a.large       |           |                  |                  | x86_64 AMD   |      |             | 50 gp3/3,000/125           |
+| m6a.large       | `301,792` | `28`             |                  | x86_64 AMD   |      |             | 50 gp3/3,000/125           |
 | m6g.medium      |           |                  |                  | arm64        |      |             |                            |
 | m6g.large       |           |                  |                  |              |      |             |                            |
 | m6gd.medium     |           |                  |                  |              |      |             | 59 NVMe SSD / 5,625        |
 | m6gd.large      |           |                  |                  |              |      |             | 118 NVMe SSD / 11,250      |
 | m7g.medium      |           |                  |                  |              |      |             | 50 gp3/3,000/125           |
 | m7g.large       |           |                  |                  |              |      |             |                            |
-| **c6i.large**   |           |                  |                  | x86_64 Intel |      |             |                            |
+| **c6i.large**   | `320,649` | `29`             |                  | x86_64 Intel |      |             |                            |
 | c6id.large      |           |                  |                  |              |      |             | 118 NVMe SSD / 16,771      |
-| c6a.large       |           |                  |                  | x86_64 AMD   |      |             | 50 gp3/3,000/125           |
+| c6a.large       | `300,907` | `28`             |                  | x86_64 AMD   |      |             | 50 gp3/3,000/125           |
 | c6g.medium      |           |                  |                  | arm64        |      |             |                            |
 | c6g.large       |           |                  |                  |              |      |             |                            |
 | c6gd.medium     |           |                  |                  |              |      |             | 59 NVMe SSD / 5,625        |
 | c6gd.large      |           |                  |                  |              |      |             | 118 NVMe SSD / 11,250      |
 | c7g.medium      |           |                  |                  | arm64        |      |             | 50 gp3/3,000/125           |
 | c7g.large       |           |                  |                  |              |      |             |                            |
-| **r6i.large**   |           |                  |                  | x86_64 Intel |      |             |                            |
+| **r6i.large**   | `322,264` | `30`             |                  | x86_64 Intel |      |             |                            |
 | r6id.large      |           |                  |                  |              |      |             | 118 NVMe SSD / 16,771      |
-| r6a.large       |           |                  |                  | x86_64 AMD   |      |             | 50 gp3/3000/125            |
+| r6a.large       | `303,916` | `28`             |                  | x86_64 AMD   |      |             | 50 gp3/3000/125            |
 | r6g.medium      |           |                  |                  | arm64        |      |             |                            |
 | r6g.large       |           |                  |                  |              |      |             |                            |
 | r6gd.medium     |           |                  |                  |              |      |             | 59 NVMe SSD / 5,625        |

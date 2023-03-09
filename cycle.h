@@ -75,13 +75,14 @@ public:
   double bytes_per_second;
   double lines_per_second;
   size_t file_size_total;
+  size_t lines_counter_last = 0;
   size_t lines_counter = 0;
   size_t seconds_counter_ev = 0;
   size_t seconds_counter = 0;
   size_t frame_counter = 0;
   //////
 
-   ///SERV
+ ///SERV
 
 #ifndef PROM
 
