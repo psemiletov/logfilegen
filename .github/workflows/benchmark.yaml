@@ -244,13 +244,17 @@ jobs:
   # Compute report
   report:
     name: Report
-    needs: benchmark
+    needs: [matrix, benchmark]
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.just_cleanup_failed == 'false' && !cancelled() && success() }}
     env:
       results_bucket: ${{ secrets.RESULTS_BUCKET }}
       results_bucket_key: ${{ secrets.RESULTS_BUCKET_KEY }}
     steps:
+
+      - name: Variables
+        run: echo "INSTANCE_TYPE=$(jq -r '. | join (" ")' <<< '${{ needs.matrix.outputs.list }}')" >> $GITHUB_ENV
+
       - name: AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
         with:
@@ -261,7 +265,7 @@ jobs:
       - name: Get data
         run: aws s3 cp --recursive s3://$results_bucket/$results_bucket_key $results_bucket_key
 
-      - name: Raw data
+      - name: Report - Raw all
         run: |
           while read report; do
             echo
@@ -269,7 +273,19 @@ jobs:
             cat $report
           done <<< "$(ls $results_bucket_key/*.txt)"
 
-      - name: Report
+      - name: Report - Raw current
+        run: |
+          while read report; do
+            for instance in ${INSTANCE_TYPE}; do
+              if [[ "${report}" =~ "${instance}" ]]; then
+                echo
+                echo $report
+                cat $report
+              fi
+            done
+          done <<< "$(ls $results_bucket_key/*.txt)"
+
+      - name: Report - All
         run: |
           while read report; do
             instance=$(awk -F ' - ' 'NR==1{print $1}' $report)
@@ -277,4 +293,18 @@ jobs:
             rate=$(awk -F ' - ' '{n += $NF}; END{print int (n / '$num')}' $report)
             throughput=$(awk -F ' - ' '{n += $(NF-1)}; END{print int (n / '$num' / 1024 / 1024)}' $report)
             echo "$instance - $rate - $throughput"
+          done <<< "$(ls $results_bucket_key/*.txt)"
+
+      - name: Report - Current
+        run: |
+          while read report; do
+            for instance in ${INSTANCE_TYPE}; do
+              if [[ "${report}" =~ "${instance}" ]]; then
+                instance=$(awk -F ' - ' 'NR==1{print $1}' $report)
+                num=$(cat $report | wc -l)
+                rate=$(awk -F ' - ' '{n += $NF}; END{print int (n / '$num')}' $report)
+                throughput=$(awk -F ' - ' '{n += $(NF-1)}; END{print int (n / '$num' / 1024 / 1024)}' $report)
+                echo "$instance - $rate - $throughput"
+              fi
+            done
           done <<< "$(ls $results_bucket_key/*.txt)"
