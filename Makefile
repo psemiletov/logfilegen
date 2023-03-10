@@ -14,7 +14,7 @@ ifeq ($(OS),Windows_NT)
 	CXX=gcc++
 else
 	ifeq (, $(shell which clang++))
-		CXX=gcc++
+		CXX=g++
 	else
 		CXX=clang++
 	endif
