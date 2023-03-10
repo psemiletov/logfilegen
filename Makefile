@@ -7,6 +7,20 @@ endif
 CXXFLAGS = -Wall -g -Og -std=c++11 -pthread -lpthread
 #LDFLAGS= -pthread  -lpthread
 
+
+
+
+ifeq ($(OS),Windows_NT)
+	CXX=gcc++
+else
+	ifeq (, $(shell which clang++))
+		CXX=gcc++
+	else
+		CXX=clang++
+	endif
+endif
+
+
 #add for -lpthread
 
 #OS_NAME := $(shell uname -s | tr A-Z a-z)
