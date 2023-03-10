@@ -2,13 +2,9 @@ ifndef prefix
 prefix=/usr
 endif
 
-
-
-
+CXX = g++
 #CXXFLAGS = -Wall -g -O3 -fopenmp
-
-
-CXXFLAGS = -Wall -g -O3 -std=c++11 -pthread -lpthread
+CXXFLAGS = -Wall -g -Og -std=c++11 -pthread -lpthread
 #LDFLAGS= -pthread  -lpthread
 
 #add for -lpthread
@@ -52,47 +48,6 @@ else
 		OSFLAG += -D ARM
 	endif
 endif
-
-
-
-# detect what shell is used
-#ifeq ($(findstring cmd.exe,$(SHELL)),cmd.exe)
-#$(info "shell Windows cmd.exe")
-#DEVNUL := NUL
-#WHICH := where
-#else
-#$(info "shell Bash")
-#DEVNUL := /dev/null
-#WHICH := which
-#endif
-
-
-
-# detect platform independently if gcc is installed
-#ifeq ($(shell ${WHICH} clang++ 2>${DEVNUL}),)
-#$(error "clang++ is not in your system PATH")
-#ifndef CXX
-#CXX = g++
-#endif
-#else
-#$(info "clang++ found")
-#ifndef CXX
-#CXX = clang++
-#endif
-#endif
-
-
-#CXX = clang++
-
-#ifeq ($(OS),Windows_NT)
-#	CXX = g++
-#else
-# ifeq (, $(shell which clang++))
- 	#CXX = g++
-
- #endif
-#endif
-
 
 
 ifeq ($(OS),Windows_NT)
