@@ -257,7 +257,7 @@ size_t get_free_space (const string &path)
             printf ("Free space on drive       = %I64u MB\n",
                     i64FreeBytes / (1024*1024));*/
          }
-   }
+
 
 
 #else
