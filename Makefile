@@ -2,7 +2,7 @@ ifndef prefix
 prefix=/usr
 endif
 
-CXX = g++
+#CXX = g++
 #CXXFLAGS = -Wall -g -O3 -fopenmp
 CXXFLAGS = -Wall -g -Og -std=c++11 -pthread -lpthread
 #LDFLAGS= -pthread  -lpthread
