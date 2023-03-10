@@ -66,11 +66,11 @@ endif
 
 ifeq ($(OS),Windows_NT)
 all: main.cpp
-	$(CXX) $(CXXFLAGS) -o logfilegen utl.cpp params.cpp macro.cpp vars.cpp tpl.cpp pairfile.cpp cycle.cpp logrot.cpp main.cpp -lws2_32
+	$(CXX) $(CXXFLAGS) $(OSFLAG) -o logfilegen utl.cpp params.cpp macro.cpp vars.cpp tpl.cpp pairfile.cpp cycle.cpp logrot.cpp main.cpp -lws2_32
 else
 #	@echo $(OSFLAG)
 all: main.cpp
-	$(CXX) $(CXXFLAGS) -o logfilegen utl.cpp params.cpp macro.cpp vars.cpp tpl.cpp pairfile.cpp cycle.cpp logrot.cpp main.cpp
+	$(CXX) $(CXXFLAGS) $(OSFLAG) -o logfilegen utl.cpp params.cpp macro.cpp vars.cpp tpl.cpp pairfile.cpp cycle.cpp logrot.cpp main.cpp
 
 endif
 
