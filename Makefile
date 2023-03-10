@@ -21,7 +21,6 @@ else
 endif
 
 
-#add for -lpthread
 
 #OS_NAME := $(shell uname -s | tr A-Z a-z)
 
