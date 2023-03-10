@@ -10,8 +10,8 @@ logfilegen_compiler="${logfilegen_compiler}"
 git clone -b "$logfilegen_version" https://github.com/psemiletov/logfilegen.git "$base_dir/$logfilegen_dir"
 
 # Compile
-if [[ "$logfilegen_compiler" == "clang" ]]; then
-  make -C "$base_dir/$logfilegen_dir" CXX=clang++
+if [[ "$logfilegen_compiler" == "g++" ]]; then
+  make -C "$base_dir/$logfilegen_dir" CXX=g++
 else
   make -C "$base_dir/$logfilegen_dir"
 fi
