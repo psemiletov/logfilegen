@@ -123,9 +123,13 @@ jobs:
     outputs:
       list: ${{ steps.compute.outputs.matrix }}
     steps:
+      - name: Variables
+        run: |
+          [[ -n "${{ vars.INSTANCE_TYPE }}" ]] && echo "INSTANCE_TYPE=${{ vars.INSTANCE_TYPE }}" >> $GITHUB_ENV || echo "INSTANCE_TYPE=${{ github.event.inputs.instance_type }}" >> $GITHUB_ENV
+
       - name: Compute instances matrix
         id: compute
-        run: echo "matrix=$(jq -Rc 'split(" ")' <<< "${{ github.event.inputs.instance_type }}")" >> $GITHUB_OUTPUT
+        run: echo "matrix=$(jq -Rc 'split(" ")' <<< "${{ env.INSTANCE_TYPE }}")" >> $GITHUB_OUTPUT
 
   # Performance benchmarking
   benchmark:
@@ -162,6 +166,7 @@ jobs:
           [[ "${{ env.TF_VAR_data_volume_throughput }}" == "null" ]] && echo "TF_VAR_data_volume_throughput=0" >> $GITHUB_ENV
           [[ -n "${{ vars.NAME }}" ]] && echo "TF_VAR_name=${{ vars.NAME }}" >> $GITHUB_ENV || echo "TF_VAR_name=${{ env.NAME }}" >> $GITHUB_ENV
           [[ -n "${{ vars.AZ }}" ]] && echo "TF_VAR_az=${{ vars.AZ }}" >> $GITHUB_ENV || echo "TF_VAR_az=${{ env.AZ }}" >> $GITHUB_ENV
+          [[ -n "${{ vars.INSTANCE_ARCHITECTURE }}" ]] && echo "TF_VAR_instance_architecture=${{ vars.INSTANCE_ARCHITECTURE }}" >> $GITHUB_ENV || echo "TF_VAR_instance_architecture=${{ github.event.inputs.instance_architecture }}" >> $GITHUB_ENV
           [[ -n "${{ vars.LOGFILEGEN_VERSION }}" ]] && echo "TF_VAR_logfilegen_version=${{ vars.LOGFILEGEN_VERSION }}" >> $GITHUB_ENV || echo "TF_VAR_logfilegen_version=${{ env.LOGFILEGEN_VERSION }}" >> $GITHUB_ENV
           [[ -n "${{ vars.LOGFILEGEN_COMPILER }}" ]] && echo "TF_VAR_logfilegen_compiler=${{ vars.LOGFILEGEN_COMPILER }}" >> $GITHUB_ENV || echo "TF_VAR_logfilegen_compiler=${{ env.LOGFILEGEN_COMPILER }}" >> $GITHUB_ENV
 
