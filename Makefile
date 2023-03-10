@@ -3,10 +3,6 @@ prefix=/usr
 endif
 
 
-ifndef CXX
-CXX = g++
-endif
-
 
 
 #CXXFLAGS = -Wall -g -O3 -fopenmp
@@ -56,6 +52,36 @@ else
 		OSFLAG += -D ARM
 	endif
 endif
+
+
+
+# detect what shell is used
+ifeq ($(findstring cmd.exe,$(SHELL)),cmd.exe)
+$(info "shell Windows cmd.exe")
+DEVNUL := NUL
+WHICH := where
+else
+$(info "shell Bash")
+DEVNUL := /dev/null
+WHICH := which
+endif
+
+
+
+#ifndef CXX
+# detect platform independently if gcc is installed
+ifeq ($(shell ${WHICH} clang++ 2>${DEVNUL}),)
+$(error "clang++ is not in your system PATH")
+ifndef CXX
+CXX = g++
+endif
+else
+$(info "clang++ found")
+ifndef CXX
+CXX = clang++
+endif
+endif
+#endif
 
 
 ifeq ($(OS),Windows_NT)
