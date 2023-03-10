@@ -30,7 +30,7 @@ jobs:
       - name: Set up Clang
         uses: egor-tensin/setup-clang@v1
          with:
-         version: latest
+          version: latest
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
