@@ -14,7 +14,7 @@ fi
 # Install Docker
 case "$os" in
   ubuntu) apt update
-          apt install -y ca-certificates curl gnupg lsb-release
+          apt install -y ca-certificates curl gnupg lsb-release clang
           mkdir -m 0755 -p /etc/apt/keyrings
           curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
           echo \
