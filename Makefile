@@ -82,16 +82,16 @@ endif
 #endif
 
 
-CXX = clang++
+#CXX = clang++
 
-ifeq ($(OS),Windows_NT)
-	CXX = g++
-else
- ifeq (, $(shell which clang++))
- 	CXX = g++
+#ifeq ($(OS),Windows_NT)
+#	CXX = g++
+#else
+# ifeq (, $(shell which clang++))
+ 	#CXX = g++
 
- endif
-endif
+ #endif
+#endif
 
 
 
