@@ -28,7 +28,7 @@
  4. Use latest logfilegen version.
  5. Run test 3 times for 5 minutes and generate logs on a separate volume.
  6. Record lines generation and throughput performance.
- 7. Calculate costs to achieve 1 million lines per second on the current instance type, excluding storage.
+ 7. Calculate costs to achieve 1 million lines per second on the current instance type, excluding the storage use cost.
 
   <details><summary> Calculation example </summary>
 
@@ -121,28 +121,28 @@
 | **m6i.large**   | `323,132` | `30`             |                  | x86_64 Intel |      |             |                            |
 | m6id.large      | `320,875` | `29`             |                  |              |      |             | 118 NVMe SSD / 16,771      |
 | m6a.large       | `301,792` | `28`             |                  | x86_64 AMD   |      |             | 50 gp3/3,000/125           |
-| m6g.medium      |           |                  |                  | arm64        |      |             |                            |
-| m6g.large       |           |                  |                  |              |      |             |                            |
-| m6gd.medium     |           |                  |                  |              |      |             | 59 NVMe SSD / 5,625        |
-| m6gd.large      |           |                  |                  |              |      |             | 118 NVMe SSD / 11,250      |
+| m6g.medium      | `167,426` | `15`             |                  | arm64        |      |             |                            |
+| m6g.large       | `166,895` | `15`             |                  |              |      |             |                            |
+| m6gd.medium     | `170,734` | `15`             |                  |              |      |             | 59 NVMe SSD / 5,625        |
+| m6gd.large      | `173,216` | `16`             |                  |              |      |             | 118 NVMe SSD / 11,250      |
 | m7g.medium      |           |                  |                  |              |      |             | 50 gp3/3,000/125           |
 | m7g.large       |           |                  |                  |              |      |             |                            |
 | **c6i.large**   | `320,649` | `29`             |                  | x86_64 Intel |      |             |                            |
 | c6id.large      | `320,041` | `29`             |                  |              |      |             | 118 NVMe SSD / 16,771      |
 | c6a.large       | `300,907` | `28`             |                  | x86_64 AMD   |      |             | 50 gp3/3,000/125           |
-| c6g.medium      |           |                  |                  | arm64        |      |             |                            |
-| c6g.large       |           |                  |                  |              |      |             |                            |
-| c6gd.medium     |           |                  |                  |              |      |             | 59 NVMe SSD / 5,625        |
-| c6gd.large      |           |                  |                  |              |      |             | 118 NVMe SSD / 11,250      |
+| c6g.medium      | `170,883` | `15`             |                  | arm64        |      |             |                            |
+| c6g.large       | `172,609` | `16`             |                  |              |      |             |                            |
+| c6gd.medium     | `172,718` | `16`             |                  |              |      |             | 59 NVMe SSD / 5,625        |
+| c6gd.large      | `172,260` | `16`             |                  |              |      |             | 118 NVMe SSD / 11,250      |
 | c7g.medium      |           |                  |                  | arm64        |      |             | 50 gp3/3,000/125           |
 | c7g.large       |           |                  |                  |              |      |             |                            |
 | **r6i.large**   | `322,264` | `30`             |                  | x86_64 Intel |      |             |                            |
 | r6id.large      | `320,875` | `29`             |                  |              |      |             | 118 NVMe SSD / 16,771      |
 | r6a.large       | `303,916` | `28`             |                  | x86_64 AMD   |      |             | 50 gp3/3000/125            |
-| r6g.medium      |           |                  |                  | arm64        |      |             |                            |
-| r6g.large       |           |                  |                  |              |      |             |                            |
-| r6gd.medium     |           |                  |                  |              |      |             | 59 NVMe SSD / 5,625        |
-| r6gd.large      |           |                  |                  |              |      |             | 118 NVMe SSD / 11,250      |
+| r6g.medium      | `166,116` | `15`             |                  | arm64        |      |             |                            |
+| r6g.large       | `170,337` | `15`             |                  |              |      |             |                            |
+| r6gd.medium     | `165,836` | `15`             |                  |              |      |             | 59 NVMe SSD / 5,625        |
+| r6gd.large      | `169,024` | `15`             |                  |              |      |             | 118 NVMe SSD / 11,250      |
 | r7g.medium      |           |                  |                  |              |      |             | 50 gp3/3,000/125           |
 | r7g.large       |           |                  |                  |              |      |             |                            |
 | **i3.large**    |           |                  |                  | x86_64 Intel |      |             | 475 NVMe SSD / 35,000      |

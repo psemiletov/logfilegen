@@ -66,6 +66,8 @@ public:
   size_t log_current_size; //in bytes
   std::ofstream file_out;
 
+  //char bf[65536];
+
   bool file_out_error;
   bool no_free_space;
   size_t test_string_size;

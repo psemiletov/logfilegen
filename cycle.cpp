@@ -369,7 +369,11 @@ bool CGenCycle::open_logfile()
              std::cout << "log_current_size, bytes: " << log_current_size << std::endl;
          }
 
-      file_out.open (params->logfile, std::ios::app);
+
+   //   file_out.rdbuf()->pubsetbuf(bf, sizeof (bf));
+
+
+      file_out.open (params->logfile, std::ios::app /*| std::ios::ios_base::binary*/);
 
       if (file_out.fail())
          {
