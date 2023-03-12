@@ -122,7 +122,7 @@ public:
   bool open_logfile();
   void write_results();
 
-  ~CGenCycle();
+  virtual ~CGenCycle();
   virtual void loop() = 0;
 
 };
