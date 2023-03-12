@@ -4,6 +4,8 @@
 
 //#undef _HAS_STD_BYTE
 
+#include <thread>
+
 #include <cstdint>
 #include <cstdlib>
 #include <vector>
@@ -108,6 +110,13 @@ void show_help()
   printf ("\n");
   printf ("logfilegen --duration=60 --rate=1000 --template=nginx.tpl --logfile=access.log\n");
 }
+
+
+void do_task (CGenCycle *c)
+{
+  c->loop();
+}
+
 
 int main (int argc, char *argv[])
 {
@@ -394,9 +403,24 @@ int main (int argc, char *argv[])
 
   if (params.rate == 0)
      {
-      CGenCycleUnrated cycle (&params, fname_template);
-      if (cycle.open_logfile())
-         cycle.loop();
+      std::thread t1;
+      std::thread t2;
+
+      CGenCycleUnrated *cycle1 = new CGenCycleUnrated (&params, fname_template);
+      if (cycle1->open_logfile())
+          t1 = std::thread (do_task, cycle1);
+
+      CGenCycleUnrated *cycle2 = new CGenCycleUnrated (&params, fname_template);
+      if (cycle2->open_logfile())
+          t2 = std::thread (do_task, cycle2);
+
+
+      t1.join();
+      delete cycle1;
+      t2.join();
+      delete cycle2;
+
+
      }
   else
       {
@@ -410,9 +434,6 @@ int main (int argc, char *argv[])
       remove (temp_logfile.c_str());
       remove (temp_logfile0.c_str());
 
-//      remove (params.logfile.c_str());
-      //std::string t = params.logfile + ".0";
-//      remove (t.c_str());
      }
 
   return 0;
