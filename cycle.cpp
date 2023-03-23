@@ -149,7 +149,7 @@ CGenCycle::CGenCycle (CParameters *prms, const std::string &fname)
     //  th_srv = new std::thread (&CGenCycle::server_handle, this);
     //  th_srv->detach();
 
-    f_handle = std::async (std::launch::async, &CGenCycle::server_handle, this);
+//    f_handle = std::async (std::launch::async, &CGenCycle::server_handle, this);
  }
 
 #endif
@@ -758,5 +758,11 @@ void CGenCycle::write_results()
   else
       if (path_exists (params->results))
           string_save_to_file (params->results, st);
+
+}
+
+
+void CProducer::write (const std::string &s)
+{
 
 }

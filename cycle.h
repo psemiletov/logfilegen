@@ -148,4 +148,25 @@ public:
 };
 
 
+class CProducer
+{
+public:
+
+   static std::atomic<size_t> lines_counter;
+   static std::atomic<size_t> lines_counter_last;
+
+   static std::atomic<double> bytes_per_second;
+   static std::atomic<double> lines_per_second;
+   static std::atomic<size_t> file_size_total;
+   static std::atomic<size_t> seconds_counter_ev;
+   static std::atomic<size_t> seconds_counter;
+   static std::atomic<size_t> frame_counter;
+
+
+   void write (const std::string &s);
+
+};
+
+
+
 #endif
