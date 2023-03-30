@@ -84,34 +84,6 @@ public:
   size_t frame_counter = 0;
   //////
 
- ///SERV
-
-#ifndef PROM
-
-  int newsockfd, portno;
-
-#if defined(_WIN32) || defined(_WIN64)
-  int clilen;
-#else
-  socklen_t clilen;
-#endif
-
-  char buffer[256];
-  struct sockaddr_in serv_addr, cli_addr;
-  bool server_run;
-  std::future<void> f_handle;
-   //  std::thread *th_srv;
-
-  std::string response;
-
-#endif
-
-#ifdef PROM
-
-  Exposer *exposer;
-  std::shared_ptr< prometheus::Registry > registry;
-
-#endif
 
   CGenCycle (CParameters *prms, const std::string &fname);
 
@@ -151,6 +123,36 @@ public:
 class CProducer
 {
 public:
+
+   ///SERV
+
+#ifndef PROM
+
+  int newsockfd, portno;
+
+#if defined(_WIN32) || defined(_WIN64)
+  int clilen;
+#else
+  socklen_t clilen;
+#endif
+
+  char buffer[256];
+  struct sockaddr_in serv_addr, cli_addr;
+  bool server_run;
+  std::future<void> f_handle;
+   //  std::thread *th_srv;
+
+  std::string response;
+
+#endif
+
+#ifdef PROM
+
+  Exposer *exposer;
+  std::shared_ptr< prometheus::Registry > registry;
+
+#endif
+
 
    static std::atomic<size_t> lines_counter;
    static std::atomic<size_t> lines_counter_last;
