@@ -55,7 +55,7 @@ public:
 //  size_t lines_counter_last = 0;
   //size_t lines_counter = 0;
   //size_t seconds_counter_ev = 0;
-  size_t seconds_counter = 0;
+ // size_t seconds_counter = 0;
   size_t frame_counter = 0;
   //////
 

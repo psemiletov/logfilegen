@@ -299,7 +299,7 @@ void CGenCycleRated::loop()
           if (frame_counter == params->rate)
              {
               frame_counter = 0;
-              seconds_counter++;
+              producer->seconds_counter++;
 
               if (params->metrics)
                  {
@@ -307,7 +307,7 @@ void CGenCycleRated::loop()
                   auto duration_s = duration_cast<seconds>(stop - start);
                   producer->seconds_counter_ev = duration_s.count();
 
-                  if (seconds_counter)
+                  if (producer->seconds_counter)
                      {
                       producer->bytes_per_second = (double) producer->file_size_total / producer->seconds_counter_ev;
                       producer->lines_per_second = (double) producer->lines_counter / duration_s.count();
@@ -405,38 +405,37 @@ void CProducer::write_results()
 
 void CProducer::write (const std::string &s)
 {
-     lines_counter++;
+  lines_counter++;
+
+  if (params->duration != 0) //not endless
+      if (params->lines == 0 && seconds_counter == params->duration)
+         {
+          g_signal = SIGINT;
+          return;
+         }
+
+  if (params->lines != 0 && lines_counter > params->lines)
+     {
+      g_signal = SIGINT;
+      return;
+     }
+
+  if (params->size != 0 && file_size_total > params->size)
+     {
+      g_signal = SIGINT;
+      return;
+     }
 
 
-         if (params->duration != 0) //not endless
-         if (params->lines == 0 && seconds_counter == params->duration)
-            {
-             g_signal = SIGINT;
-             return;
-           }
 
-         if (params->lines != 0 && lines_counter > params->lines)
-            {
-             g_signal = SIGINT;
-             return;
-           }
+  if (params->bstdout)
+     {
+      if (lines_counter % 24 == 0)
+          clrscr();
 
-         if (params->size != 0 && file_size_total > params->size)
-            {
-             g_signal = SIGINT;
-             return;
-           }
-
-
-
-   if (params->bstdout)
-      {
-       if (lines_counter % 24 == 0)
-           clrscr();
-
-       std::cout << s << "\n";
-       return;
-       }
+      std::cout << s << "\n";
+      return;
+     }
 
 
    if (! file_out_error && ! no_free_space)
@@ -472,12 +471,11 @@ void CProducer::write (const std::string &s)
 CProducer::CProducer (CParameters *prms, const std::string &fname)
 {
 
+  params = prms;
+  tpl = new CTpl (fname, params->mode);
 
-   params = prms;
-   tpl = new CTpl (fname, params->mode);
 
-
-   fname_template = fname;
+  fname_template = fname;
   log_current_size = 0;
   no_free_space = false;
   file_size_total = 0;
@@ -570,7 +568,6 @@ CProducer::CProducer (CParameters *prms, const std::string &fname)
     else
         std::cout << "ERROR on binding" << std::endl;
 
-
  }
 
 }
@@ -611,10 +608,8 @@ void CProducer::run()
    if (params->rate == 0)
      {
       cycle = new CGenCycleUnrated (this, params, fname_template);
-     if (open_logfile())
-         {
+      if (open_logfile())
           cycle->loop();
-         }
 
 /*
       for (size_t i = 0; i < threads_count; i++)
