@@ -167,12 +167,12 @@ void show_help()
   c->loop();
 }
 */
-
+/*
  void  do_task (CGenCycle *c)
 {
   if (c->open_logfile ())
-      c->loop();
-}
+      c->loop();*/
+//}
 
 
 
@@ -462,19 +462,24 @@ int main (int argc, char *argv[])
 
   std::cout << "std::thread::hardware_concurrency: " << std::thread::hardware_concurrency() << std::endl;
 
+
   size_t threads_count = std::thread::hardware_concurrency() - 1;
 
-  if (params.rate == 0)
-     {
-//      std::map <std::future<void>, CGenCycleUnrated*> loops;
+
+  CProducer *producer = new CProducer (&params, fname_template);
 
 
 
-          CGenCycleUnrated *c1 = new CGenCycleUnrated (&params, fname_template);
-          CGenCycleUnrated *c2 = new CGenCycleUnrated (&params, fname_template);
-          CGenCycleUnrated *c3 = new CGenCycleUnrated (&params, fname_template);
-          CGenCycleUnrated *c4 = new CGenCycleUnrated (&params, fname_template);
-          CGenCycleUnrated *c5 = new CGenCycleUnrated (&params, fname_template);
+
+  producer->run();
+
+  //if (params.rate == 0)
+    // {
+        //CGenCycleUnrated *c1 = new CGenCycleUnrated (&params, fname_template);
+ /*       CGenCycleUnrated *c2 = new CGenCycleUnrated (&params, fname_template);
+        CGenCycleUnrated *c3 = new CGenCycleUnrated (&params, fname_template);
+        CGenCycleUnrated *c4 = new CGenCycleUnrated (&params, fname_template);
+        CGenCycleUnrated *c5 = new CGenCycleUnrated (&params, fname_template);
 
           std::thread t1;
           std::thread t2;
@@ -485,11 +490,11 @@ int main (int argc, char *argv[])
           t2 = std::thread(&do_task, c2);
           t3 = std::thread(&do_task, c3);
           t4 = std::thread(&do_task, c5);
-
+*/
          //if (c2->open_logfile())
            // t2 = std::thread(&do_task, c2);
 
-
+/*
          if (c5->open_logfile())
             c5->loop();
 
@@ -507,7 +512,7 @@ int main (int argc, char *argv[])
     delete c5;
 
 
-
+*/
       //   if (c2->open_logfile())
         //  std::thread t2 (&do_task, c2);
 
@@ -525,8 +530,8 @@ int main (int argc, char *argv[])
 
     //s.add_task(c3);
 
-      for (size_t i = 0; i < threads_count; i++)
-          {
+     // for (size_t i = 0; i < threads_count; i++)
+       //   {
 
         //   CGenCycleUnrated *c = new CGenCycleUnrated (&params, fname_template);
       //     std::future<void> h = std::async (std::launch::async, &do_task, c);
@@ -536,7 +541,7 @@ int main (int argc, char *argv[])
 
 
 
-          }
+         // }
 
 /*
           std::cout << "wwww" << std::endl;
@@ -568,13 +573,7 @@ int main (int argc, char *argv[])
 */
 
 
-     }
-  else
-      {
-      CGenCycleRated cycle (&params, fname_template);
-      if (cycle.open_logfile())
-         cycle.loop();
-     }
+
 
   if (params.test && ! tdir.empty())
      {
@@ -582,6 +581,8 @@ int main (int argc, char *argv[])
       remove (temp_logfile0.c_str());
 
      }
+
+  delete producer;
 
   return 0;
 }

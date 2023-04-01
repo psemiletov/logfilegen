@@ -8,8 +8,6 @@
 #endif
 
 
-#ifndef PROM
-
 #if defined(_WIN32) || defined(_WIN64)
 //#include <WinSock2.h>
 //#include <WinSock.h>
@@ -28,22 +26,8 @@
 #endif
 
 
-#endif
 
 
-
-#ifdef PROM
-
-#include "prometheus/client_metric.h"
-#include "prometheus/counter.h"
-#include "prometheus/exposer.h"
-#include "prometheus/family.h"
-#include "prometheus/info.h"
-#include "prometheus/registry.h"
-
-using namespace prometheus;
-
-#endif
 
 
 #include "pairfile.h"
@@ -52,47 +36,33 @@ using namespace prometheus;
 #include "logrot.h"
 #include "params.h"
 
-
+class CProducer;
 
 
 class CGenCycle
 {
 public:
 
+
+  CProducer *producer;
   CParameters *params;
-  CTpl *tpl;
-  CLogRotator *logrotator;
-
-  size_t log_current_size; //in bytes
-  std::ofstream file_out;
-
-  //char bf[65536];
-
-  bool file_out_error;
-  bool no_free_space;
-  size_t test_string_size;
-  std::string fname_template;
+//  CTpl *tpl;
 
   ///////// stats
-  double bytes_per_second;
-  double lines_per_second;
-  size_t file_size_total;
-  size_t lines_counter_last = 0;
-  size_t lines_counter = 0;
-  size_t seconds_counter_ev = 0;
+//  double bytes_per_second;
+//  double lines_per_second;
+//  size_t file_size_total;
+//  size_t lines_counter_last = 0;
+  //size_t lines_counter = 0;
+  //size_t seconds_counter_ev = 0;
   size_t seconds_counter = 0;
   size_t frame_counter = 0;
   //////
 
 
-  CGenCycle (CParameters *prms, const std::string &fname);
+  CGenCycle (CProducer *prod, CParameters *prms, const std::string &fname);
 
-#ifndef PROM
-  void server_handle();
-#endif
-
-  bool open_logfile();
-  void write_results();
+  //bool open_logfile();
 
   virtual ~CGenCycle();
   virtual void loop() = 0;
@@ -104,7 +74,7 @@ class CGenCycleRated: public CGenCycle
 {
 public:
 
-  CGenCycleRated (CParameters *prms, const std::string &fname);
+  CGenCycleRated (CProducer *prod, CParameters *prms, const std::string &fname);
   void loop();
 
 };
@@ -114,7 +84,7 @@ class CGenCycleUnrated: public CGenCycle
 {
 public:
 
-  CGenCycleUnrated (CParameters *prms, const std::string &fname);
+  CGenCycleUnrated (CProducer *prod, CParameters *prms, const std::string &fname);
   void loop();
 
 };
@@ -124,9 +94,14 @@ class CProducer
 {
 public:
 
+    CTpl *tpl;
+
+
    ///SERV
 
-#ifndef PROM
+  std::chrono::_V2::system_clock start;
+  std::chrono::_V2::steady_clock clock;
+
 
   int newsockfd, portno;
 
@@ -144,16 +119,7 @@ public:
 
   std::string response;
 
-#endif
-
-#ifdef PROM
-
-  Exposer *exposer;
-  std::shared_ptr< prometheus::Registry > registry;
-
-#endif
-
-
+/*
    static std::atomic<size_t> lines_counter;
    static std::atomic<size_t> lines_counter_last;
 
@@ -163,11 +129,47 @@ public:
    static std::atomic<size_t> seconds_counter_ev;
    static std::atomic<size_t> seconds_counter;
    static std::atomic<size_t> frame_counter;
+*/
+
+   std::atomic<size_t> lines_counter;
+   std::atomic<size_t> lines_counter_last;
+
+   std::atomic<double> bytes_per_second;
+   std::atomic<double> lines_per_second;
+   std::atomic<size_t> file_size_total;
+   std::atomic<size_t> seconds_counter_ev;
+   std::atomic<size_t> seconds_counter;
+   std::atomic<size_t> frame_counter;
+
+  CLogRotator *logrotator;
+  CParameters *params;
+
+  size_t log_current_size; //in bytes
+  std::ofstream file_out;
+
+  //char bf[65536];
+
+  bool file_out_error;
+  bool no_free_space;
+  size_t test_string_size;
+  std::string fname_template;
 
 
-   void write (const std::string &s);
+  CGenCycle *cycle;
+
+
+  void server_handle();
+
+  void write_results();
+  void write (const std::string &s);
+  bool open_logfile();
+
+   CProducer (CParameters *prms, const std::string &fname);
+   ~CProducer();
+   void run();
 
 };
+
 
 
 
