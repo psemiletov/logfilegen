@@ -469,8 +469,6 @@ int main (int argc, char *argv[])
   CProducer *producer = new CProducer (&params, fname_template);
 
 
-
-
   producer->run();
 
   //if (params.rate == 0)

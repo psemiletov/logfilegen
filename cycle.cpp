@@ -24,12 +24,20 @@
 using namespace std::chrono;
 
 
+std::mutex rotation_mutex;
+
 namespace
 {
   volatile std::sig_atomic_t g_signal;
   volatile int sockfd;
 }
 
+
+
+void do_task (CGenCycle *c)
+{
+  c->loop();
+}
 
 
 void f_signal_handler (int signal)
@@ -405,6 +413,8 @@ void CProducer::write_results()
 
 void CProducer::write (const std::string &s, bool rated)
 {
+ std::lock_guard<std::mutex> coutLock(rotation_mutex);
+
   lines_counter++;
 
   //rated
@@ -626,9 +636,37 @@ void CProducer::run()
 
    if (params->rate == 0)
      {
+      /*
+
       cycle = new CGenCycleUnrated (this, params, fname_template);
       if (open_logfile())
           cycle->loop();
+
+        */
+
+
+            if (! open_logfile())
+               return;
+
+
+        CGenCycleUnrated *c1 = new CGenCycleUnrated (this, params, fname_template);
+        CGenCycleUnrated *c2 = new CGenCycleUnrated (this, params, fname_template);
+
+          std::thread t1;
+          std::thread t2;
+
+          t1 = std::thread(&do_task, c1);
+          t2 = std::thread(&do_task, c2);
+
+
+     t1.join();
+     t2.join();
+
+
+    delete c1;
+    delete c2;
+
+
 
 /*
       for (size_t i = 0; i < threads_count; i++)
@@ -652,6 +690,22 @@ void CProducer::run()
   seconds_counter_ev = duration_s.count();
 
   server_run = false;
+
+
+   if (params->benchmark && seconds_counter_ev)
+     {
+      lines_per_second = (double) lines_counter / seconds_counter_ev;
+      std::cout << "Benchmark, lines per seconds: " << lines_per_second << std::endl;
+     }
+
+  if (params->test && seconds_counter_ev)
+     {
+      lines_per_second = (double) lines_counter / seconds_counter_ev;
+      std::cout << "Test, lines per seconds: " << lines_per_second << std::endl;
+     }
+
+  if (! params->results.empty())
+      write_results();
 
   if (! params->results.empty())
       write_results();
