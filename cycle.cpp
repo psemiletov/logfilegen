@@ -303,8 +303,8 @@ void CGenCycleRated::loop()
 
               if (params->metrics)
                  {
-                  auto stop = high_resolution_clock::now();
-                  auto duration_s = duration_cast<seconds>(stop - start);
+                  producer->stop = high_resolution_clock::now();
+                  auto duration_s = duration_cast<seconds>(producer->stop - producer->start);
                   producer->seconds_counter_ev = duration_s.count();
 
                   if (producer->seconds_counter)
@@ -319,7 +319,7 @@ void CGenCycleRated::loop()
          frame_counter++;
 
          std::string log_string = producer->tpl->prepare_log_string();
-         producer->write (log_string);
+         producer->write (log_string, true);
 
           std::this_thread::sleep_until (next_frame);
         }
@@ -338,18 +338,18 @@ void CGenCycleUnrated::loop()
 {
 
 
-  auto start = high_resolution_clock::now();
+  //auto start = high_resolution_clock::now();
 
   // using clock = std::chrono::steady_clock;
 
-  while (true)
+  while (g_signal != SIGINT)
         {
-         if (g_signal == SIGINT)
-             break;
+         //if (g_signal == SIGINT)
+           //  break;
 
          std::string log_string = producer->tpl->prepare_log_string();
 
-         producer->write (log_string);
+         producer->write (log_string, false);
         }
 
 }
@@ -403,16 +403,34 @@ void CProducer::write_results()
 }
 
 
-void CProducer::write (const std::string &s)
+void CProducer::write (const std::string &s, bool rated)
 {
   lines_counter++;
 
+  //rated
+  if (rated)
   if (params->duration != 0) //not endless
-      if (params->lines == 0 && seconds_counter == params->duration)
-         {
-          g_signal = SIGINT;
-          return;
-         }
+    {
+       if (params->lines == 0 && seconds_counter == params->duration)
+          {
+           g_signal = SIGINT;
+           return;
+          }
+    }
+
+//unrated
+  if (! rated)
+  if (params->duration != 0)
+            {
+             stop = high_resolution_clock::now();
+             auto duration_s = duration_cast<seconds>(stop - start);
+             if (duration_s >= std::chrono::seconds(params->duration))
+                {
+                 g_signal = SIGINT;
+                 return;
+                 }
+            }
+
 
   if (params->lines != 0 && lines_counter > params->lines)
      {
@@ -428,6 +446,7 @@ void CProducer::write (const std::string &s)
 
 
 
+
   if (params->bstdout)
      {
       if (lines_counter % 24 == 0)
@@ -438,31 +457,31 @@ void CProducer::write (const std::string &s)
      }
 
 
-   if (! file_out_error && ! no_free_space)
-      {
-       file_out << s << "\n";
+  if (! file_out_error && ! no_free_space)
+     {
+      file_out << s << "\n";
 
-       log_current_size += s.size();
-       file_size_total += s.size();
+      log_current_size += s.size();
+      file_size_total += s.size();
 
-       if (log_current_size >= logrotator->max_log_file_size)
-          {
-           file_out.close();
-           log_current_size = 0;
+      if (log_current_size >= logrotator->max_log_file_size)
+         {
+          file_out.close();
+          log_current_size = 0;
 
-           logrotator->rotate();
+          logrotator->rotate();
 
-           if (! open_logfile())
-              {
-               std::cout << "cannot re-open: " << params->logfile << std::endl;
+          if (! open_logfile())
+             {
+              std::cout << "cannot re-open: " << params->logfile << std::endl;
 
-               g_signal = SIGINT;
+              g_signal = SIGINT;
 
-               shutdown (sockfd, 2);
-               close (sockfd);
-              }
-          }
-      }
+              shutdown (sockfd, 2);
+              close (sockfd);
+             }
+         }
+     }
 }
 
 
@@ -602,7 +621,7 @@ void CProducer::run()
    test_string_size = test_string.size();
 
 
-   auto start = high_resolution_clock::now();
+   /*auto */start = high_resolution_clock::now();
 
 
    if (params->rate == 0)
@@ -627,7 +646,7 @@ void CProducer::run()
      }
 
 
-  auto stop = high_resolution_clock::now();
+  /*auto */stop = high_resolution_clock::now();
 
   auto duration_s = duration_cast<seconds>(stop - start);
   seconds_counter_ev = duration_s.count();

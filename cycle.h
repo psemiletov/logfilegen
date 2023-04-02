@@ -99,8 +99,11 @@ public:
 
    ///SERV
 
-  std::chrono::_V2::system_clock start;
-  std::chrono::_V2::steady_clock clock;
+//  std::chrono::_V2::system_clock start;
+//  std::chrono::_V2::steady_clock clock;
+
+  std::chrono::time_point<std::chrono::high_resolution_clock> start;
+  std::chrono::time_point<std::chrono::high_resolution_clock> stop;
 
 
   int newsockfd, portno;
@@ -161,7 +164,7 @@ public:
   void server_handle();
 
   void write_results();
-  void write (const std::string &s);
+  void write (const std::string &s, bool rated);
   bool open_logfile();
 
    CProducer (CParameters *prms, const std::string &fname);
