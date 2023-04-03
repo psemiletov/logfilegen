@@ -315,7 +315,7 @@ void CGenCycleRated::loop()
                   auto duration_s = duration_cast<seconds>(producer->stop - producer->start);
                   producer->seconds_counter_ev = duration_s.count();
 
-                  if (producer->seconds_counter)
+                  if (producer->seconds_counter != 0)
                      {
                       producer->bytes_per_second = (double) producer->file_size_total / producer->seconds_counter_ev;
                       producer->lines_per_second = (double) producer->lines_counter / duration_s.count();
@@ -329,7 +329,7 @@ void CGenCycleRated::loop()
          std::string log_string = producer->tpl->prepare_log_string();
          producer->write (log_string, true);
 
-          std::this_thread::sleep_until (next_frame);
+         std::this_thread::sleep_until (next_frame);
         }
 
 
@@ -380,7 +380,7 @@ void CProducer::write_results()
   std::string fdate = datebuffer;
   std::string fduration = std::to_string (seconds_counter_ev);
   std::string fmode = params->mode;
-  //std::string ftemplate = tpl->vars["$logstring"]->get_val();
+  std::string ftemplate = tpl->vars["$logstring"]->get_val();
   std::string fsize_generated = std::to_string (file_size_total);
   std::string flines_generated = std::to_string (lines_counter);
   std::string flpsperformance = std::to_string (round (lines_per_second));
@@ -408,6 +408,8 @@ void CProducer::write_results()
 
 void CProducer::write (const std::string &s, bool rated)
 {
+ //std::cout << "CProducer::write\n ";
+
  std::lock_guard<std::mutex> coutLock(rotation_mutex);
 
   lines_counter++;
@@ -450,8 +452,6 @@ void CProducer::write (const std::string &s, bool rated)
      }
 
 
-
-
   if (params->bstdout)
      {
       if (lines_counter % 24 == 0)
@@ -468,6 +468,9 @@ void CProducer::write (const std::string &s, bool rated)
 
       log_current_size += s.size();
       file_size_total += s.size();
+
+    //   std::cout << "log_current_size: " << log_current_size << "\n";
+    //   std::cout << "file_size_total: " << file_size_total << "\n";
 
       if (log_current_size >= logrotator->max_log_file_size)
          {
@@ -732,6 +735,8 @@ CProducer::~CProducer()
 
 void CProducer::run()
 {
+
+       f_handle = std::async (std::launch::async, &CProducer::server_handle, this);
 
    std::string test_string = tpl->prepare_log_string();
    test_string_size = test_string.size();
