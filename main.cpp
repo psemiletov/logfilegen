@@ -56,52 +56,6 @@
 #define RESET "\x1B[0m"
 
 
-//using namespace std;
-/*
-class server
-{
-public:
-    std::mutex pending_mutex;
-    std::condition_variable pending_condition;
-    std::unordered_map<unsigned, std::future<void>> pending;
-    unsigned next_id =  0;
-
-    CGenCycle *cycle;
-
-    void add_task(CGenCycle *c)
-    {
-       cycle = c;
-
-        std::unique_lock<std::mutex> lock (pending_mutex);
-        auto id = next_id++;
-        auto f = std::async(std::launch::async, [this, id]{
-            this->doSomething(cycle);
-            this->notify_complete(id);
-        });
-        pending.emplace(id, std::move(f));
-    }
-
-    void doSomething (CGenCycle *c)
-         {c->loop();};
-
-    void notify_complete(unsigned id)
-    {
-        std::unique_lock<std::mutex> lock (pending_mutex);
-        pending.erase(id);
-        if (pending.empty())
-            pending_condition.notify_all();
-    }
-
-    void wait_all_complete()
-    {
-        auto none_left = [&] { return pending.empty(); };
-
-        std::unique_lock<std::mutex>  lock (pending_mutex);
-        pending_condition.wait(lock, none_left);
-    }
-};
-*/
-
 
 std::string find_config_in_paths (const std::string &fname)
 {
@@ -183,7 +137,7 @@ int main (int argc, char *argv[])
 
 //  std::string tdir = fs::temp_directory_path().string();
 
-   std::string tdir = get_tmp_dir();
+  std::string tdir = get_tmp_dir();
 
 
   std::string temp_logfile;
@@ -204,7 +158,7 @@ int main (int argc, char *argv[])
                             "LFG_LINES", "LFG_SIZE", "LFG_RANDOM",
                             "LFG_BENCHMARK", "LFG_STATS", "LFG_TEST",
                             "LFG_ADDR", "LFG_METRICS", "LFG_PORT",
-                            "LFG_IP", "LFG_RESULTS", "LFG_RESULTS_TEMPLATE", "LFG_RESULTS_THREADS"};
+                            "LFG_IP", "LFG_RESULTS", "LFG_RESULTS_TEMPLATE", "LFG_THREADS"};
 
   CParameters params;
   std::string fname_config;
@@ -257,7 +211,7 @@ int main (int argc, char *argv[])
    params.max_log_file_size = opts_config.get_string ("logsize", "16m");
    params.max_log_files = opts_config.get_num ("logcount", 5);
 
-   params.threads = opts_config.get_num ("threads", 1);
+   params.threads = opts_config.get_num ("threads", 2);
 
 
    params.mode = opts_config.get_string ("mode", "nginx");
@@ -469,123 +423,15 @@ int main (int argc, char *argv[])
       }
 
 
-  //std::cout << "std::thread::hardware_concurrency: " << std::thread::hardware_concurrency() << std::endl;
-
-
-
-
   CProducer *producer = new CProducer (&params, fname_template);
 
 
   producer->run();
 
-  //if (params.rate == 0)
-    // {
-        //CGenCycleUnrated *c1 = new CGenCycleUnrated (&params, fname_template);
- /*       CGenCycleUnrated *c2 = new CGenCycleUnrated (&params, fname_template);
-        CGenCycleUnrated *c3 = new CGenCycleUnrated (&params, fname_template);
-        CGenCycleUnrated *c4 = new CGenCycleUnrated (&params, fname_template);
-        CGenCycleUnrated *c5 = new CGenCycleUnrated (&params, fname_template);
-
-          std::thread t1;
-          std::thread t2;
-          std::thread t3;
-          std::thread t4;
-
-          t1 = std::thread(&do_task, c1);
-          t2 = std::thread(&do_task, c2);
-          t3 = std::thread(&do_task, c3);
-          t4 = std::thread(&do_task, c5);
-*/
-         //if (c2->open_logfile())
-           // t2 = std::thread(&do_task, c2);
-
-/*
-         if (c5->open_logfile())
-            c5->loop();
-
-
-     t1.join();
-     t2.join();
-     t3.join();
-     t4.join();
-
-
-    delete c1;
-    delete c2;
-    delete c3;
-    delete c4;
-    delete c5;
-
-
-*/
-      //   if (c2->open_logfile())
-        //  std::thread t2 (&do_task, c2);
-
-         //   auto h1 = std::async (std::launch::async, &do_task, c1);
-
-         //if (c2->open_logfile())
-           // auto h2 = std::async (std::launch::async, &do_task, c2);
-
-
-
-
-   //       CGenCycleUnrated *c3 = new CGenCycleUnrated (&params, fname_template);
-
-   // if (c3->open_logfile())
-
-    //s.add_task(c3);
-
-     // for (size_t i = 0; i < threads_count; i++)
-       //   {
-
-        //   CGenCycleUnrated *c = new CGenCycleUnrated (&params, fname_template);
-      //     std::future<void> h = std::async (std::launch::async, &do_task, c);
-
-  //         if (c->open_logfile())
-    //         loops.insert (std::make_pair (h, c));
-
-
-
-         // }
-
-/*
-          std::cout << "wwww" << std::endl;
-           CGenCycleUnrated *c = new CGenCycleUnrated (&params, fname_template);
-       //    v.push_back (c);
-           if (c->open_logfile())
-               c->loop();
-*/
-          // for (auto itr = v.begin(); itr != v.end(); ++itr)
-            //   delete (*itr);
-
-
-
-/*
-      std::future<void> f_handle;
-
-
-      CGenCycleUnrated *cycle1 = new CGenCycleUnrated (&params, fname_template);
-      if (cycle1->open_logfile())
-         f_handle = std::async (std::launch::async, &do_task, cycle1);
-
-
-      CGenCycleUnrated *cycle2 = new CGenCycleUnrated (&params, fname_template);
-      if (cycle2->open_logfile())
-         cycle2->loop();
-
-      delete cycle1;
-      delete cycle2;
-*/
-
-
-
-
   if (params.test && ! tdir.empty())
      {
       remove (temp_logfile.c_str());
       remove (temp_logfile0.c_str());
-
      }
 
   delete producer;

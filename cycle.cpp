@@ -15,9 +15,7 @@
 #define clrscr() printf("\e[1;1H\e[2J")
 #endif
 
-#ifndef PROM
 //#include <arpa/inet.h>
-#endif
 
 #include "cycle.h"
 
@@ -55,19 +53,12 @@ CGenCycle::CGenCycle (CProducer *prod, CParameters *prms, const std::string &fna
 {
   params = prms;
   producer = prod;
-
-
-
-//  std::signal (SIGINT, f_signal_handler);
-
-
- }
+}
 
 
 
 //http://localhost:8888/metrics
 
-#ifndef PROM
 
 void CProducer::server_handle()
 {
@@ -233,7 +224,6 @@ void CProducer::server_handle()
    }
 }
 
-#endif
 
 
 CGenCycle::~CGenCycle()
