@@ -367,6 +367,9 @@ void CProducer::write_results()
   else
       std::cout << "cannot divide by zero and evaluate lines_per_second\n";
 
+
+  bytes_per_second = (double) file_size_total / seconds_counter_ev;
+
   std::string fdate = datebuffer;
   std::string fduration = std::to_string (seconds_counter_ev);
   std::string fmode = params->mode;
@@ -761,6 +764,8 @@ void CProducer::run()
 
         if (threads_count < 1)
            threads_count = 1;
+
+   //    std::cout <<  "threads_count " << threads_count << std::endl;
 
       for (size_t i = 0; i < threads_count; i++)
          {
