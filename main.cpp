@@ -204,7 +204,7 @@ int main (int argc, char *argv[])
                             "LFG_LINES", "LFG_SIZE", "LFG_RANDOM",
                             "LFG_BENCHMARK", "LFG_STATS", "LFG_TEST",
                             "LFG_ADDR", "LFG_METRICS", "LFG_PORT",
-                            "LFG_IP", "LFG_RESULTS", "LFG_RESULTS_TEMPLATE"};
+                            "LFG_IP", "LFG_RESULTS", "LFG_RESULTS_TEMPLATE", "LFG_RESULTS_THREADS"};
 
   CParameters params;
   std::string fname_config;
@@ -256,6 +256,10 @@ int main (int argc, char *argv[])
    params.logfile = opts_config.get_string ("logfile", "stdout");
    params.max_log_file_size = opts_config.get_string ("logsize", "16m");
    params.max_log_files = opts_config.get_num ("logcount", 5);
+
+   params.threads = opts_config.get_num ("threads", 1);
+
+
    params.mode = opts_config.get_string ("mode", "nginx");
    params.pure = opts_config.get_bool ("pure", false);
    params.random = opts_config.get_bool ("random", false);
@@ -306,6 +310,10 @@ int main (int argc, char *argv[])
 
   params.max_log_file_size = opts_cmdline.get_string ("logsize", params.max_log_file_size);
   params.max_log_files = opts_cmdline.get_num ("logcount", params.max_log_files);
+
+  params.threads = opts_cmdline.get_num ("threads", params.threads);
+
+
   params.mode = opts_cmdline.get_string ("mode", params.mode);
   params.pure = opts_cmdline.get_bool ("pure", params.pure);
   params.random = opts_cmdline.get_bool ("random", params.random);
@@ -352,6 +360,7 @@ int main (int argc, char *argv[])
   params.results = opts_envars.get_string ("results", params.results);
   params.results_template = opts_envars.get_string ("results_template", params.results_template);
 
+ params.threads = opts_envars.get_num ("threads", params.threads);
 
   params.lines = opts_envars.get_num ("lines", params.lines);
   params.logfile = opts_envars.get_string ("logfile", params.logfile);
@@ -460,10 +469,9 @@ int main (int argc, char *argv[])
       }
 
 
-  std::cout << "std::thread::hardware_concurrency: " << std::thread::hardware_concurrency() << std::endl;
+  //std::cout << "std::thread::hardware_concurrency: " << std::thread::hardware_concurrency() << std::endl;
 
 
-  size_t threads_count = std::thread::hardware_concurrency() - 1;
 
 
   CProducer *producer = new CProducer (&params, fname_template);

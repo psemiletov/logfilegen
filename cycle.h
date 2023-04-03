@@ -144,6 +144,9 @@ public:
    std::atomic<size_t> seconds_counter;
    std::atomic<size_t> frame_counter;
 
+   std::vector <std::string> v_buffer;
+
+
   CLogRotator *logrotator;
   CParameters *params;
 
@@ -165,6 +168,10 @@ public:
 
   void write_results();
   void write (const std::string &s, bool rated);
+  void write_buffered (const std::string &s, bool rated);
+
+  void flush_buffer();
+
   bool open_logfile();
 
    CProducer (CParameters *prms, const std::string &fname);

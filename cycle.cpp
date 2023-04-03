@@ -345,11 +345,6 @@ CGenCycleUnrated::CGenCycleUnrated (CProducer *prod, CParameters *prms, const st
 void CGenCycleUnrated::loop()
 {
 
-
-  //auto start = high_resolution_clock::now();
-
-  // using clock = std::chrono::steady_clock;
-
   while (g_signal != SIGINT)
         {
          //if (g_signal == SIGINT)
@@ -493,6 +488,116 @@ void CProducer::write (const std::string &s, bool rated)
              }
          }
      }
+}
+
+
+
+void CProducer::write_buffered (const std::string &s, bool rated)
+{
+  std::lock_guard<std::mutex> coutLock(rotation_mutex);
+
+  lines_counter++;
+
+  //rated
+  if (rated)
+  if (params->duration != 0) //not endless
+     {
+      if (params->lines == 0 && seconds_counter == params->duration)
+         {
+          g_signal = SIGINT;
+          flush_buffer();
+          return;
+         }
+     }
+
+//unrated
+  if (! rated)
+  if (params->duration != 0)
+            {
+             stop = high_resolution_clock::now();
+             auto duration_s = duration_cast<seconds>(stop - start);
+             if (duration_s >= std::chrono::seconds(params->duration))
+                {
+                 g_signal = SIGINT;
+                 flush_buffer();
+                 return;
+                 }
+            }
+
+
+  if (params->lines != 0 && lines_counter > params->lines)
+     {
+      g_signal = SIGINT;
+      flush_buffer();
+
+      return;
+     }
+
+  if (params->size != 0 && file_size_total > params->size)
+     {
+      g_signal = SIGINT;
+      flush_buffer();
+
+      return;
+     }
+
+
+
+
+  if (params->bstdout)
+     {
+      if (lines_counter % 24 == 0)
+          clrscr();
+
+      std::cout << s << "\n";
+      return;
+     }
+
+
+  if (! file_out_error && ! no_free_space)
+     {
+      v_buffer.push_back (s);
+
+      if (v_buffer.size() > 10000)
+          flush_buffer();
+
+      //log_current_size += s.size();
+      //file_size_total += s.size();
+
+      if (log_current_size >= logrotator->max_log_file_size)
+         {
+
+          file_out.close();
+          log_current_size = 0;
+
+          logrotator->rotate();
+
+          if (! open_logfile())
+             {
+              std::cout << "cannot re-open: " << params->logfile << std::endl;
+
+              g_signal = SIGINT;
+
+              shutdown (sockfd, 2);
+              close (sockfd);
+             }
+         }
+     }
+}
+
+
+void CProducer::flush_buffer()
+{
+  for (std::string i : v_buffer)
+     {
+      file_out << i << "\n";
+
+      log_current_size += i.size();
+      file_size_total += i.size();
+         //cout << "i = " << i << endl;
+    }
+
+  v_buffer.clear();
 }
 
 
@@ -646,34 +751,70 @@ void CProducer::run()
         */
 
 
-            if (! open_logfile())
-               return;
+        if (! open_logfile())
+            return;
 
 
+        std::vector <CGenCycleUnrated *> v_cycles;
+        std::vector <std::thread> v_threads;
+
+        size_t threads_count = params->threads;//std::thread::hardware_concurrency() - 1;
+
+
+        if (threads_count > std::thread::hardware_concurrency())
+           threads_count = 1;
+
+        if (threads_count < 1)
+           threads_count = 1;
+
+      for (size_t i = 0; i < threads_count; i++)
+         {
+          v_threads.push_back (std::thread(&do_task, new CGenCycleUnrated (this, params, fname_template)));
+         }
+
+
+
+      for (size_t i = 0; i < v_threads.size(); i++)
+          {
+           v_threads[i].join();
+         }
+
+      for (size_t i = 0; i < v_cycles.size(); i++)
+          {
+           delete v_cycles[i];
+         }
+
+
+/*
         CGenCycleUnrated *c1 = new CGenCycleUnrated (this, params, fname_template);
         CGenCycleUnrated *c2 = new CGenCycleUnrated (this, params, fname_template);
         CGenCycleUnrated *c3 = new CGenCycleUnrated (this, params, fname_template);
+        CGenCycleUnrated *c4 = new CGenCycleUnrated (this, params, fname_template);
 
           std::thread t1;
           std::thread t2;
          std::thread t3;
+         std::thread t4;
 
           t1 = std::thread(&do_task, c1);
           t2 = std::thread(&do_task, c2);
-          t3 = std::thread(&do_task, c2);
+          t3 = std::thread(&do_task, c3);
+          t4 = std::thread(&do_task, c4);
 
 
      t1.join();
      t2.join();
      t3.join();
+t4.join();
 
 
     delete c1;
     delete c2;
     delete c3;
+  delete c4;
 
 
-
+*/
 /*
       for (size_t i = 0; i < threads_count; i++)
           {
