@@ -174,14 +174,9 @@ public:
 
   bool open_logfile();
 
-<<<<<<< HEAD
-  virtual ~CGenCycle();
-  virtual void loop() = 0;
-=======
    CProducer (CParameters *prms, const std::string &fname);
    ~CProducer();
    void run();
->>>>>>> test2
 
 };
 
