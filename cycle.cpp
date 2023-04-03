@@ -291,7 +291,7 @@ bool CProducer::open_logfile()
 void CGenCycleRated::loop()
 {
 
-   auto start = high_resolution_clock::now();
+   producer->start = high_resolution_clock::now();
 
    using clock = std::chrono::steady_clock;
 
@@ -476,6 +476,7 @@ void CProducer::write (const std::string &s, bool rated)
 
       if (log_current_size >= logrotator->max_log_file_size)
          {
+
           file_out.close();
           log_current_size = 0;
 
@@ -651,20 +652,25 @@ void CProducer::run()
 
         CGenCycleUnrated *c1 = new CGenCycleUnrated (this, params, fname_template);
         CGenCycleUnrated *c2 = new CGenCycleUnrated (this, params, fname_template);
+        CGenCycleUnrated *c3 = new CGenCycleUnrated (this, params, fname_template);
 
           std::thread t1;
           std::thread t2;
+         std::thread t3;
 
           t1 = std::thread(&do_task, c1);
           t2 = std::thread(&do_task, c2);
+          t3 = std::thread(&do_task, c2);
 
 
      t1.join();
      t2.join();
+     t3.join();
 
 
     delete c1;
     delete c2;
+    delete c3;
 
 
 
