@@ -23,7 +23,7 @@ You can use following configuration variables:
 
 **duration=integer** - how many seconds runs the lines gerenation cycle. If 0 (zero), cycle will run until break by Ctrl-C.
 
-**rate=integer** - how many lines we generate at the each cycle iteration. If ```rate``` = 0, logfilegen performs non-timed loop with the full processor power.
+**rate=integer** - how many lines we generate at the each cycle iteration. If ```rate``` = 0, logfilegen performs non-timed loop with the full processor power. Thus, we have two main modes - *rated* (rate=non-zero) and *unnrated* (rate=0). Default: 0.
 
 **lines=integer** - overrides ```duration``` with the ```lines``` count to generate exact number of the lines. Maximum lines count is 18446744073709551615.
 
@@ -32,6 +32,9 @@ You can use following configuration variables:
 **template=string** - file name of the template that is used for logfile lines generation. (See [Using templates](templates.md) chapter).
 
 **logfile=string** - file name for the resulting logfile. If no absolute file provided, the program will search in the current directory. You can also use ```stdout``` as the file name to output lines to the console. It is slow, but good way for the quick testing.
+
+**threads=integer** - use multiply threads (*unrated* mode only). Default: 2 (1 on single core). The optimal value can be found by experiments, because there are many factors (disk IO, log rotationn, etc) those prevents many threads utilization. 3-4 threads may increase the performance on 70-80 percents, but further (mor than 4 threads) we may expect the significant degradation of the performance.
+
 
 ### Log rotation
 

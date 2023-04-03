@@ -4,11 +4,18 @@
 
 //#undef _HAS_STD_BYTE
 
+#include <thread>
+
 #include <cstdint>
 #include <cstdlib>
 #include <vector>
 #include <iostream>
 #include <iomanip>
+
+#include <unordered_map>
+#include <condition_variable>
+#include <mutex>
+#include <future>
 
 //#include <filesystem>
 /*
@@ -49,7 +56,6 @@
 #define RESET "\x1B[0m"
 
 
-//using namespace std;
 
 std::string find_config_in_paths (const std::string &fname)
 {
@@ -109,13 +115,29 @@ void show_help()
   printf ("logfilegen --duration=60 --rate=1000 --template=nginx.tpl --logfile=access.log\n");
 }
 
+/*
+ void  do_task (CGenCycle *c)
+{
+  c->loop();
+}
+*/
+/*
+ void  do_task (CGenCycle *c)
+{
+  if (c->open_logfile ())
+      c->loop();*/
+//}
+
+
+
+
 int main (int argc, char *argv[])
 {
 //  cout << "version: " << VERSION_NUMBER << endl;
 
 //  std::string tdir = fs::temp_directory_path().string();
 
-   std::string tdir = get_tmp_dir();
+  std::string tdir = get_tmp_dir();
 
 
   std::string temp_logfile;
@@ -136,7 +158,7 @@ int main (int argc, char *argv[])
                             "LFG_LINES", "LFG_SIZE", "LFG_RANDOM",
                             "LFG_BENCHMARK", "LFG_STATS", "LFG_TEST",
                             "LFG_ADDR", "LFG_METRICS", "LFG_PORT",
-                            "LFG_IP", "LFG_RESULTS", "LFG_RESULTS_TEMPLATE"};
+                            "LFG_IP", "LFG_RESULTS", "LFG_RESULTS_TEMPLATE", "LFG_THREADS"};
 
   CParameters params;
   std::string fname_config;
@@ -188,6 +210,10 @@ int main (int argc, char *argv[])
    params.logfile = opts_config.get_string ("logfile", "stdout");
    params.max_log_file_size = opts_config.get_string ("logsize", "16m");
    params.max_log_files = opts_config.get_num ("logcount", 5);
+
+   params.threads = opts_config.get_num ("threads", 2);
+
+
    params.mode = opts_config.get_string ("mode", "nginx");
    params.pure = opts_config.get_bool ("pure", false);
    params.random = opts_config.get_bool ("random", false);
@@ -238,6 +264,10 @@ int main (int argc, char *argv[])
 
   params.max_log_file_size = opts_cmdline.get_string ("logsize", params.max_log_file_size);
   params.max_log_files = opts_cmdline.get_num ("logcount", params.max_log_files);
+
+  params.threads = opts_cmdline.get_num ("threads", params.threads);
+
+
   params.mode = opts_cmdline.get_string ("mode", params.mode);
   params.pure = opts_cmdline.get_bool ("pure", params.pure);
   params.random = opts_cmdline.get_bool ("random", params.random);
@@ -284,6 +314,7 @@ int main (int argc, char *argv[])
   params.results = opts_envars.get_string ("results", params.results);
   params.results_template = opts_envars.get_string ("results_template", params.results_template);
 
+ params.threads = opts_envars.get_num ("threads", params.threads);
 
   params.lines = opts_envars.get_num ("lines", params.lines);
   params.logfile = opts_envars.get_string ("logfile", params.logfile);
@@ -392,28 +423,18 @@ int main (int argc, char *argv[])
       }
 
 
-  if (params.rate == 0)
-     {
-      CGenCycleUnrated cycle (&params, fname_template);
-      if (cycle.open_logfile())
-         cycle.loop();
-     }
-  else
-      {
-      CGenCycleRated cycle (&params, fname_template);
-      if (cycle.open_logfile())
-         cycle.loop();
-     }
+  CProducer *producer = new CProducer (&params, fname_template);
+
+
+  producer->run();
 
   if (params.test && ! tdir.empty())
      {
       remove (temp_logfile.c_str());
       remove (temp_logfile0.c_str());
-
-//      remove (params.logfile.c_str());
-      //std::string t = params.logfile + ".0";
-//      remove (t.c_str());
      }
+
+  delete producer;
 
   return 0;
 }
