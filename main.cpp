@@ -397,10 +397,6 @@ int main (int argc, char *argv[])
       params.max_log_files = 1;
       params.bstdout = false;
 
-      //string tdir (std::filesystem::temp_directory_path());
-      //params.logfile = tdir + "/" + "logfilegen.log";
-      //cout << "params.logfile " << params.logfile << endl;
-
       params.logfile = temp_logfile;
 
       fname_template = "";

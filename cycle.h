@@ -2,10 +2,7 @@
 #define CYCLE_H
 
 #include <fstream>
-
-#ifndef PROM
 #include <future>
-#endif
 
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -35,6 +32,7 @@
 #include "tpl.h"
 #include "logrot.h"
 #include "params.h"
+
 
 class CProducer;
 
