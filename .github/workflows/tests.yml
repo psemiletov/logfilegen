@@ -26,7 +26,7 @@ jobs:
       - name: Prerequisites
         run: |
           sudo apt update
-          sudo apt install git make g++
+          sudo apt install -y git make g++
 
       - name: Build
         run: make
