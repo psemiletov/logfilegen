@@ -784,44 +784,6 @@ void CProducer::run()
            delete v_cycles[i];
          }
 
-
-/*
-        CGenCycleUnrated *c1 = new CGenCycleUnrated (this, params, fname_template);
-        CGenCycleUnrated *c2 = new CGenCycleUnrated (this, params, fname_template);
-        CGenCycleUnrated *c3 = new CGenCycleUnrated (this, params, fname_template);
-        CGenCycleUnrated *c4 = new CGenCycleUnrated (this, params, fname_template);
-
-          std::thread t1;
-          std::thread t2;
-         std::thread t3;
-         std::thread t4;
-
-          t1 = std::thread(&do_task, c1);
-          t2 = std::thread(&do_task, c2);
-          t3 = std::thread(&do_task, c3);
-          t4 = std::thread(&do_task, c4);
-
-
-     t1.join();
-     t2.join();
-     t3.join();
-t4.join();
-
-
-    delete c1;
-    delete c2;
-    delete c3;
-  delete c4;
-
-
-*/
-/*
-      for (size_t i = 0; i < threads_count; i++)
-          {
-
-          }
-*/
-
      }
   else
       {
@@ -850,9 +812,6 @@ t4.join();
       lines_per_second = (double) lines_counter / seconds_counter_ev;
       std::cout << "Test, lines per seconds: " << lines_per_second << std::endl;
      }
-
-  if (! params->results.empty())
-      write_results();
 
   if (! params->results.empty())
       write_results();
