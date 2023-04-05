@@ -46,7 +46,7 @@ jobs:
       - name: Common - Prerequisites
         run: |
           sudo apt update
-          sudo apt install git make g++ cmake pkg-config
+          sudo apt install -y git make g++ cmake pkg-config
 
       - name: Prometheus - Checkout
         if: ${{ env.PROMETHEUS_ENABLE == 'true' }}
