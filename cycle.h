@@ -161,6 +161,8 @@ public:
 
   CGenCycle *cycle;
 
+  void server_init();
+  void server_done();
 
   void server_handle();
 

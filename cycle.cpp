@@ -651,55 +651,8 @@ CProducer::CProducer (CParameters *prms, const std::string &fname)
      }
 
 
- //SERV
 
-
- if (params->metrics)
-    {
-#if defined(_WIN32) || defined(_WIN64)
-     WSADATA wsa;
-     if (WSAStartup (MAKEWORD(2,2),&wsa) != 0)
-         printf("Error: Windows socket subsystem could not be initialized. Error Code: %d\n", WSAGetLastError());
-#endif
-
-     sockfd = socket(AF_INET, SOCK_STREAM, 0);
-     if (sockfd < 0)
-        std::cout << "ERROR opening socket" << std::endl;
-
-
-#if defined(_WIN32) || defined(_WIN64)
-
-     char yes='1'; // use this under Solaris and WIN
-     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
-        perror("setsockopt");
-
-#else
-
-     int yes=1;
-     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
-        perror("setsockopt");
-
-#endif
-
-     memset (&serv_addr, 0, sizeof (serv_addr));
-
-     portno = std::stoi(params->port.c_str());;
-     serv_addr.sin_family = AF_INET;
-     serv_addr.sin_addr.s_addr = INADDR_ANY;
-    //  inet_pton (AF_INET, params->ip.c_str(), &serv_addr);
-     serv_addr.sin_port = htons(portno);
-
-     int retcode = ::bind (sockfd, (struct sockaddr *) &serv_addr, sizeof (serv_addr));
-
-     if (retcode == 0)
-        {
-         listen (sockfd, 5);
-         server_run = true;
-        }
-    else
-        std::cout << "ERROR on binding" << std::endl;
-
- }
+ server_init();
 
 }
 
@@ -713,12 +666,7 @@ CProducer::CProducer (CParameters *prms, const std::string &fname)
 CProducer::~CProducer()
 {
 
- if (params->metrics)
-    {
-     server_run = false;
-     shutdown (sockfd, 2);
-     close (sockfd);
-    }
+ server_done();
 
  delete tpl;
  delete logrotator;
@@ -740,16 +688,7 @@ void CProducer::run()
 
    if (params->rate == 0)
      {
-      /*
-
-      cycle = new CGenCycleUnrated (this, params, fname_template);
-      if (open_logfile())
-          cycle->loop();
-
-        */
-
-
-        if (! open_logfile())
+      if (! open_logfile())
             return;
 
 
@@ -817,5 +756,75 @@ void CProducer::run()
       write_results();
 
   file_out.close();
+
+}
+
+
+void CProducer::server_init()
+{
+//SERV
+
+
+ if (! params->metrics)
+     return;
+
+#if defined(_WIN32) || defined(_WIN64)
+     WSADATA wsa;
+     if (WSAStartup (MAKEWORD(2,2),&wsa) != 0)
+         printf("Error: Windows socket subsystem could not be initialized. Error Code: %d\n", WSAGetLastError());
+#endif
+
+     sockfd = socket(AF_INET, SOCK_STREAM, 0);
+     if (sockfd < 0)
+        std::cout << "ERROR opening socket" << std::endl;
+
+
+#if defined(_WIN32) || defined(_WIN64)
+
+     char yes='1'; // use this under Solaris and WIN
+     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
+        perror("setsockopt");
+
+#else
+
+     int yes=1;
+     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1)
+        perror("setsockopt");
+
+#endif
+
+     memset (&serv_addr, 0, sizeof (serv_addr));
+
+     portno = std::stoi(params->port.c_str());;
+     serv_addr.sin_family = AF_INET;
+     serv_addr.sin_addr.s_addr = INADDR_ANY;
+    //  inet_pton (AF_INET, params->ip.c_str(), &serv_addr);
+     serv_addr.sin_port = htons(portno);
+
+     int retcode = ::bind (sockfd, (struct sockaddr *) &serv_addr, sizeof (serv_addr));
+
+     if (retcode == 0)
+        {
+         listen (sockfd, 5);
+         server_run = true;
+        }
+    else
+        std::cout << "ERROR on binding" << std::endl;
+
+
+
+}
+
+
+void CProducer::server_done()
+{
+   if (! params->metrics)
+      return;
+
+
+   server_run = false;
+   shutdown (sockfd, 2);
+   close (sockfd);
+
 
 }
