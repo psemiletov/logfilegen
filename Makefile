@@ -11,7 +11,7 @@ CXXFLAGS = -Wall -g -O3 -std=c++11 -pthread -lpthread
 
 
 ifeq ($(OS),Windows_NT)
-	CXX=gcc++
+	CXX=g++
 else
 	ifeq (, $(shell which clang++))
 		CXX=g++
