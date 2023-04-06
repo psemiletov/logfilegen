@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.5)
 
 set (CMAKE_CXX_STANDARD 11)
 
-option(USE_PROMCPP "Use prometheus_cpp" OFF)
 option(USE_STATIC "Static build" OFF)
 option(USE_CLANG "Build with Clang" OFF)
 
@@ -58,37 +57,6 @@ endif()
 if(WIN32)
   target_link_libraries(logfilegen  -lws2_32)
 endif()
-
-
-
-if(USE_PROMCPP)
-
-set(ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH}:/usr/local/lib/pkgconfig")
-
-find_package(PkgConfig REQUIRED)
-
-pkg_check_modules(prometheus-cpp-core QUIET prometheus-cpp-core)
-if(prometheus-cpp-core_FOUND)
-  add_definitions(-DPROM=1)
-  target_link_libraries(logfilegen ${prometheus-cpp-core_LIBRARIES})
-  include_directories(${prometheus-cpp-core_INCLUDE_DIRS})
-  message("+ prom core support")
-endif()
-
-pkg_check_modules(prometheus-cpp-pull QUIET prometheus-cpp-pull)
-if(prometheus-cpp-core_FOUND)
-  add_definitions(-DPROM=1)
-  target_link_libraries(logfilegen ${prometheus-cpp-pull_LIBRARIES} )
-  include_directories(${prometheus-cpp-pull_INCLUDE_DIRS})
-  message("+ prom pull support")
-endif()
-
-else()
-
- target_link_libraries(logfilegen ${prometheus-cpp-pull_LIBRARIES})
-
-endif()
-
 
 
 install (TARGETS logfilegen DESTINATION bin)

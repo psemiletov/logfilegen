@@ -48,7 +48,8 @@ void CPairFile::set_string (const string &key, const string &value)
 void CPairFile::set_float (const string &key, float value)
 {
   char buffer [64];
-  sprintf (buffer, "%f", value);
+  //sprintf (buffer, "%f", value);
+  snprintf (buffer, 64, "%f", value);
   string n (buffer);
   values[key] = n; 
 }

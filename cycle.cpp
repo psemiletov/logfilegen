@@ -490,7 +490,7 @@ void CProducer::write (const std::string &s, bool rated)
 
 void CProducer::write_buffered (const std::string &s, bool rated)
 {
-  std::lock_guard<std::mutex> coutLock(rotation_mutex);
+  std::lock_guard<std::mutex> coutLock (rotation_mutex);
 
   lines_counter++;
 
