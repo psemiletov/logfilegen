@@ -90,13 +90,10 @@ public:
   struct sockaddr_in serv_addr, cli_addr;
   bool server_run;
   std::future<void> f_handle;
-
   std::string response;
-
 
   std::atomic<size_t> lines_counter;
   std::atomic<size_t> lines_counter_last;
-
   std::atomic<double> bytes_per_second;
   std::atomic<double> lines_per_second;
   std::atomic<size_t> file_size_total;
@@ -121,19 +118,20 @@ public:
 
   CProducer (CParameters *prms, const std::string &fname);
   ~CProducer();
-  void run();
 
+  void run();
   bool open_logfile();
 
   void write (const std::string &s, bool rated);
   void write_buffered (const std::string &s, bool rated);
   void flush_buffer();
 
+  void write_results();
+
   void server_init();
   void server_done();
   void server_handle();
 
-  void write_results();
 };
 
 
