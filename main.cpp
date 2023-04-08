@@ -41,9 +41,8 @@
 
 
 #ifndef VERSION_NUMBER
-#define VERSION_NUMBER "2.3.0"
+#define VERSION_NUMBER "3.0.0"
 #endif
-
 
 
 #define RED   "\x1B[31m"
@@ -78,7 +77,6 @@ std::string find_config_in_paths (const std::string &fname)
 }
 
 
-
 void show_version()
 {
   std::cout << "logfilegen v." << VERSION_NUMBER << std::endl;
@@ -90,19 +88,21 @@ void show_help()
   printf (GRN "logfilegen v%s by Peter Semiletov\n" RESET, VERSION_NUMBER);
   printf (YEL "Please read the full Manual at https://psemiletov.github.io/logfilegen/\n" RESET);
   printf (MAG "Parameters short list:\n");
-  printf (CYN"--pure" RESET "      - Generate lines in memory or output them to the log file, disabled by default.\n");
-  printf (CYN"--benchmark" RESET " - Perfrom benchmark to test logs generation performance of the current system, disabled by default.\n");
-  printf (CYN"--duration" RESET "  - Logs generation duration in seconds, default is 0 and it means unlimited.\n");
-  printf (CYN"--rate" RESET "      - Generation speed, default is 0 and it means unlimited.\n");
-  printf (CYN"--lines" RESET "     - Generate number of lines and exit, overrides duration.\n");
-  printf (CYN"--size" RESET "      - Generate specific log file size and exit, overrides duration and lines. Default units are bytes and we can specify k/m/g etc.\n");
-  printf (CYN"--template" RESET "  - Template file name that is used for log file generation. See documentation for more details about template file format.\n");
-  printf (CYN"--logfile" RESET "   - File name for the resulting logfile. We can also use 'stdout' to output lines to the console.\n");
-  printf (CYN"--logsize" RESET "   - Maximum log file size, if exceeded, the log file rotation will happen. Default is 16m, default units are bytes and we can specify k/m/g\n");
+  printf (CYN"--pure" RESET "        - Generate lines in memory or output them to the log file, disabled by default.\n");
+  printf (CYN"--benchmark" RESET "   - Perfrom benchmark to test logs generation performance of the current system, disabled by default.\n");
+  printf (CYN"--duration=n" RESET "  - Logs generation duration in seconds, default is 0 and it means unlimited.\n");
+  printf (CYN"--rate=n" RESET "      - Generation speed, default is 0 and it means unlimited.\n");
+  printf (CYN"--lines=n" RESET "     - Generate number of lines and exit, overrides duration.\n");
+  printf (CYN"--size=n" RESET "      - Generate specific log file size and exit, overrides duration and lines. Default units are bytes and we can specify k/m/g etc.\n");
+  printf (CYN"--template=s" RESET "  - Template file name that is used for log file generation. See documentation for more details about template file format.\n");
+  printf (CYN"--logfile=s" RESET "   - File name for the resulting logfile. We can also use 'stdout' to output lines to the console.\n");
+  printf (CYN"--logsize=n" RESET "   - Maximum log file size, if exceeded, the log file rotation will happen. Default is 16m, default units are bytes and we can specify k/m/g\n");
   printf ("etc.\n");
-  printf (CYN"--logcount" RESET "  - Number of the files to retain during rotation.\n");
-  printf (CYN"--gzip" RESET "      - Use external gzip to compress rotated log files, disabled by default.\n");
-  printf (CYN"--debug" RESET "     - Enable or disable debug, disabled by default.\n");
+  printf (CYN"--logcount=n" RESET "  - Number of the files to retain during rotation.\n");
+  printf (CYN"--gzip" RESET "        - Use external gzip to compress rotated log files, disabled by default.\n");
+  printf (CYN"--debug" RESET "       - Enable or disable debug, disabled by default.\n");
+  printf (CYN"--threads=n" RESET "   - Number of threads in unrated mode, 2 by default.\n");
+
   printf ("\n");
   printf (MAG "Examples:\n" RESET);
   printf ("\n");

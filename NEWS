@@ -1,4 +1,3 @@
-+ CMake support optimization
-+ HaikuOS support (compile with make --makefile=Makefile.Haiku
-+ Mac ARM support (compile with make --makefile=Makefile.macarm
-* randomization engine take less resources
+logfilegen 3.0.0
+
+This release introduces the multithread support (performance improved), fixes mac and win building, and many more.

@@ -1,3 +1,7 @@
++ multithread support
+* win and mac support fixed
+- prometheus_cpp library support (logfilegen built-in code covers all needs)
+
 + CMake support optimization
 + HaikuOS support (compile with make --makefile=Makefile.Haiku
 + Mac ARM support (compile with make --makefile=Makefile.macarm
