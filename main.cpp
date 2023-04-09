@@ -41,7 +41,7 @@
 
 
 #ifndef VERSION_NUMBER
-#define VERSION_NUMBER "3.0.0"
+#define VERSION_NUMBER "3.0.1"
 #endif
 
 

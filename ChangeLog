@@ -1,3 +1,8 @@
+3.0.1
+* @meta fix
+* randomizer rewrote
+
+3.0.0
 + multithread support
 * win and mac support fixed
 - prometheus_cpp library support (logfilegen built-in code covers all needs)
