@@ -1,3 +1,7 @@
 logfilegen 3.0.0
 
 This release introduces the multithread support (performance improved), fixes mac and win building, and many more.
+
+upd 3.0.1
+* @meta macro fixes
+* randomizer code has been rewritten
