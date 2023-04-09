@@ -15,7 +15,9 @@
 
 using namespace std;
 
+extern std::mt19937 rnd_mt19937;
 
+/*
 std::mt19937 &vmt()
 {
   // initialize once per thread
@@ -28,7 +30,7 @@ std::mt19937 &vmt()
 
   return smt;
 }
-
+*/
 
 
 int get_value_nature (const string &s)
@@ -136,7 +138,7 @@ CVar::~CVar()
 int CVar::get_rnd (int ta, int tb)
 {
    std::uniform_int_distribution <> distrib (ta, tb);
-   return distrib (vmt());
+   return distrib (rnd_mt19937);
 }
 
 
@@ -148,7 +150,7 @@ string CVar::gen_msecs()
   std::stringstream sstream;
   sstream.setf (std::ios::fixed);
   sstream.precision (precision);
-  sstream << distrib (vmt());
+  sstream << distrib (rnd_mt19937);
 
   return sstream.str();
 }

@@ -139,6 +139,7 @@ int main (int argc, char *argv[])
 
   std::string tdir = get_tmp_dir();
 
+  rnd_init();
 
   std::string temp_logfile;
   std::string temp_logfile0;

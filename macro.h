@@ -7,6 +7,8 @@
 #include <map>
 
 
+
+
 class CMacro
 {
 public:
@@ -183,5 +185,7 @@ public:
   ~CMacroMeta(){};
 };
 
+
+void rnd_init();
 
 #endif

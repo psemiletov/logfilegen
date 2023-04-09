@@ -7,17 +7,6 @@
 #include <chrono>
 
 
-#ifdef USE_PROM
-
-#include "prometheus/client_metric.h"
-#include "prometheus/counter.h"
-#include "prometheus/exposer.h"
-#include "prometheus/family.h"
-#include "prometheus/info.h"
-#include "prometheus/registry.h"
-
-#endif
-
 
 #include "utl.h"
 #include "macro.h"
@@ -27,6 +16,15 @@ using namespace std;
 char arr_nums [] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
 
+std::mt19937 rnd_mt19937;
+
+
+void rnd_init()
+{
+  rnd_mt19937.seed (std::chrono::system_clock::now().time_since_epoch().count());
+}
+
+/*
 std::mt19937 &mt()
 {
   // initialize once per thread
@@ -38,12 +36,12 @@ std::mt19937 &mt()
 
   return smt;
 }
-
+*/
 
 int get_rnd (int ta, int tb)
 {
   std::uniform_int_distribution <> distrib (ta, tb);
-  return distrib (mt());
+  return distrib (rnd_mt19937);
 }
 
 
@@ -56,7 +54,7 @@ string gen_string (size_t len)
 
   for (size_t i = 0; i < len; i++)
       {
-       int g = distrib (mt());
+       int g = distrib (rnd_mt19937);
        char d = static_cast<char> (g + 'a');
        result += d;
       }
@@ -72,11 +70,11 @@ string gen_string (size_t min, size_t max)
 
   std::uniform_int_distribution<> distrib (0, 25);
   std::uniform_int_distribution<> dminmax (min, max);
-  size_t len = dminmax (mt());
+  size_t len = dminmax (rnd_mt19937);
 
   for (size_t i = 0; i < len; i++)
       {
-       int g = distrib (mt());
+       int g = distrib (rnd_mt19937);
        char d = static_cast<char> (g + 'a');
        result += d;
       }
@@ -113,7 +111,7 @@ string gen_number (size_t len)
 
   for (size_t i = 0; i < len; i++)
       {
-       result += arr_nums[distrib (mt())];
+       result += arr_nums[distrib (rnd_mt19937)];
       }
 
   return result;
@@ -124,14 +122,14 @@ string gen_number (size_t min, size_t max)
 {
   std::uniform_int_distribution<> distrib (0, 9);
   std::uniform_int_distribution<> dminmax (min, max);
-  size_t len = dminmax (mt());
+  size_t len = dminmax (rnd_mt19937);
 
   string result;
   result.reserve (len);
 
   for (size_t i = 0; i < len; i++)
       {
-       result += arr_nums[distrib (mt())];
+       result += arr_nums[distrib (rnd_mt19937)];
       }
 
   return result;
@@ -147,7 +145,7 @@ string gen_hex_number (size_t len)
 
   for (size_t i = 0; i < len; i++)
       {
-       result += arr_nums[distrib (mt())];
+       result += arr_nums[distrib (rnd_mt19937)];
       }
 
   return result;
@@ -158,14 +156,14 @@ string gen_hex_number (size_t min, size_t max)
 {
   std::uniform_int_distribution<> distrib (0, 15);
   std::uniform_int_distribution<> dminmax (min, max);
-  size_t len = dminmax (mt());
+  size_t len = dminmax (rnd_mt19937);
 
   string result;
   result.reserve (len);
 
   for (size_t i = 0; i < len; i++)
       {
-       result += arr_nums[distrib (mt())];
+       result += arr_nums[distrib (rnd_mt19937)];
       }
 
   return result;
@@ -245,16 +243,16 @@ string CMacroIPRandom::process()
   string result;
   result.reserve (16);
 
-  result += to_string (distrib (mt()));
+  result += to_string (distrib (rnd_mt19937));
   result += ".";
 
-  result += to_string (distrib (mt()));
+  result += to_string (distrib (rnd_mt19937));
   result += ".";
 
-  result += to_string (distrib (mt()));
+  result += to_string (distrib (rnd_mt19937));
   result += ".";
 
-  result += to_string (distrib (mt()));
+  result += to_string (distrib (rnd_mt19937));
 
   return result;
 }
@@ -439,7 +437,7 @@ void CMacroPathRandom::parse (const string &s)
 
 string CMacroPathRandom::process()
 {
-   return gen_rnd_path (len_min, len_max, length);
+  return gen_rnd_path (len_min, len_max, length);
 }
 
 
@@ -490,18 +488,33 @@ vector <string> split_string_to_vector_a (const string &s, char delimeter, char 
 
 void CMacroSeq::parse (const string &s)
 {
+//  cout << "void CMacroSeq::parse: " << s << endl;
+
   len_min = 0;
   len_max = 0;
   length = 0;
   text = "";
 
-  vt = split_string_to_vector_a (s, ':', '/');
+//  vt = split_string_to_vector_a (s, ':', '/');
+  vt = split_string_to_vector (s, ":");
+
+
 }
 
 
 string CMacroSeq::process()
 {
+//  cout << "CMacroSeq::process() 1" << endl;
+
+  //cout << "vt.size(): " << vt.size() << endl;
+
    size_t i = get_rnd (1, vt.size() - 1);
+
+    //    cout << "CMacroSeq::process() 2:" << i << endl;
+
+
+//     cout << "CMacroSeq::process() 3" << endl;
+
 
    return vt[i];
 }
@@ -607,7 +620,7 @@ void CMacroMeta::parse (const string &s)
                //create cached macro
                string name = get_macro_name (macrotext);
 
-               cout << "name is: " << name << endl;
+            //   cout << "name is: " << name << endl;
 
                if (name.empty())
                   continue;
@@ -618,7 +631,7 @@ void CMacroMeta::parse (const string &s)
 
                //copy metamacro instead of real one
                string newname = "@" + to_string(i);
-               cout << "new name is: " << newname << endl;
+              // cout << "new name is: " << newname << endl;
 
                meta += newname;
 
