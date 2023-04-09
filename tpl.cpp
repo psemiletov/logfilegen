@@ -75,9 +75,10 @@ CTpl::CTpl (const string &fname, const string &amode)
      }
 
 
+
      //logstrings["apache"] = "\"%h %l %u %t \"%r\" %>s %b\"";
 
-    if (mode == "apache")
+  if (mode == "apache")
      {
       vars.insert (std::make_pair ("$logstring", new CVar ("$logstring", logstrings["apache"])));
 
@@ -85,14 +86,18 @@ CTpl::CTpl (const string &fname, const string &amode)
       vars.insert (std::make_pair ("%l", new CVar ("%l", "@str:8|-")));
       vars.insert (std::make_pair ("%u", new CVar ("%u", "@str:8|-")));
       vars.insert (std::make_pair ("%t", new CVar ("%t", "@datetime:%d/%b/%Y:%H:%M:%S %z")));
-//      vars.insert (std::make_pair ("%r", new CVar ("%r", "/GET /hello.html HTTP/1.1.")));
 
-      vars.insert (std::make_pair ("%r", new CVar ("%r", "@meta:(@seq:/GET:/PUT) (@path:1:5:3) (@seq:HTTP/1.1:/HTTP/2.0)")));
       //$request $uri $protocol
+      vars.insert (std::make_pair ("%r", new CVar ("%r", "@meta:(@seq:/GET:/PUT) (@path:1:5:3) (@seq:HTTP/1.1:/HTTP/2.0)")));
 
       vars.insert (std::make_pair ("%>s", new CVar ("%>s", "200|400")));
       vars.insert (std::make_pair ("%b", new CVar ("%b", "1..9999")));
+
+
+      //      vars.insert (std::make_pair ("%r", new CVar ("%r", "/GET /hello.html HTTP/1.1.")));
+
      }
+
 
 
 
@@ -108,20 +113,29 @@ CTpl::CTpl (const string &fname, const string &amode)
       vars.insert (std::make_pair (it->first, new CVar (it->first, it->second)));
      }
 
+
 }
 
 
 string CTpl::prepare_log_string()
 {
 
+// std::cout << "111" << std::endl;
+
+
   string logstring = vars["$logstring"]->get_val();
   logstring.reserve (256);
+
+//   std::cout << "222:" << logstring << std::endl;
+
 
   if (logstring.empty())
      {
       cout << "$logstring mandatory variable is not defined!" << endl;
       return "";
      }
+
+
 
 //change to     for (auto it = mymap.rbegin(); it != mymap.rend(); it++)
   map <string, CVar*>::reverse_iterator it;
@@ -138,6 +152,8 @@ string CTpl::prepare_log_string()
          }
        while (i != string::npos);
       }
+
+
 
   return logstring;
 }

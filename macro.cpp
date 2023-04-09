@@ -550,6 +550,8 @@ CMacroMeta* CMacroMeta::create_self (const string &s)
 
 void CMacroMeta::parse (const string &s)
 {
+//  cout <<  "CMacroMeta::parse" << endl;
+
   len_min = 0;
   len_max = 0;
   length = 0;
@@ -605,7 +607,7 @@ void CMacroMeta::parse (const string &s)
                //create cached macro
                string name = get_macro_name (macrotext);
 
-     //          cout << "and name is: " << name << endl;
+               cout << "name is: " << name << endl;
 
                if (name.empty())
                   continue;
@@ -616,6 +618,7 @@ void CMacroMeta::parse (const string &s)
 
                //copy metamacro instead of real one
                string newname = "@" + to_string(i);
+               cout << "new name is: " << newname << endl;
 
                meta += newname;
 
@@ -628,6 +631,10 @@ void CMacroMeta::parse (const string &s)
          meta += text[i];
         i++;
        }
+
+ //   cout <<  "CMacroMeta::parse -2" << endl;
+
+
 }
 
 
@@ -639,7 +646,11 @@ string CMacroMeta::process()
   for (it = cache.macros.begin(); it != cache.macros.end(); it++)
       {
        string macroname = it->first; //@1, @2, etc
-   //   cout << "macroname:" << macroname << endl;
+
+//      cout <<  "CMacroMeta::parse" << endl;
+
+
+       //cout << "macroname:" << macroname << endl;
        size_t i = 0;
        do
          {
@@ -653,6 +664,7 @@ string CMacroMeta::process()
  // cout << "text:"  << text << endl;
   return text;
 }
+
 
 void CMacrosCache::add (size_t pos, CMacro *m)
 {

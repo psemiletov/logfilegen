@@ -139,6 +139,7 @@ CProducer::CProducer (CParameters *prms, const std::string &fname)
   tpl = new CTpl (fname, params->mode);
 
 
+
   fname_template = fname;
   log_current_size = 0;
   no_free_space = false;
@@ -156,7 +157,7 @@ CProducer::CProducer (CParameters *prms, const std::string &fname)
   logrotator = new CLogRotator (params->logfile, params->max_log_files, string_to_file_size (params->max_log_file_size));
   logrotator->use_gzip = params->use_gzip;
 
-   std::signal (SIGINT, f_signal_handler);
+  std::signal (SIGINT, f_signal_handler);
 
 
   if (! params->bstdout)
@@ -186,7 +187,6 @@ CProducer::CProducer (CParameters *prms, const std::string &fname)
 
 
  server_init();
-
 }
 
 //http://localhost:8888/metrics
