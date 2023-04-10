@@ -267,14 +267,14 @@ Please note, the file name after ```@file``` must be an absolute file path, or, 
 
 #### @seq
 
-Works like **sequence** variable values. Each value is separated by ```:```.
+Works like **sequence** variable values. Each value is separated by ```|```.
 
-Syntax: ```@seq:param1:param2:etc```
+Syntax: ```@seq:param1|param2|etc```
 
 Example:
 
 ```
-$test=@seq:GET:PUT
+$test=@seq:GET|PUT
 $logstring=hello, $test
 ```
 

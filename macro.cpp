@@ -495,10 +495,24 @@ void CMacroSeq::parse (const string &s)
   length = 0;
   text = "";
 
+  size_t pos = s.find_first_of ("|");
+  if (pos == std::string::npos)
+     return;
+
+
 //  vt = split_string_to_vector_a (s, ':', '/');
-  vt = split_string_to_vector (s, ":");
 
+  pos = s.find_first_of (":");
+  if (pos == std::string::npos)
+     return;
 
+  std::string t = s.substr (pos);
+
+ // cout << "t: " << t << endl;
+
+  vt = split_string_to_vector (t, "|");
+
+// vt = split_string_to_vector (s, ":");
 }
 
 
@@ -507,6 +521,9 @@ string CMacroSeq::process()
 //  cout << "CMacroSeq::process() 1" << endl;
 
   //cout << "vt.size(): " << vt.size() << endl;
+
+   if (vt.size() == 0)
+      return string();
 
    size_t i = get_rnd (1, vt.size() - 1);
 

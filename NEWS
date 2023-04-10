@@ -5,3 +5,7 @@ This release introduces the multithread support (performance improved), fixes ma
 upd 3.0.1
 * @meta macro fixes
 * randomizer code has been rewritten
+upd 3.0.2
+* @seq macros fix. Syntax change!
+Was: @seq:param1:param2:etc
+Now: @seq:param1|param2|etc
