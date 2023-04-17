@@ -1,11 +1,11 @@
-logfilegen 3.0.0
+logfilegen 3.0.3
 
 This release introduces the multithread support (performance improved), fixes mac and win building, and many more.
 
 upd 3.0.1
 * @meta macro fixes
 * randomizer code has been rewritten
-upd 3.0.2
+upd 3.0.3
 * @seq macros fix. Syntax change!
-Was: @seq:param1:param2:etc
-Now: @seq:param1|param2|etc
+Was: @seq:param1|param2|etc
+Now: @seq:param1^param2^etc

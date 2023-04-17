@@ -88,7 +88,7 @@ CTpl::CTpl (const string &fname, const string &amode)
       vars.insert (std::make_pair ("%t", new CVar ("%t", "@datetime:%d/%b/%Y:%H:%M:%S %z")));
 
       //$request $uri $protocol
-      vars.insert (std::make_pair ("%r", new CVar ("%r", "@meta:(@seq:/GET|/PUT) (@path:1:5:3) (@seq:HTTP/1.1|/HTTP/2.0)")));
+      vars.insert (std::make_pair ("%r", new CVar ("%r", "@meta:(@seq:/GET^/PUT) (@path:1:5:3) (@seq:HTTP/1.1^/HTTP/2.0)")));
 
       vars.insert (std::make_pair ("%>s", new CVar ("%>s", "200|400")));
       vars.insert (std::make_pair ("%b", new CVar ("%b", "1..9999")));

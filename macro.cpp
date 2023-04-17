@@ -486,6 +486,43 @@ vector <string> split_string_to_vector_a (const string &s, char delimeter, char 
 }
 
 
+vector <string> split_string_to_vector_simple (const string &s, char delimeter)
+{
+  vector <string> result;
+
+  size_t a = 0;
+  size_t b = 0;
+
+  while (b < s.size())
+        {
+         if (b + 1 == s.size())
+            {
+             string t = s.substr (a + 1, b - a);
+             result.push_back (t);
+            }
+
+         if (s[b] == delimeter)
+        //     if (b + 1 != s.size())
+          //      if (s[b + 1] != aware)
+                   {
+                    string t;
+
+                    if (a == 0)
+                        t = s.substr (a, b - a);
+                    else
+                        t = s.substr (a + 1, b - a - 1);
+
+                    result.push_back (t);
+                    a = b;
+                   }
+
+         b++;
+        }
+
+  return result;
+}
+
+
 void CMacroSeq::parse (const string &s)
 {
 //  cout << "void CMacroSeq::parse: " << s << endl;
@@ -495,22 +532,23 @@ void CMacroSeq::parse (const string &s)
   length = 0;
   text = "";
 
-  size_t pos = s.find_first_of ("|");
+
+
+
+  size_t pos = s.find_first_of (":");
   if (pos == std::string::npos)
      return;
 
+  std::string t = s.substr (pos + 1);
 
-//  vt = split_string_to_vector_a (s, ':', '/');
+  //  cout << "t: " << t << endl;
 
-  pos = s.find_first_of (":");
-  if (pos == std::string::npos)
-     return;
 
-  std::string t = s.substr (pos);
+ // vt = split_string_to_vector_simple (t, '^');
+  vt = split_string_to_vector (t, "^");
 
- // cout << "t: " << t << endl;
 
-  vt = split_string_to_vector (t, "|");
+//  vt = split_string_to_vector (t, "|");
 
 // vt = split_string_to_vector (s, ":");
 }
@@ -525,7 +563,7 @@ string CMacroSeq::process()
    if (vt.size() == 0)
       return string();
 
-   size_t i = get_rnd (1, vt.size() - 1);
+   size_t i = get_rnd (0, vt.size() - 1);
 
     //    cout << "CMacroSeq::process() 2:" << i << endl;
 

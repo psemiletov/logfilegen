@@ -41,7 +41,7 @@
 
 
 #ifndef VERSION_NUMBER
-#define VERSION_NUMBER "3.0.2"
+#define VERSION_NUMBER "3.0.3"
 #endif
 
 
@@ -79,7 +79,7 @@ std::string find_config_in_paths (const std::string &fname)
 
 void show_version()
 {
-  std::cout << "logfilegen v." << VERSION_NUMBER << std::endl;
+  std::cout << "logfilegen v" << VERSION_NUMBER << std::endl;
 }
 
 

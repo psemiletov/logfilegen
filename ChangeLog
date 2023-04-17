@@ -1,5 +1,10 @@
+3.0.3
+* @seq macro fix. Syntax change!
+Was: @seq:param1|param2|etc
+Now: @seq:param1^param2^etc
+
 3.0.2
-* @seq macros fix. Syntax change!
+* @seq macro fix. Syntax change!
 Was: @seq:param1:param2:etc
 Now: @seq:param1|param2|etc
 

@@ -13,7 +13,7 @@ if(USE_CLANG)
 endif(USE_CLANG)
 
 
-project (logfilegen VERSION 3.0.2 LANGUAGES CXX)
+project (logfilegen VERSION 3.0.3 LANGUAGES CXX)
 add_definitions(-DVERSION_NUMBER="\\"${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}\\"")
 
 
